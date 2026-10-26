@@ -32,7 +32,8 @@ def fixed_pipeline(obs, mask):
 
 
 def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_conf=None,
-                     min_money_for_retry=0.15, summarize=True):
+                     min_money_for_retry=0.15, summarize=True, giveup_diff=None,
+                     lowconf_retry=False):
     """Hand-designed router.
     research_on: task-type indices (0 coding, 1 analytical, 2 research) that get a researcher call first.
     verify: check the candidate. skip_verify_conf: if confidence >= this, trust it and skip checking.
@@ -48,10 +49,16 @@ def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_con
             if ttype in research_on and n_res == 0:
                 return RESEARCH
             return SOLVE
+        # difficulty-aware: on hard tasks do not spend on checks or retries, just finish
+        hard = giveup_diff is not None and obs[3] >= giveup_diff
+        retries_left = (not hard) and (n_solve - 1) < max_retries and obs[12] > min_money_for_retry
         trusted = skip_verify_conf is not None and obs[14] >= skip_verify_conf
-        if verify and not passed and not failed and not trusted:
+        unchecked = not passed and not failed
+        if lowconf_retry and unchecked and obs[14] < 0.5 and retries_left and mask[RETRY]:
+            return RETRY                      # probably wrong already: retry without paying for a check
+        if verify and not hard and unchecked and not trusted:
             return VERIFY
-        if failed and (n_solve - 1) < max_retries and obs[12] > min_money_for_retry and mask[RETRY]:
+        if failed and retries_left and mask[RETRY]:
             return RETRY
         if summarize and mask[SUMMARIZE]:
             return SUMMARIZE

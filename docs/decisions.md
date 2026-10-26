@@ -69,3 +69,17 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
 - Fairness problem found: my rule family NEVER reads estimated difficulty (obs[3]). The DQN's edge
   may come only from using a feature the rules ignore. Must add difficulty-aware rules and re-tune
   on DEV before claiming RL beats rules.
+
+## 2026-10-27 Milestone 4d: FAIR re-test with a difficulty-aware rule (eval/compare2.py)
+- Rule family extended: giveup_diff (on hard tasks skip checks and retries) and lowconf_retry.
+  960 rules tuned on 5,000 DEV tasks. Winner: verify, 3 retries, trust conf>=0.6, give up when
+  est. difficulty >= 0.6-0.7 (several near-ties at dev +0.186).
+- TEST (10,000 tasks): single +0.153 | old rule +0.154 | NEW rule +0.173 | DQN mean +0.173
+  (seeds +0.185 +0.183 +0.181 +0.181 +0.136).
+- Paired DQN - NEW rule: +0.012, +0.009, +0.007, +0.008, -0.037 (CIs about +-0.007).
+- Verdict: the pre-registered GO test now FAILS (gain 0.0% vs needed 10%). The earlier +12.7%
+  came from the rule ignoring difficulty. RL independently discovered the same "give up on hard
+  tasks" structure the better hand rule uses.
+- Honest story for the report: RL matches a well-tuned expert rule without being told it, clearly
+  beats a fixed pipeline and an undesigned rule, and is somewhat unstable across seeds.
+  Four seeds are marginally above the rule (+0.01), one clearly below.
