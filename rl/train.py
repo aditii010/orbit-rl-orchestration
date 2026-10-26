@@ -14,8 +14,9 @@ TRAIN_SEED_BASE = 1_000_000
 
 
 def train(episodes=20000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buffer=50_000,
-          batch=64, warmup=1000, target_every=500, eval_every=2000, save=None, config=None):
-    agent = DoubleDQN(seed=seed)
+          batch=64, warmup=1000, target_every=500, eval_every=2000, save=None, config=None,
+          lr=1e-3):
+    agent = DoubleDQN(seed=seed, lr=lr)
     buf = ReplayBuffer(buffer)
     env = OrbitEnv(config)
     rng = np.random.default_rng(seed)

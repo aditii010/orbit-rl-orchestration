@@ -83,3 +83,10 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
 - Honest story for the report: RL matches a well-tuned expert rule without being told it, clearly
   beats a fixed pipeline and an undesigned rule, and is somewhat unstable across seeds.
   Four seeds are marginally above the rule (+0.01), one clearly below.
+
+## 2026-10-27 Plan A pre-declared (BEFORE running): stabilize the DQN, short fixed budget
+- S1: 60k episodes, lr 1e-3. S2: 60k, lr 3e-4, target sync 1000. S3: S2 + exploration decay to 80%.
+- 5 seeds each, final checkpoint only, no seed picking. Choose the setting by DEV mean only.
+- Success: chosen setting beats the difficulty-aware rule (+0.173 test) clearly beyond noise AND no
+  seed clearly below it. Otherwise Plan A failed: go to Plan B (honest story) with the original setting.
+- Whatever happens, Plan B follows (held-out budgets/tasks, ablations, real-LLM check).
