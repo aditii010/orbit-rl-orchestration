@@ -1,0 +1,59 @@
+"""Non-learning baselines. A policy is a function (obs, mask) -> action index.
+
+Observation layout (see env/orbit_env.py): 0-2 task type, 3 est. difficulty, 4 has candidate,
+5-7 last verify (none/pass/fail), 8-11 call counts / max_steps (researcher, solver, verifier,
+summarizer), 12 money left, 13 steps left, 14 confidence, 15 summarized.
+"""
+from env.orbit_env import A
+
+SOLVE, RETRY, VERIFY = A["INVOKE_SOLVER"], A["RETRY_SOLVER"], A["INVOKE_VERIFIER"]
+RESEARCH, SUMMARIZE, STOP = A["INVOKE_RESEARCHER"], A["INVOKE_SUMMARIZER"], A["STOP"]
+MAX_STEPS = 8
+
+
+def single_agent(obs, mask):
+    """One solver call, then stop. No specialists."""
+    return SOLVE if not obs[4] else STOP
+
+
+def fixed_pipeline(obs, mask):
+    """Every task: researcher -> solver -> verifier -> summarizer -> stop."""
+    n_res, n_ver, n_sum = (round(obs[8] * MAX_STEPS), round(obs[10] * MAX_STEPS),
+                           round(obs[11] * MAX_STEPS))
+    if n_res == 0:
+        return RESEARCH
+    if not obs[4]:
+        return SOLVE
+    if n_ver == 0:
+        return VERIFY
+    if n_sum == 0 and mask[SUMMARIZE]:
+        return SUMMARIZE
+    return STOP
+
+
+def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_conf=None,
+                     min_money_for_retry=0.15, summarize=True):
+    """Hand-designed router.
+    research_on: task-type indices (0 coding, 1 analytical, 2 research) that get a researcher call first.
+    verify: check the candidate. skip_verify_conf: if confidence >= this, trust it and skip checking.
+    Retry only after a failed check, up to max_retries, and only while enough money is left.
+    """
+    def rule(obs, mask):
+        ttype = int(obs[:3].argmax())
+        n_res = round(obs[8] * MAX_STEPS)
+        n_solve = round(obs[9] * MAX_STEPS)
+        n_ver = round(obs[10] * MAX_STEPS)
+        passed, failed = obs[6] > 0.5, obs[7] > 0.5
+        if not obs[4]:
+            if ttype in research_on and n_res == 0:
+                return RESEARCH
+            return SOLVE
+        trusted = skip_verify_conf is not None and obs[14] >= skip_verify_conf
+        if verify and not passed and not failed and not trusted:
+            return VERIFY
+        if failed and (n_solve - 1) < max_retries and obs[12] > min_money_for_retry and mask[RETRY]:
+            return RETRY
+        if summarize and mask[SUMMARIZE]:
+            return SUMMARIZE
+        return STOP
+    return rule
