@@ -56,3 +56,16 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
   the cause of its lower return. Not yet confirmed by an ablation.
 - DQN choices look "mushy" (many actions per situation) because the greedy policy depends on
   other inputs (task type, difficulty, money) that the table averages over, not because it is random.
+
+## 2026-10-27 Milestone 4c: hypothesis test "skip the check at low confidence" (eval/hypothesis.py)
+- Part C: P(truly wrong | unchecked, confidence<0.5) = 0.92 (n=6214). Matches my rough math.
+- Part B (same hand rule, only the low-confidence action changes, 10,000 paired tasks):
+  verify +0.154 | retry at once -0.0004 +-0.0084 (tie) | stop +0.0075 +-0.0063 (not significant;
+  success 0.49 -> 0.38, cost 0.271 -> 0.170).
+- Verdict: hypothesis NOT supported. Skipping the check saves only ~0.005 cost; the verifier is cheap.
+  Giving up at low confidence is about as good as retrying: the reward is FLAT in that region.
+- Part A: DQN seeds 0 and 1 agree on one pattern: low confidence + HARD task + money left -> stop
+  (56% and 61%); easy task -> retry. Giving up on hard tasks, retrying easy ones.
+- Fairness problem found: my rule family NEVER reads estimated difficulty (obs[3]). The DQN's edge
+  may come only from using a feature the rules ignore. Must add difficulty-aware rules and re-tune
+  on DEV before claiming RL beats rules.
