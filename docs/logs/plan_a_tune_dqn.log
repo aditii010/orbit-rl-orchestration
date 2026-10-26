@@ -1,0 +1,27 @@
+NEW rule: dev +0.186  test +0.173
+  S1 longer seed 0: dev +0.170 test +0.162
+  S1 longer seed 1: dev +0.189 test +0.176
+  S1 longer seed 2: dev +0.173 test +0.162
+  S1 longer seed 3: dev +0.184 test +0.166
+  S1 longer seed 4: dev +0.190 test +0.180
+S1 longer: dev mean +0.181 (min +0.170)
+  S2 longer+slower seed 0: dev +0.192 test +0.183
+  S2 longer+slower seed 1: dev +0.213 test +0.194
+  S2 longer+slower seed 2: dev +0.203 test +0.195
+  S2 longer+slower seed 3: dev +0.202 test +0.184
+  S2 longer+slower seed 4: dev +0.203 test +0.191
+S2 longer+slower: dev mean +0.203 (min +0.192)
+  S3 +more exploration seed 0: dev +0.193 test +0.175
+  S3 +more exploration seed 1: dev +0.208 test +0.199
+  S3 +more exploration seed 2: dev +0.187 test +0.178
+  S3 +more exploration seed 3: dev +0.208 test +0.189
+  S3 +more exploration seed 4: dev +0.192 test +0.180
+S3 +more exploration: dev mean +0.198 (min +0.187)
+
+CHOSEN BY DEV: S2 longer+slower
+seed 0: test +0.183  DQN - rule = +0.0094 ± 0.0073
+seed 1: test +0.194  DQN - rule = +0.0206 ± 0.0075
+seed 2: test +0.195  DQN - rule = +0.0220 ± 0.0074
+seed 3: test +0.184  DQN - rule = +0.0105 ± 0.0068
+seed 4: test +0.191  DQN - rule = +0.0177 ± 0.0073
+TEST mean +0.189 vs rule +0.173  (gain +9.3%)

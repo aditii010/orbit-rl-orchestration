@@ -13,9 +13,9 @@ DEV = range(0, 1000)
 TRAIN_SEED_BASE = 1_000_000
 
 
-def train(episodes=20000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buffer=50_000,
-          batch=64, warmup=1000, target_every=500, eval_every=2000, save=None, config=None,
-          lr=1e-3):
+def train(episodes=60000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buffer=50_000,
+          batch=64, warmup=1000, target_every=1000, eval_every=2000, save=None, config=None,
+          lr=3e-4):
     agent = DoubleDQN(seed=seed, lr=lr)
     buf = ReplayBuffer(buffer)
     env = OrbitEnv(config)
@@ -50,7 +50,7 @@ def train(episodes=20000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buf
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--episodes", type=int, default=20000)
+    p.add_argument("--episodes", type=int, default=60000)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--save", default="checkpoints/dqn_seed0.pt")
     a = p.parse_args()

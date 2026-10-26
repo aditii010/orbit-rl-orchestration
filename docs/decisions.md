@@ -90,3 +90,14 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
 - Success: chosen setting beats the difficulty-aware rule (+0.173 test) clearly beyond noise AND no
   seed clearly below it. Otherwise Plan A failed: go to Plan B (honest story) with the original setting.
 - Whatever happens, Plan B follows (held-out budgets/tasks, ablations, real-LLM check).
+
+## 2026-10-27 Plan A result (log: docs/logs/plan_a_tune_dqn.log)
+- DEV means: S1 +0.181, S2 +0.203, S3 +0.198. Chosen by dev: S2 (60k episodes, lr 3e-4, target sync 1000).
+- TEST (10,000 tasks), S2, final checkpoints: +0.183 +0.194 +0.195 +0.184 +0.191, mean +0.189.
+  Difficulty-aware rule: +0.173. Paired DQN - rule: +0.009 to +0.022, every seed above the rule beyond its CI.
+- Seed instability is gone: worst seed is now above the rule (before: -0.037).
+- Plan A success criterion (beats rule beyond noise, no seed below): MET.
+  Original feasibility bar (+10% relative): +9.3%, just under. Report both, do not round up.
+- Caveats: rule family is limited (960 hand-built variants); the DQN had 3x more training than before;
+  S2 was picked from 3 settings using dev only. rl/train.py defaults now equal S2.
+- Plan B starts: held-out budgets / task families, ablations, real-LLM check.
