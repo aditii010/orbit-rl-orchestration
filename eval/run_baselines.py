@@ -4,16 +4,16 @@ import itertools
 from baselines.policies import fixed_pipeline, make_rule_router, single_agent
 from eval.runner import evaluate, table
 
-DEV = range(0, 1000)
+DEV = range(0, 5000)   # bigger dev set: ~300 rule settings are searched, so 1000 tasks is too noisy
 TEST = range(100_000, 102_000)
 
 if __name__ == "__main__":
     best, best_cfg = -9, None
     grid = itertools.product([(), (2,), (0, 1, 2)], [True, False], [0, 1, 2, 3],
-                             [None, 0.6, 0.7], [0.1, 0.25])
-    for research_on, verify, retries, skip, minmoney in grid:
+                             [None, 0.6, 0.7], [0.1, 0.25], [True, False])
+    for research_on, verify, retries, skip, minmoney, summ in grid:
         cfg = dict(research_on=research_on, verify=verify, max_retries=retries,
-                   skip_verify_conf=skip, min_money_for_retry=minmoney)
+                   skip_verify_conf=skip, min_money_for_retry=minmoney, summarize=summ)
         r = evaluate(make_rule_router(**cfg), DEV)["return"]
         if r > best:
             best, best_cfg = r, cfg

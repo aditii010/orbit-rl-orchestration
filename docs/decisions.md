@@ -25,3 +25,19 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
   Dev return 0.177 vs test 0.137 shows noise of this size, so the two are statistically tied.
 - Not changing the world yet. Next: second feasibility test (DQN vs best rule) on this exact setup.
   Any change to lambda/skills must be decided and logged BEFORE looking at RL results.
+
+## 2026-10-27 Milestone 4a / second feasibility test: Double DQN vs baselines (10,000 TEST tasks)
+- Two setup mistakes of mine, found before claiming anything:
+  1. The rule search could not skip the summarizer, so the "tuned" rule looked worse than single agent.
+     Fixed by adding a summarize on/off option. Winner did not change.
+  2. 300 rule settings tuned on 1,000 dev tasks gave a lucky winner (dev +0.177, test +0.137).
+     Fixed by tuning on 5,000 dev tasks and testing on 10,000 fresh tasks.
+- Final numbers (return, mean): single +0.153, rule router +0.154 (tie), fixed pipeline +0.003.
+- DQN, 5 seeds, final checkpoint (no cherry-picking), 20k episodes, ~30 s each:
+  +0.185, +0.183, +0.181, +0.181, +0.136. Mean +0.173 = +12.7% over best simple baseline.
+- Paired on identical tasks: seeds 0-3 beat both rule and single by +0.03 (CI +-0.008).
+  Seed 4 is WORSE by -0.017. Training is not yet stable across seeds.
+- Cost: DQN gets success 0.47 at cost ~0.217 vs rule 0.49 at cost 0.271 (about 20% cheaper).
+- Verdict: WEAK GO. Passes the pre-registered 10% rule on the mean, but the gain is small in
+  absolute terms (about 0.03 reward) and one seed fails. Next: find out why seed 4 differs,
+  and what the DQN actually does differently (action distribution).
