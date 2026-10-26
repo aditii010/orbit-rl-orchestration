@@ -41,3 +41,18 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
 - Verdict: WEAK GO. Passes the pre-registered 10% rule on the mean, but the gain is small in
   absolute terms (about 0.03 reward) and one seed fails. Next: find out why seed 4 differs,
   and what the DQN actually does differently (action distribution).
+
+## 2026-10-27 Milestone 4b: what does the DQN do? (eval/analyze.py, 2000 test tasks)
+- Caveat on reading the table: each row counts every decision step, so "stop 50%" after PASS
+  mostly means "summarize first, then stop on the next step". Not two competing choices.
+- Both DQN seeds learned the skeleton: always solve first, stop/summarize after PASS, retry after FAIL.
+- Rule router verifies 100% of low-confidence candidates. DQN seed 0 verifies only 27% there and
+  instead retries (30%) or stops (36%). Hypothesis (NOT yet tested): when confidence already
+  says "probably wrong", a check adds little, so skipping it saves cost. Test by splitting on
+  estimated difficulty and money left.
+- DQN seed 0 re-verifies after a FAIL (40%). A second noisy opinion can be useful, but costs money. Untested.
+- DQN seed 4 wastes calls: researcher after a candidate already exists (16% at high confidence,
+  12% after PASS). Research only helps FUTURE solver calls, so these are mostly useless. Likely
+  the cause of its lower return. Not yet confirmed by an ablation.
+- DQN choices look "mushy" (many actions per situation) because the greedy policy depends on
+  other inputs (task type, difficulty, money) that the table averages over, not because it is random.
