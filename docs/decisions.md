@@ -128,3 +128,12 @@ the seed-AVERAGED per-task return minus the fixed rule (its CI hides seed-to-see
   the retuned column has no CI. Tight budget (0.3-0.6) partly overlaps the train range (0.5-1.2).
 - H4 (generalization): mostly supported. The DQN keeps its edge over the fixed rule in 5 of 6 worlds
   and matches human retuning without any retuning. Biggest value is robustness, not peak reward.
+
+## 2026-10-27 Plan B step 2 pre-declared (BEFORE running): ablations (eval/ablate.py)
+- Full DQN = the 5 S2 checkpoints from eval/shift.py. Each variant: retrain 5 seeds with S2 settings.
+  A no cost penalty (train with lambda=0, evaluate with the TRUE reward), B no history (zero last-verify,
+  call counts, summarized flag), C1 no difficulty estimate, C2 no confidence score.
+- Tested in the train world and the research-heavy world, 10,000 tasks, paired vs the full DQN.
+- Predictions written first: C1 (difficulty) hurts most, because the DQN's "give up on hard tasks"
+  pattern needs it. A makes the agent spend more (higher cost, more steps) and lowers true return.
+  B hurts a little. C2 hurts little. If wrong, we say so.

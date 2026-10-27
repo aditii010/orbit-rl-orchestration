@@ -49,8 +49,11 @@ class ReplayBuffer:
 
 
 class DoubleDQN:
-    def __init__(self, gamma=0.99, lr=1e-3, hidden=128, seed=0):
+    def __init__(self, gamma=0.99, lr=1e-3, hidden=128, seed=0, hide=()):
         torch.manual_seed(seed)
+        # observation indices the agent is NOT allowed to see (zeroed). Used for ablations.
+        self.keep = np.ones(OBS_DIM, np.float32)
+        self.keep[list(hide)] = 0.0
         self.rng = np.random.default_rng(seed)
         self.q = QNet(hidden=hidden)
         self.target = copy.deepcopy(self.q)          # frozen copy
@@ -59,6 +62,7 @@ class DoubleDQN:
 
     def act(self, obs, mask, eps=0.0):
         """Epsilon-greedy over LEGAL actions only."""
+        obs = obs * self.keep
         legal = np.flatnonzero(mask)
         if self.rng.random() < eps:
             return int(self.rng.choice(legal))
@@ -82,6 +86,11 @@ class DoubleDQN:
         nn.utils.clip_grad_norm_(self.q.parameters(), 10.0)
         self.opt.step()
         return float(loss.detach())
+
+    def load(self, path):
+        self.q.load_state_dict(torch.load(path))
+        self.sync_target()
+        return self
 
     def sync_target(self):
         self.target.load_state_dict(self.q.state_dict())

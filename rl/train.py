@@ -15,8 +15,8 @@ TRAIN_SEED_BASE = 1_000_000
 
 def train(episodes=60000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buffer=50_000,
           batch=64, warmup=1000, target_every=1000, eval_every=2000, save=None, config=None,
-          lr=3e-4):
-    agent = DoubleDQN(seed=seed, lr=lr)
+          lr=3e-4, hide=()):
+    agent = DoubleDQN(seed=seed, lr=lr, hide=hide)
     buf = ReplayBuffer(buffer)
     env = OrbitEnv(config)
     rng = np.random.default_rng(seed)
@@ -30,7 +30,7 @@ def train(episodes=60000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buf
             a = agent.act(obs, mask, eps)
             obs2, r, done, _ = env.step(a)
             m2 = np.ones(len(mask), bool) if done else env.action_mask()
-            buf.add(obs, a, r, obs2, float(done), m2)
+            buf.add(obs * agent.keep, a, r, obs2 * agent.keep, float(done), m2)
             obs = obs2
             step += 1
             if buf.size >= warmup:
