@@ -1,0 +1,10 @@
+FULL DQN [train world]: mean +0.189 (min +0.183)
+FULL DQN [research-heavy]: mean +0.076 (min +0.073)
+A no cost penalty (train lambda=0)                      [train world   ] return -0.123 (min -0.139) success 0.57 cost 0.540 calls 7.22 | vs full: -0.3123 ± 0.0070
+A no cost penalty (train lambda=0)                      [research-heavy] return -0.330 (min -0.347) success 0.47 cost 0.632 calls 7.28 | vs full: -0.4062 ± 0.0079
+B no history (verify result, call counts, summarized)   [train world   ] return +0.169 (min +0.166) success 0.41 cost 0.159 calls 2.40 | vs full: -0.0205 ± 0.0041
+B no history (verify result, call counts, summarized)   [research-heavy] return +0.072 (min +0.071) success 0.31 cost 0.165 calls 2.28 | vs full: -0.0041 ± 0.0029
+C1 no difficulty estimate                               [train world   ] return +0.179 (min +0.164) success 0.48 cost 0.226 calls 3.94 | vs full: -0.0104 ± 0.0032
+C1 no difficulty estimate                               [research-heavy] return +0.068 (min +0.052) success 0.32 cost 0.195 calls 3.05 | vs full: -0.0084 ± 0.0026
+C2 no confidence score                                  [train world   ] return +0.182 (min +0.172) success 0.44 cost 0.193 calls 3.48 | vs full: -0.0075 ± 0.0041
+C2 no confidence score                                  [research-heavy] return +0.070 (min +0.066) success 0.30 cost 0.172 calls 2.71 | vs full: -0.0065 ± 0.0031

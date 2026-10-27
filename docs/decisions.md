@@ -137,3 +137,19 @@ the seed-AVERAGED per-task return minus the fixed rule (its CI hides seed-to-see
 - Predictions written first: C1 (difficulty) hurts most, because the DQN's "give up on hard tasks"
   pattern needs it. A makes the agent spend more (higher cost, more steps) and lowers true return.
   B hurts a little. C2 hurts little. If wrong, we say so.
+
+## 2026-10-27 Plan B step 2 result: ablations (log: docs/logs/ablate.log), 10,000 paired tasks
+Full DQN: train world +0.189, research-heavy +0.076. Change vs full (5-seed average):
+  A no cost penalty  train -0.312, research-heavy -0.406  (calls 7.2 per task, cost 0.54, success 0.57)
+  B no history       train -0.0205, research-heavy -0.004 (calls 2.4: stops verifying)
+  C1 no difficulty   train -0.0104, research-heavy -0.0084
+  C2 no confidence   train -0.0075, research-heavy -0.0065
+- Predictions check: A as predicted (very strong). "C1 hurts most among features": TRUE only in
+  research-heavy; in the train world B (history) hurt most, about 2x C1. "B hurts a little": wrong in
+  train world. C2 small: roughly right.
+- Every state-feature ablation still lands at or above the fixed rule (+0.173 train world), so the DQN's
+  small edge is spread over several overlapping features; removing one leaves another that carries
+  similar information (difficulty and confidence both signal "probably wrong").
+- Without verify results (B) the agent stops verifying and drops to single-agent-like behaviour: the
+  value of verification depends entirely on being able to read its result.
+- Not tested: removing difficulty AND confidence together. Would show if the two are redundant.
