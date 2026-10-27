@@ -110,3 +110,21 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
   DQN mean/min over seeds, paired DQN minus fixed rule.
 - Question: does the DQN's small edge survive a shift, and does it lose more or less than the fixed rule?
 - Not allowed afterwards: changing the shifts, dropping a world, or tuning anything on these test tasks.
+
+## 2026-10-27 Plan B step 1 result: held-out budgets and task mixes (log: docs/logs/shift.log)
+Return, 5,000 tasks per world. DQN = 5 S2 seeds trained once on the default world; "DQN-rule" is
+the seed-AVERAGED per-task return minus the fixed rule (its CI hides seed-to-seed spread).
+  world            single  rule(fixed) rule(retuned) DQN mean (min)   DQN-rule
+  train world      +0.153  +0.166      +0.167        +0.187 (+0.181)  +0.020 +-0.008
+  tight budget     +0.153  +0.172      +0.172        +0.167 (+0.161)  -0.005 +-0.008
+  loose budget     +0.153  +0.166      +0.167        +0.181 (+0.170)  +0.016 +-0.008
+  research-heavy   +0.067  +0.029      +0.072        +0.077 (+0.072)  +0.048 +-0.009
+  harder tasks     +0.088  +0.085      +0.093        +0.103 (+0.090)  +0.018 +-0.008
+  easier tasks     +0.213  +0.246      +0.241        +0.263 (+0.257)  +0.016 +-0.009
+- The fixed rule BREAKS under research-heavy (+0.029, below single agent +0.067). The DQN does not (+0.077)
+  and lands on the same level as a rule a human retuned for that world (+0.072).
+- DQN >= retuned rule in 5 of 6 worlds; it loses only under TIGHT budget (+0.167 vs +0.172, a tie within noise).
+- Caveats: retuned rule used only 2,000 dev tasks and 960 settings, so it is itself a bit noisy;
+  the retuned column has no CI. Tight budget (0.3-0.6) partly overlaps the train range (0.5-1.2).
+- H4 (generalization): mostly supported. The DQN keeps its edge over the fixed rule in 5 of 6 worlds
+  and matches human retuning without any retuning. Biggest value is robustness, not peak reward.

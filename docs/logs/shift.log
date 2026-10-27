@@ -1,0 +1,13 @@
+trained seed 0
+trained seed 1
+trained seed 2
+trained seed 3
+trained seed 4
+
+condition          single  rule(fixed)  rule(retuned)  DQN mean  DQN min         DQN-rule
+train world        +0.153       +0.166         +0.167    +0.187   +0.181  +0.0202±0.0084
+tight budget       +0.153       +0.172         +0.172    +0.167   +0.161  -0.0050±0.0078
+loose budget       +0.153       +0.166         +0.167    +0.181   +0.170  +0.0159±0.0084
+research-heavy     +0.067       +0.029         +0.072    +0.077   +0.072  +0.0483±0.0088
+harder tasks       +0.088       +0.085         +0.093    +0.103   +0.090  +0.0178±0.0081
+easier tasks       +0.213       +0.246         +0.241    +0.263   +0.257  +0.0162±0.0090
