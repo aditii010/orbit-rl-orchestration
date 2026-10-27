@@ -101,3 +101,12 @@ Rule fixed in advance: GO if exact optimal reward >= 1.10 x best hand rule.
 - Caveats: rule family is limited (960 hand-built variants); the DQN had 3x more training than before;
   S2 was picked from 3 settings using dev only. rl/train.py defaults now equal S2.
 - Plan B starts: held-out budgets / task families, ablations, real-LLM check.
+
+## 2026-10-27 Plan B step 1 pre-declared (BEFORE running): held-out budgets and task mixes (eval/shift.py)
+- Train the 5 S2 DQNs and tune the rule ONCE on the default world. Test in 6 worlds (5,000 tasks each):
+  train world, tight budget (0.3-0.6), loose budget (1.2-2.0), research-heavy mix (10/20/70%),
+  harder tasks (Beta 3,2), easier tasks (Beta 2,3).
+- Reported per world: single agent, fixed rule, RETUNED rule (reference: human who knew the shift),
+  DQN mean/min over seeds, paired DQN minus fixed rule.
+- Question: does the DQN's small edge survive a shift, and does it lose more or less than the fixed rule?
+- Not allowed afterwards: changing the shifts, dropping a world, or tuning anything on these test tasks.
