@@ -1,0 +1,37 @@
+26 dev tasks, 24 test tasks
+TUNED RULE (chosen on dev, dev return +0.475): {'research_on': (2,), 'verify': False, 'max_retries': 0, 'min_money_for_retry': 0.05, 'summarize': False}
+refit done
+
+=== TEST tasks (24): mean return, success, cost; DQN rows average 5 seeds ===
+single agent                     return +0.462 success 0.59 cost 0.106 | coding +0.61 analytical +0.79 research -0.08
+fixed pipeline                   return +0.336 success 0.75 cost 0.334 | coding +0.46 analytical +0.34 research +0.15
+tuned rule (dev)                 return +0.569 success 0.72 cost 0.120 | coding +0.61 analytical +0.79 research +0.29
+DQN zero-shot (sim-trained)      return +0.438 success 0.64 cost 0.162 | coding +0.61 analytical +0.71 research -0.08
+                                per-seed: +0.466 +0.452 +0.389 +0.470 +0.411
+DQN refit on real dev traces     return +0.580 success 0.77 cost 0.154 | coding +0.64 analytical +0.79 research +0.29
+                                per-seed: +0.567 +0.607 +0.568 +0.580 +0.578
+
+=== paired differences (per-task, 95% CI over tasks) ===
+fixed pipeline                   - single agent       -0.1256 ± 0.2017
+tuned rule (dev)                 - single agent       +0.1074 ± 0.1364
+tuned rule (dev)                 - fixed pipeline     +0.2330 ± 0.1340
+DQN zero-shot (sim-trained)      - single agent       -0.0243 ± 0.0546
+DQN zero-shot (sim-trained)      - tuned rule (dev)   -0.1317 ± 0.1439
+DQN refit on real dev traces     - tuned rule (dev)   +0.0108 ± 0.0438
+DQN refit on real dev traces     - single agent       +0.1182 ± 0.1372
+
+=== average calls per episode by task type (test) ===
+tuned rule (dev)                 coding     rese 0.00 solv 1.00 veri 0.00 summ 0.00 | success 0.74
+tuned rule (dev)                 analytical rese 0.00 solv 1.00 veri 0.00 summ 0.00 | success 0.96
+tuned rule (dev)                 research   rese 1.00 solv 1.00 veri 0.00 summ 0.00 | success 0.43
+DQN zero-shot (sim-trained)      coding     rese 0.03 solv 1.46 veri 1.38 summ 0.83 | success 0.86
+DQN zero-shot (sim-trained)      analytical rese 0.01 solv 1.05 veri 0.32 summ 0.45 | success 0.95
+DQN zero-shot (sim-trained)      research   rese 0.00 solv 1.00 veri 0.00 summ 0.13 | success 0.00
+DQN refit on real dev traces     coding     rese 0.06 solv 1.39 veri 1.14 summ 0.04 | success 0.86
+DQN refit on real dev traces     analytical rese 0.00 solv 1.00 veri 0.00 summ 0.00 | success 0.96
+DQN refit on real dev traces     research   rese 1.40 solv 1.07 veri 0.00 summ 0.00 | success 0.46
+
+=== ALL 50 tasks, no tuning needed (single, fixed, zero-shot DQN) ===
+single agent                     return +0.428
+fixed pipeline                   return +0.289
+DQN zero-shot (sim-trained)      return +0.412

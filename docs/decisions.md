@@ -229,3 +229,28 @@ Predictions (to be scored against the result):
  P3 tuned rule has research_on containing 2, and probably no summarizer (summarizer adds cost, the real raw text already grades fine).
  P4 refit DQN lands within error of the tuned rule (26 training tasks is tiny); I do NOT expect a clear win.
 Claim rule: "method X beats Y" only if the paired per-task CI excludes 0; for DQN rows also >=4 of 5 seeds above Y's mean.
+
+## 2026-10-29 RESULT: real qwen2.5:3b traces (docs/logs/real_eval_qwen3b.log), 24 test tasks, task-level paired CIs
+Return (success, cost): single +0.462 (.59, .106) | fixed pipeline +0.336 (.75, .334) | tuned rule +0.569 (.72, .120) |
+DQN zero-shot +0.438 (.64, .162) | DQN refit +0.580 (.77, .154).
+Tuned rule (chosen on dev): researcher on research tasks, one solver call, no check, no retry, no summarizer.
+Paired differences: tuned rule - fixed pipeline +0.233 ± 0.134 (only clear result); tuned rule - single +0.107 ± 0.136;
+zero-shot DQN - single -0.024 ± 0.055; zero-shot DQN - tuned rule -0.132 ± 0.144; refit DQN - tuned rule +0.011 ± 0.044;
+refit DQN - single +0.118 ± 0.137.
+Scoring my predictions:
+ P1 WRONG: fixed pipeline did NOT beat the single agent (-0.126, CI includes 0). It gets 75% success but pays 3x the cost
+    (verifier on analytical costs as much as the solver, and the summarizer/researcher add calls on tasks that did not need them).
+ P2 mostly RIGHT: zero-shot DQN ~ single agent; research success 0.00 (never calls the researcher: 0.00 calls). It does retry/verify
+    coding (success .86 vs .74) but pays for it. "Clearly below the tuned rule": point estimate yes, but CI includes 0, so NOT claimable.
+ P3 RIGHT (research_on has 2, no summarizer), plus no verify and no retry at all.
+ P4 RIGHT: refit DQN equals the tuned rule within error (+0.011 ± 0.044). No win for RL over a tuned rule on these traces.
+Honest reading:
+ - The sim-to-real gap is real and visible: the sim-trained controller skips the researcher, so it scores 0% on research tasks.
+   After refitting on real traces it calls the researcher (1.40 per research episode) and fixes it (success .46).
+ - Refit DQN beats the tuned rule on coding only slightly (verifies coding with the cheap test run: success .86 vs .74), but my rule
+   grid cannot express "verify only coding", so the rule is a bit handicapped. A type-specific rule would probably close that gap.
+   NOT tested yet; if tested it must be pre-declared (tuned on dev only), because I now know this from the test result.
+ - Everything is based on 24 test tasks, one 3B model, 4 samples per setting; most CIs are wide. Treat as evidence of direction only.
+ - Headline for the report: RL is clearly better than a naive fixed pipeline and robust to blindness in the simulator, but on real
+   traces from this small model a tuned rule is as good; the DQN's value is that it finds that rule automatically (refit),
+   while the zero-shot transfer fails on research tasks.
