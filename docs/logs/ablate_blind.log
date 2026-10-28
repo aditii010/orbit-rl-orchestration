@@ -1,0 +1,8 @@
+BLIND RULE (chosen on DEV) {'research_on': (), 'verify': False, 'max_retries': 0, 'min_money_for_retry': 0.05, 'summarize': False}
+  test +0.1528
+seed 0: test +0.1711  DQN-blind - blind rule = +0.0184 ± 0.0046
+seed 1: test +0.1842  DQN-blind - blind rule = +0.0314 ± 0.0052
+seed 2: test +0.1856  DQN-blind - blind rule = +0.0328 ± 0.0065
+seed 3: test +0.1730  DQN-blind - blind rule = +0.0203 ± 0.0050
+seed 4: test +0.1700  DQN-blind - blind rule = +0.0172 ± 0.0049
+MEAN blind DQN +0.1768 vs blind rule +0.1528 (gain +15.7%)  [full-info DQN +0.189, full-info rule +0.173]

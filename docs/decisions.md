@@ -195,3 +195,14 @@ Why: real LLMs give us no usable confidence and no non-oracle difficulty, so the
   the blind rule by a few percent (history features carry most of the value). 
 - Decision rule: "DQN keeps its edge" if blind-DQN mean TEST return > blind rule by >= 3% and at least 4 of 5 seeds
   are above the rule beyond the 95% CI. Otherwise report a tie (or a loss) as it is.
+
+## 2026-10-28 RESULT of pre-declared C3 blind test (docs/logs/ablate_blind.log)
+- Blind rule (chosen on DEV): single agent in disguise (no research, no check, no retry, no summarize): TEST +0.1528.
+- Blind DQN, 5 seeds: +0.171, +0.184, +0.186, +0.173, +0.170; mean +0.1768. Every seed beats the blind rule beyond the 95% CI
+  (+0.017 to +0.033). Gain +15.7%. Pre-declared bar (>=3%, >=4 of 5 seeds) PASSED.
+- My prediction was wrong in direction of size: I expected the DQN to lose about half its edge; it lost only 0.012
+  (+0.189 -> +0.177), while the best RULE lost 0.020 (+0.173 -> +0.153). So blindness hurts the rules more than the DQN.
+- Caveat: the blind rule family is small (no way to use "how many calls so far" cleverly except max_retries), so part of
+  the gap may be a weak baseline. Honest reading: with no difficulty or confidence, a learned policy still beats every
+  hand rule we tried by ~16%, and beats the single agent by the same margin.
+- Checkpoints: checkpoints/blind_seed{0..4}.pt (these are what we run zero-shot on real traces).
