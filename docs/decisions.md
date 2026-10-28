@@ -153,3 +153,15 @@ Full DQN: train world +0.189, research-heavy +0.076. Change vs full (5-seed aver
 - Without verify results (B) the agent stops verifying and drops to single-agent-like behaviour: the
   value of verification depends entirely on being able to read its result.
 - Not tested: removing difficulty AND confidence together. Would show if the two are redundant.
+
+## 2026-10-28 Real-LLM step 1: task set built (llm/tasks.py, tests/test_tasks.py)
+- Qwen2.5-3b via Ollama works locally (~14 tok/s). In a smoke test it got a change-making problem wrong
+  (said 21, correct 16), so it fails sometimes: good, orchestration has something to fix.
+- 50 tasks: 20 coding (2 visible + 5-6 hidden asserts each, reference solution for each),
+  15 analytical (exact number), 15 research (invented facts, 16 documents, keyword retrieval; 8 of 15
+  questions need 2-3 documents, so a second researcher call can matter).
+- Grader tests (48): every reference solution passes; a wrong function and a non-Python answer fail;
+  an infinite loop is cut off at 10 s; every research answer is derivable from its gold documents;
+  extra retrieval calls reach more gold docs.
+- Safety note: model-written code is run in a subprocess (python -I, temp dir, 10 s timeout). No sandbox beyond
+  that, fine for small functions on a personal machine; do not run on untrusted input at scale.
