@@ -165,3 +165,22 @@ Full DQN: train world +0.189, research-heavy +0.076. Change vs full (5-seed aver
   extra retrieval calls reach more gold docs.
 - Safety note: model-written code is run in a subprocess (python -I, temp dir, 10 s timeout). No sandbox beyond
   that, fine for small functions on a personal machine; do not run on untrusted input at scale.
+
+## 2026-10-28 Real-LLM step 2: client, agents, pilot on qwen2.5:3b (docs/logs/pilot_qwen3b.log)
+Pilot (12 tasks x 3 samples). FIRST run had a design flaw, fixed before any real result was used:
+- Research tasks scored 0/9. Cause: the 2nd researcher call retrieved irrelevant passages and the LLM extraction
+  wrote "None of the provided passages mention ...", which was pasted into the evidence; solver then said "unknown".
+  An unnecessary extra agent call poisoned the answer (a real instance of the failure mode in the project doc).
+  Fix: researcher on research tasks is pure retrieval (no LLM call, evidence = the passages). The log file keeps the
+  flawed first run for the record.
+- After the fix: single-hop questions are answered correctly; 2-3 hop questions still return "unknown" even when
+  all gold documents are in the evidence (qwen 3B cannot chain facts). So for this model research success has a
+  ceiling near the 6 of 15 single-hop questions. A stronger model (Groq gpt-oss-20b) should chain them.
+- Coding: solver correct 0.80 (4 tasks always right, 1 always wrong), verifier (visible tests) agrees with truth 0.93.
+  Analytical: solver 0.92. So qwen is already strong on 2 of 3 task types: little room for orchestration there.
+- CONFIDENCE is useless: mean 0.98 when correct vs 1.00 when wrong (and missing in 2 of 36). Cannot feed the
+  controller. The simulator's confidence (gap ~0.2) is NOT realistic for this model.
+- Speed: 2-3 s per coding call, 8-9 s per analytical call. Full cache is feasible.
+- Consequence: the real controller cannot use observation 14 (confidence) and has no non-oracle difficulty
+  estimate either (3). Plan: test "hide both" in the simulator first, then use that variant (and a rule without
+  those features) for the real traces.
