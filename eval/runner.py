@@ -4,8 +4,8 @@ import numpy as np
 from env.orbit_env import OrbitEnv
 
 
-def evaluate(policy, seeds, config=None):
-    env = OrbitEnv(config)
+def evaluate(policy, seeds, config=None, env_fn=None):
+    env = env_fn() if env_fn else OrbitEnv(config)
     rets, succ, cost, steps = [], [], [], []
     calls = {"researcher": [], "solver": [], "verifier": [], "summarizer": []}
     for s in seeds:

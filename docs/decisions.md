@@ -206,3 +206,26 @@ Why: real LLMs give us no usable confidence and no non-oracle difficulty, so the
   the gap may be a weak baseline. Honest reading: with no difficulty or confidence, a learned policy still beats every
   hand rule we tried by ~16%, and beats the single agent by the same margin.
 - Checkpoints: checkpoints/blind_seed{0..4}.pt (these are what we run zero-shot on real traces).
+
+## 2026-10-29 PRE-DECLARED (before running): real-LLM comparison on the qwen2.5:3b trace cache (eval/real_eval.py)
+Cache is complete: 50 tasks x (4 samples per evidence level). Facts seen BEFORE writing this (cache summary): coding 68% -> 79%
+with the plan; analytical 97%; research 0% with no researcher call, 40% after one, 43% after 2-3; verifier agrees with truth
+70-92%. (I looked at these aggregates, so the predictions below are informed by them. I have NOT run any policy on the cache.)
+Setup (llm/trace_env.py):
+- Replay env, same 16-number observation, difficulty (3) and confidence (14) always 0. Outcomes are recorded model outputs.
+- Cost = (tokens in + out)/2500 + 0.02 per call. 2500 is chosen so an average solver call (~300 tokens) costs ~0.12 like
+  the simulator. This choice fixes what lambda=0.5 means; with another scale the optimum would change. Reported as a limitation.
+- Reward: 1 if the final answer is correct (summarized or raw text graded as it is, no 0.9 factor), -0.3 if none, minus
+  0.5*cost/0.4. Retry = next unused recorded sample (feedback effect not recorded). Verifier verdict is fixed per sample.
+- Split: tasks stratified by type, even position -> dev (26 tasks), odd -> test (24 tasks). Tune the rule (256-rule grid) on dev
+  only; refit the DQN (20k episodes, 5 seeds, from scratch, hide 3 and 14, no checkpoint picking) on dev tasks only.
+  Zero-shot DQN = the 5 sim-trained blind checkpoints (checkpoints/blind_seed*.pt), nothing changed.
+- Unit of analysis is the TASK (24 test tasks, 100 episodes each averaged): CI = 2.07*sd/sqrt(24) of per-task paired differences.
+  Episodes of one task are not independent, so per-episode CIs would be too narrow.
+Predictions (to be scored against the result):
+ P1 fixed pipeline beats single agent overall (research 0% -> ~40% outweighs its extra cost).
+ P2 zero-shot DQN is about equal to the single agent or slightly above it, and clearly below the tuned rule; it will rarely call the
+    researcher on research tasks (sim taught it the researcher is rarely useful), so its research success stays near 0.
+ P3 tuned rule has research_on containing 2, and probably no summarizer (summarizer adds cost, the real raw text already grades fine).
+ P4 refit DQN lands within error of the tuned rule (26 training tasks is tiny); I do NOT expect a clear win.
+Claim rule: "method X beats Y" only if the paired per-task CI excludes 0; for DQN rows also >=4 of 5 seeds above Y's mean.

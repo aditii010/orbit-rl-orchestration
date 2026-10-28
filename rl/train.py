@@ -15,10 +15,10 @@ TRAIN_SEED_BASE = 1_000_000
 
 def train(episodes=60000, seed=0, eps_start=1.0, eps_end=0.05, eps_frac=0.6, buffer=50_000,
           batch=64, warmup=1000, target_every=1000, eval_every=2000, save=None, config=None,
-          lr=3e-4, hide=()):
+          lr=3e-4, hide=(), env_fn=None):
     agent = DoubleDQN(seed=seed, lr=lr, hide=hide)
     buf = ReplayBuffer(buffer)
-    env = OrbitEnv(config)
+    env = env_fn() if env_fn else OrbitEnv(config)
     rng = np.random.default_rng(seed)
     step, history = 0, []
     for ep in range(episodes):
