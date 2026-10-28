@@ -254,3 +254,14 @@ Honest reading:
  - Headline for the report: RL is clearly better than a naive fixed pipeline and robust to blindness in the simulator, but on real
    traces from this small model a tuned rule is as good; the DQN's value is that it finds that rule automatically (refit),
    while the zero-shot transfer fails on research tasks.
+
+## 2026-10-29 PRE-DECLARED: stronger-model check, Groq openai/gpt-oss-20b (reasoning_effort=low, max_tokens>=1500)
+Test call: ~70-80 output tokens, 0.7 s, so cheap. Why this run: qwen 3B cannot chain 2-3 hop research questions; a stronger model might,
+which would make the researcher and verifier matter more. Same pipeline, same trace-cache format, same eval script (cache path argument).
+- Request cap raised from 600 to 650 (design said 600; the planned cache needs about 605). Samples per level fewer than qwen's 4:
+  coding 3+3, analytical 3+2, research 2+3+3+2 (levels 0..3). The replay env handles uneven counts (wraps when exhausted).
+- Output stays on disk in runs/cache_gptoss20b.jsonl (text only). Key is read from .env, never printed or logged.
+- Predictions: (a) single agent is already strong on coding/analytical (>=90%), so little orchestration room there;
+  (b) with 2-3 researcher calls, multi-hop research is answered mostly correctly (>=60% at level 3), 0% at level 0;
+  (c) tuned rule again = researcher on research tasks, solver once; (d) zero-shot DQN again loses on research (never calls researcher);
+  (e) refit DQN ties the tuned rule. If instead everything is ~100% except research, orchestration gain is small and I will say so.

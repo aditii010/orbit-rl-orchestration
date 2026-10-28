@@ -12,10 +12,12 @@ class BudgetExceeded(RuntimeError):
 
 
 class LLM:
-    def __init__(self, backend="ollama", model="qwen2.5:3b", max_requests=None, log_path=None):
+    def __init__(self, backend="ollama", model="qwen2.5:3b", max_requests=None, log_path=None,
+                 min_tokens=0, reasoning_effort=None):
         self.backend, self.model = backend, model
         self.max_requests, self.n_requests = max_requests, 0
         self.log_path = log_path
+        self.min_tokens, self.reasoning_effort = min_tokens, reasoning_effort   # reasoning models spend hidden tokens
         if backend == "groq" and not os.environ.get("GROQ_API_KEY"):
             raise RuntimeError("GROQ_API_KEY is not set (put it in .env and load it)")
 
@@ -30,7 +32,10 @@ class LLM:
             d = self._post("http://localhost:11434/api/chat", body, {})
             text, tin, tout = d["message"]["content"], d.get("prompt_eval_count", 0), d.get("eval_count", 0)
         else:
-            body = {"model": self.model, "messages": msgs, "max_tokens": max_tokens, "temperature": temperature}
+            body = {"model": self.model, "messages": msgs, "max_tokens": max(max_tokens, self.min_tokens),
+                    "temperature": temperature}
+            if self.reasoning_effort:
+                body["reasoning_effort"] = self.reasoning_effort
             hdr = {"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}"}
             d = self._post("https://api.groq.com/openai/v1/chat/completions", body, hdr)
             text = d["choices"][0]["message"]["content"] or ""
