@@ -286,3 +286,20 @@ only, evaluated on test tasks. The DQN refit is retrained exactly as before (sam
 Prediction: the typed rule closes the gap: refit DQN - typed rule has a CI that includes 0 on BOTH caches, i.e. the honest conclusion
 is "the DQN finds a rule as good as the best hand-tuned typed rule, automatically". If the DQN is still clearly better (CI excludes 0)
 or clearly worse, I report that instead. Zero-shot DQN is unchanged, no need to rerun.
+
+## 2026-10-29 RESULT: typed rule vs refit DQN (docs/logs/typed_qwen3b.log, typed_gptoss20b.log)
+qwen 3B: typed rule (chosen on dev: researcher once on research tasks, verify coding only, up to 2 retries, no summarizer) test +0.576;
+  refit DQN +0.580; difference +0.005 ± 0.018 -> TIE, as predicted.
+gpt-oss-20b: typed rule (researcher twice on research tasks, no verify, no retry, no summarizer) test +0.819 (success 1.00);
+  refit DQN +0.770 (success .96; seeds .656 .791 .800 .793 .812); difference -0.048 ± 0.041 -> the hand-tuned typed rule is
+  slightly but CLEARLY better. My prediction (CI includes 0 on both) was WRONG for gpt-oss.
+Reading: once the rule family may be type-specific, the earlier "refit DQN +0.10 over the tuned rule" disappears (the rule family was
+the handicap). On real traces the DQN at best ties the best hand rule; it did slightly worse on gpt-oss (seed 0 under-researches,
+and the DQN calls the researcher 3.3 times where 2 is enough, paying extra cost). Caveat: tiny training set (26 tasks, 20k episodes).
+Honest final claim for the report:
+ 1. Simulator: DQN > best rule (+9.3% full info, +15.7% blind), robust to task-mix shift; cost penalty essential.
+ 2. Real traces: orchestration matters (researcher calls turn 0% into 43-93% on research tasks; fixed pipeline wastes cost and
+    loses), but a tuned typed rule is as good as or slightly better than the refit DQN. Zero-shot sim->real transfer fails
+    (clearly below single agent on gpt-oss: -0.033 ± 0.009).
+ 3. The RL value is automatic discovery of the policy (refit) and the ability to handle a cost trade-off without hand-writing rules.
+Not done: LLM-router baseline (counted-cost) - optional, only if time remains.

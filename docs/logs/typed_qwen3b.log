@@ -1,0 +1,4 @@
+TYPED RULE (dev +0.509): {'res_calls': (0, 0, 1), 'verify': (True, False, False), 'max_retries': 2, 'summarize': False}
+typed rule  test return +0.576 success 0.76 cost 0.146
+refit DQN   test return +0.580 success 0.77 cost 0.154  per-seed +0.567 +0.607 +0.568 +0.580 +0.578
+refit DQN - typed rule: +0.0046 ± 0.0181
