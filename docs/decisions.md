@@ -184,3 +184,14 @@ Pilot (12 tasks x 3 samples). FIRST run had a design flaw, fixed before any real
 - Consequence: the real controller cannot use observation 14 (confidence) and has no non-oracle difficulty
   estimate either (3). Plan: test "hide both" in the simulator first, then use that variant (and a rule without
   those features) for the real traces.
+
+## 2026-10-28 PRE-DECLARED (before running): C3 "blind" test = hide difficulty (3) AND confidence (14) together
+Why: real LLMs give us no usable confidence and no non-oracle difficulty, so the realistic controller is blind to both.
+- DQN-blind: S2 settings, 5 seeds, hide=(3, 14), checkpoints saved to checkpoints/blind_seed{0..4}.pt.
+- Blind rule: grid of 256 rules (research_on in {(), (2,), (1,2), (0,1,2)}, verify in {T,F}, max_retries 0..3,
+  min_money_for_retry in {.05,.1,.15,.25}, summarize in {T,F}); no giveup_diff, no confidence. The policy wrapper
+  also zeroes obs[3], obs[14] so it cannot cheat. Chosen on DEV (seeds 0-4999) only, reported on TEST (100000+).
+- My prediction: the blind DQN loses about half of its 9% edge over the full-information rule, but still beats
+  the blind rule by a few percent (history features carry most of the value). 
+- Decision rule: "DQN keeps its edge" if blind-DQN mean TEST return > blind rule by >= 3% and at least 4 of 5 seeds
+  are above the rule beyond the 95% CI. Otherwise report a tie (or a loss) as it is.
