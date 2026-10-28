@@ -265,3 +265,24 @@ which would make the researcher and verifier matter more. Same pipeline, same tr
   (b) with 2-3 researcher calls, multi-hop research is answered mostly correctly (>=60% at level 3), 0% at level 0;
   (c) tuned rule again = researcher on research tasks, solver once; (d) zero-shot DQN again loses on research (never calls researcher);
   (e) refit DQN ties the tuned rule. If instead everything is ~100% except research, orchestration gain is small and I will say so.
+
+## 2026-10-29 RESULT: gpt-oss-20b traces (docs/logs/real_eval_gptoss20b.log), 24 test tasks
+Return (success, cost): single +0.563 (.71,.116) | fixed pipeline +0.282 (.75,.374) | tuned rule +0.670 (.83,.131) |
+DQN zero-shot +0.530 (.71,.143) | DQN refit +0.770 (.96,.153; per seed .656 .791 .800 .793 .812).
+Paired: tuned rule - fixed +0.388 ± 0.140 (clear); fixed - single -0.281 ± 0.217; zero-shot - single -0.033 ± 0.009 (CLEAR: zero-shot
+is worse than doing nothing clever); zero-shot - tuned rule -0.140 ± 0.132; refit - tuned rule +0.100 ± 0.111 (not clear);
+refit - single +0.207 ± 0.142 (just clear).
+Predictions: (a) right (coding 100%, analytical 100%); (b) right (research 0% at level 0, 93% at level 3); (c) right;
+(d) right (zero-shot never calls the researcher, research success 0.00); (e) tie with tuned rule: point estimate +0.10 but CI includes 0.
+What drives refit's +0.10: it calls the researcher 3.33 times on research tasks (success .87) while the rule's grid can only call it ONCE
+(success .43). So part of the refit "advantage" is a limit of my rule family, not intelligence. Same flag as for qwen (rule cannot be
+type-specific about verify).
+Next (pre-declared below): a fairer, richer rule family tuned on dev, then compare with refit DQN on both caches.
+
+## 2026-10-29 PRE-DECLARED: typed rule family (eval/real_eval_typed.py)
+Rule options per task type: number of researcher calls before solving (research: 0-3; coding and analytical: 0-1), verify once
+per candidate (T/F per type), global max retries 0-2 (retry only after a failed check), summarize T/F. 768 rules, chosen on dev tasks
+only, evaluated on test tasks. The DQN refit is retrained exactly as before (same seeds, 20k episodes, dev tasks only).
+Prediction: the typed rule closes the gap: refit DQN - typed rule has a CI that includes 0 on BOTH caches, i.e. the honest conclusion
+is "the DQN finds a rule as good as the best hand-tuned typed rule, automatically". If the DQN is still clearly better (CI excludes 0)
+or clearly worse, I report that instead. Zero-shot DQN is unchanged, no need to rerun.
