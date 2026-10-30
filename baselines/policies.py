@@ -64,3 +64,21 @@ def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_con
             return SUMMARIZE
         return STOP
     return rule
+
+
+def make_typed_rule(res_calls, verify, max_retries, summarize):
+    """res_calls, verify: tuples indexed by task type (coding, analytical, research)."""
+    def rule(obs, mask):
+        t = int(obs[:3].argmax())
+        n_res, n_solve = round(obs[8] * MAX_STEPS), round(obs[9] * MAX_STEPS)
+        passed, failed = obs[6] > 0.5, obs[7] > 0.5
+        if not obs[4]:
+            return RESEARCH if n_res < res_calls[t] else SOLVE
+        if verify[t] and not passed and not failed:
+            return VERIFY
+        if failed and (n_solve - 1) < max_retries and obs[12] > 0.05 and mask[RETRY]:
+            return RETRY
+        if summarize and mask[SUMMARIZE]:
+            return SUMMARIZE
+        return STOP
+    return rule

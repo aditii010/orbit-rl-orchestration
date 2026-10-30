@@ -4,30 +4,12 @@ import sys
 
 import numpy as np
 
-from baselines.policies import MAX_STEPS, RESEARCH, RETRY, SOLVE, STOP, SUMMARIZE, VERIFY
+from baselines.policies import make_typed_rule
 from eval.real_eval import HIDE, diff_ci, per_task
 from llm.trace_env import TraceEnv, load_cache, split_tasks
 from rl.train import train
 
 CACHE = sys.argv[1]
-
-
-def make_typed_rule(res_calls, verify, max_retries, summarize):
-    """res_calls, verify: tuples indexed by task type (coding, analytical, research)."""
-    def rule(obs, mask):
-        t = int(obs[:3].argmax())
-        n_res, n_solve = round(obs[8] * MAX_STEPS), round(obs[9] * MAX_STEPS)
-        passed, failed = obs[6] > 0.5, obs[7] > 0.5
-        if not obs[4]:
-            return RESEARCH if n_res < res_calls[t] else SOLVE
-        if verify[t] and not passed and not failed:
-            return VERIFY
-        if failed and (n_solve - 1) < max_retries and obs[12] > 0.05 and mask[RETRY]:
-            return RETRY
-        if summarize and mask[SUMMARIZE]:
-            return SUMMARIZE
-        return STOP
-    return rule
 
 
 if __name__ == "__main__":

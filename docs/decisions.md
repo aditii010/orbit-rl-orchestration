@@ -303,3 +303,16 @@ Honest final claim for the report:
     (clearly below single agent on gpt-oss: -0.033 ± 0.009).
  3. The RL value is automatic discovery of the policy (refit) and the ability to handle a cost trade-off without hand-writing rules.
 Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
+
+## 2026-10-30 Dashboard step 1: core engine (app/engine.py, tests/test_engine.py)
+- One generator per episode yields an event per step (action, output, tokens, seconds, cost, money left, the DQN's Q-values with
+  illegal actions as NaN). Two modes with the same events: run_live (real agents on Ollama/Groq) and run_replay (recorded cache).
+- Controllers offered: single agent, fixed pipeline, typed rule (tuned on qwen dev tasks), DQN refit on real runs, DQN simulator-only.
+- Demo checkpoint checkpoints/refit_qwen_seed0.pt: seed 0, chosen BEFORE looking at anything (no seed picking), trained on the 26 dev
+  tasks' recorded qwen runs only. Simulator-only DQN = blind_seed0.pt.
+- Free-text tasks: a keyword router picks analytical or research (coding needs tests, so only coding examples are allowed). Research only
+  works over the 16 invented documents.
+- Live smoke test (qwen2.5:3b): simulator-only DQN on res01 answers 'unknown' (no researcher call); refit DQN calls the researcher and
+  answers correctly (1991) but then wastes calls (retry, 2 more researcher calls, cost 0.254). Honest note for the demo: the refit DQN is
+  not always tidy; Q-values are close to each other in those steps. Choose demo tasks accordingly and say it.
+- App code refactor: make_typed_rule moved to baselines/policies.py (eval script unchanged in behaviour). 68 tests pass.
