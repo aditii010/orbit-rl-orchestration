@@ -316,3 +316,12 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   answers correctly (1991) but then wastes calls (retry, 2 more researcher calls, cost 0.254). Honest note for the demo: the refit DQN is
   not always tidy; Q-values are close to each other in those steps. Choose demo tasks accordingly and say it.
 - App code refactor: make_typed_rule moved to baselines/policies.py (eval script unchanged in behaviour). 68 tests pass.
+
+## 2026-10-30 Dashboard step 2: Streamlit page (app/dashboard.py)
+- Sidebar: where agents run (live Ollama / live Groq if a key exists / offline replay), controller, budget slider, replay draw.
+- Live run tab: step cards appear as they happen (agent, output, cost, tokens, seconds); expander per card with the DQN's scores per
+  action (illegal ones greyed = the action mask); meter for money left; final answer with correct/wrong from the real grader.
+- Compare tab: all 5 controllers on the same task, table plus cost bar chart.
+- Not built yet: Results tab (charts from the report), demo script, pre-demo checklist.
+- Test: Streamlit AppTest loads the page, runs replay mode, runs compare. 69 tests pass. Groq key is read from .env into the
+  environment only, never shown.
