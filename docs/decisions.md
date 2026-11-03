@@ -334,3 +334,11 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   plain-words glossary in the sidebar. Radio options carry their one-line explanations.
 - Checked by screenshot (headless Chrome driven over CDP): home page, a replay run (research and coding), and the Compare tab.
   Fixed: font override of headings, truncated "Correct" metric, default-blue chart (now navy, horizontal).
+
+## 2026-11-03 Dashboard step 4: full-width desktop layout, stronger palette use
+- User feedback: everything was a narrow centered column and too cream/yellow. Fix: block width unlimited; navy hero band across the top;
+  left rail (1. task, 2. controller and settings) and a wide right stage (3. live run with metrics, final answer, trace; or compare).
+- Palette use: page background pale blue (clear-blue tint), navy header strips and hero, gold numbers/rules/RUN button, clear blue for
+  researcher cards, slider and progress; beige only as the title colour on navy. Trace cards are HTML with a coloured left edge and a
+  fold-out (details) with the DQN's scores.
+- Checked by screenshots at 1600 px wide (live run and compare). 69 tests pass.

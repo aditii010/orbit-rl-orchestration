@@ -1,5 +1,6 @@
 """ORBIT dashboard. Run from the project root:  streamlit run app/dashboard.py
-Tabs: Live run (watch one controller handle a task), Compare (all controllers on the same task)."""
+Desktop layout: navy hero band, a left rail with the controls, a right stage with the live run and the comparison."""
+import html
 import os
 import sys
 
@@ -14,63 +15,77 @@ from llm.tasks import all_tasks
 from llm.trace_env import load_cache
 
 st.set_page_config(page_title="ORBIT", layout="wide", initial_sidebar_state="collapsed")
-# Palette: navy #0B0B52, soft beige #F6E4C4, clear blue #7B93CC, gold #9B7B2E. Fonts: Bodoni Moda (display), Cormorant Garamond (text).
-AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#5673B5"), "INVOKE_SOLVER": ("Solver", "#14146B"),
+# Palette (from the user's reference): navy #0B0B52, soft beige #F6E4C4, clear blue #7B93CC, gold #9B7B2E.
+# Fonts: Bodoni Moda (display), Cormorant Garamond (text). Free lookalikes of the user's Amethyst and Sapphire.
+AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#4F6FB8"), "INVOKE_SOLVER": ("Solver", "#0B0B52"),
          "INVOKE_VERIFIER": ("Verifier", "#9B7B2E"), "INVOKE_SUMMARIZER": ("Summarizer", "#5B4B8A"),
          "RETRY_SOLVER": ("Solver (retry)", "#A5601F"), "STOP": ("STOP", "#6B6B6B")}
-HELPERS = [("Researcher", "#5673B5", "Looks up facts in the documents."), ("Solver", "#14146B", "Writes the answer."),
-           ("Verifier", "#9B7B2E", "Checks the answer."), ("Summarizer", "#5B4B8A", "Tidies the final answer."),
-           ("STOP", "#6B6B6B", "Hands in the answer.")]
-ACTION_ORDER = list(AGENT)
+HELPERS = [("Researcher", "#4F6FB8", "looks up facts"), ("Solver", "#0B0B52", "writes the answer"),
+           ("Verifier", "#9B7B2E", "checks it"), ("Summarizer", "#5B4B8A", "tidies it"), ("STOP", "#6B6B6B", "hands it in")]
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap');
-html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp button, .stApp input, .stApp textarea {
+html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp button, .stApp input, .stApp textarea, .stApp summary {
   font-family: 'Cormorant Garamond', Georgia, serif !important; }
 .stApp span[data-testid="stIconMaterial"], .stApp .material-symbols-rounded { font-family: 'Material Symbols Rounded' !important; }
-[data-testid="stToolbar"] { visibility: hidden; }
-[data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 1.2rem !important; font-weight: 600; }
-[data-testid="stCaptionContainer"] p { font-size: 1.08rem !important; color: #4a4a7a; }
-.stTabs [data-baseweb="tab"] p { font-size: 1.3rem !important; font-weight: 700; }
-.stApp [data-testid="stSelectbox"] div { font-size: 1.15rem; }
-.stApp { background: #FBF5E8; color: #0E0E4A; font-size: 1.2rem; }
-.block-container { max-width: 1180px; padding-top: 1.6rem; }
-header[data-testid="stHeader"] { background: transparent; } footer { visibility: hidden; }
-h1, h2, h3, h4, .stApp .hero-title, .stApp .sec-t, .stApp .num, .stApp .how b, .stApp h1, .stApp h2, .stApp h3, .stApp h4 { font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif !important; color: #0B0B52; }
-/* hero: framed like the palette card */
-.hero { text-align: center; padding: 34px 20px 26px; margin-bottom: 18px; background: #FFFAF0;
-  border: 1px solid #9B7B2E; outline: 1px solid #D9C48F; outline-offset: 6px; border-radius: 2px; }
-.eyebrow { letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.82rem; color: #9B7B2E; font-weight: 700; }
-.hero-title { font-size: 4.4rem; font-weight: 700; letter-spacing: 0.18em; line-height: 1.05; margin: 8px 0 4px; }
-.gold-rule { width: 120px; height: 2px; background: linear-gradient(90deg, transparent, #9B7B2E, transparent); margin: 10px auto 14px; }
-.tag { font-size: 1.55rem; font-style: italic; color: #14146B; max-width: 720px; margin: 0 auto; line-height: 1.3; }
-.how { display: flex; gap: 14px; margin: 6px 0 26px; }
-.how > div { flex: 1; background: #F6E4C4; border-top: 3px solid #9B7B2E; padding: 12px 16px; border-radius: 2px; }
-.how b { font-family: 'Bodoni Moda', serif; font-size: 1.05rem; color: #0B0B52; }
-.how span { display: block; font-size: 1.08rem; color: #2b2b6b; margin-top: 2px; }
-.sec { display: flex; align-items: center; gap: 14px; margin: 26px 0 8px; border-bottom: 1px solid #D9C48F; padding-bottom: 8px; }
-.num { width: 38px; height: 38px; border: 1.5px solid #9B7B2E; border-radius: 50%; display: flex; align-items: center;
-  justify-content: center; font-family: 'Bodoni Moda', serif; font-weight: 700; color: #0B0B52; background: #FFFAF0; flex: none; }
-.sec-t { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
-.sec-s { font-size: 1.12rem; font-style: italic; color: #5a5a86; }
-.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 4px 0 14px; }
-.legend div { font-size: 1.05rem; }
+.stApp { background: #EEF2FA; color: #0B0B52; font-size: 1.2rem; }
+.block-container { max-width: none !important; padding: 1.2rem 2.6rem 3rem !important; }
+header[data-testid="stHeader"] { background: transparent; } footer, [data-testid="stToolbar"] { visibility: hidden; }
+[data-testid="stSidebar"] { background: #0B0B52; }
+[data-testid="stSidebar"] * { color: #F6E4C4 !important; }
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp .hero-title, .stApp .ph-t, .stApp .num, .stApp .stepn,
+.stApp div[data-testid="stMetricValue"], .stApp div[data-testid="stMetricValue"] div { font-family: 'Bodoni Moda', Georgia, serif !important; }
+.stApp h4 { color: #0B0B52; }
+[data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 1.18rem !important; font-weight: 600; }
+[data-testid="stCaptionContainer"] p { font-size: 1.05rem !important; color: #44447a; }
+/* hero: full-width navy band */
+.hero { display: flex; align-items: center; justify-content: space-between; gap: 48px; background: #0B0B52; color: #F6E4C4;
+  padding: 30px 46px; border-radius: 4px; border-bottom: 4px solid #9B7B2E; margin-bottom: 22px; }
+.hero-l { flex: 1.15; } .hero-r { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.eyebrow { letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.85rem; color: #C9A24A; font-weight: 700; }
+.hero-title { font-size: 5.2rem; font-weight: 700; letter-spacing: 0.2em; line-height: 1.0; margin: 6px 0 2px; color: #F6E4C4; }
+.gold-rule { width: 150px; height: 2px; background: #9B7B2E; margin: 12px 0 14px; }
+.tag { font-size: 1.7rem; font-style: italic; color: #DCE4F7; line-height: 1.3; max-width: 640px; }
+.stepbox { display: flex; align-items: center; gap: 16px; background: rgba(123,147,204,0.18); border: 1px solid #7B93CC;
+  border-radius: 3px; padding: 10px 18px; }
+.stepn { width: 38px; height: 38px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; flex: none; }
+.stepbox b { display: block; font-size: 1.25rem; color: #F6E4C4; } .stepbox span { color: #DCE4F7; font-size: 1.08rem; }
+/* panels: navy header strip + white body */
+div[data-testid="stVerticalBlockBorderWrapper"] { background: #FFFFFF; border: 1px solid #B9C6E4 !important; border-radius: 4px; }
+.panelhead { margin: -1rem -1rem 0.9rem -1rem; background: #0B0B52; color: #F6E4C4; padding: 10px 18px; display: flex; align-items: center;
+  gap: 14px; border-bottom: 3px solid #9B7B2E; border-radius: 3px 3px 0 0; }
+.num { width: 34px; height: 34px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; flex: none; }
+.ph-t { font-size: 1.5rem; font-weight: 700; line-height: 1.1; color: #F6E4C4; } .ph-s { font-size: 1.02rem; font-style: italic; color: #B9C6E4; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; font-size: 1.05rem; }
 .badge { display: inline-block; padding: 2px 12px; border-radius: 3px; color: #fff; font-weight: 700; font-size: 0.98rem; letter-spacing: 0.03em; }
+.step { background: #fff; border: 1px solid #C9D3EA; border-left: 6px solid #0B0B52; border-radius: 3px; padding: 10px 16px; margin: 0 0 10px; }
+.step .meta { margin-left: 10px; color: #33337a; font-size: 1.05rem; }
+.step pre { margin: 8px 0 4px; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, Menlo, monospace !important;
+  font-size: 0.92rem; background: #F3F6FC; padding: 8px 10px; border-radius: 2px; color: #0B0B52; }
+.step summary { cursor: pointer; color: #3F5AA8; font-weight: 700; margin-top: 4px; }
 .qrow { display: flex; align-items: center; margin: 3px 0; font-size: 1rem; }
 .qname { width: 120px; } .qbar { height: 12px; border-radius: 2px; margin-right: 8px; } .qoff { color: #8a8aa8; font-style: italic; }
-div[data-testid="stVerticalBlockBorderWrapper"] { border-color: #D9C48F !important; background: #FFFCF4; border-radius: 3px; }
-div[data-testid="stMetric"] { background: #FFFAF0; border: 1px solid #D9C48F; border-top: 3px solid #9B7B2E; padding: 10px 14px; border-radius: 2px; }
-.stApp div[data-testid="stMetricValue"], .stApp div[data-testid="stMetricValue"] div { font-family: 'Bodoni Moda', serif !important; color: #0B0B52; font-size: 1.7rem; }
+div[data-testid="stMetric"] { background: #F3F6FC; border: 1px solid #C9D3EA; border-top: 4px solid #9B7B2E; padding: 8px 14px; border-radius: 3px; }
+div[data-testid="stMetricValue"] { color: #0B0B52; font-size: 1.7rem; }
 div[data-testid="stMetricValue"] > div { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
-button[kind="primary"] { background: #14146B; border: 1px solid #9B7B2E; letter-spacing: 0.08em; font-weight: 700; font-size: 1.1rem; }
-button[kind="primary"]:hover { background: #9B7B2E; border-color: #14146B; color: #fff; }
-.stTabs [data-baseweb="tab"] { font-size: 1.2rem; font-weight: 700; } .stTabs [aria-selected="true"] { color: #14146B; }
-pre, code, .stText { font-family: ui-monospace, Menlo, monospace !important; font-size: 0.92rem !important; }
+button[kind="primary"] { background: #9B7B2E; border: 1px solid #9B7B2E; color: #fff; letter-spacing: 0.1em; font-weight: 700; font-size: 1.15rem; padding: 4px 28px; }
+button[kind="primary"]:hover { background: #0B0B52; border-color: #0B0B52; color: #F6E4C4; }
+.stTabs [data-baseweb="tab"] p { font-size: 1.3rem !important; font-weight: 700; }
+.stTabs [aria-selected="true"] p { color: #0B0B52; }
+.stTabs [data-baseweb="tab-highlight"] { background: #9B7B2E; height: 3px; }
+.stApp [data-testid="stSelectbox"] div { font-size: 1.12rem; }
+div[data-testid="stProgress"] > div > div > div { background: #4F6FB8; }
+.stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"], .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"] * {
+  color: #33337a !important; opacity: 1 !important; font-size: 1.08rem !important; }
+.stApp [data-testid="stCode"] code, .stApp [data-testid="stCode"] pre { font-size: 1.05rem !important; }
+div[data-testid="stProgress"] p { font-size: 1.05rem !important; }
 </style>""", unsafe_allow_html=True)
 
 
-def section(num, title, sub):
-    st.markdown(f'<div class="sec"><div class="num">{num}</div><div><div class="sec-t">{title}</div>'
-                f'<div class="sec-s">{sub}</div></div></div>', unsafe_allow_html=True)
+def panel_head(num, title, sub):
+    return (f'<div class="panelhead"><div class="num">{num}</div><div><div class="ph-t">{title}</div>'
+            f'<div class="ph-s">{sub}</div></div></div>')
 
 
 @st.cache_resource
@@ -116,21 +131,20 @@ def q_bars(ev):
         w = 6 + 94 * (q - lo) / (hi - lo + 1e-9)
         bold = "font-weight:700;" if chosen else ""
         rows.append(f'<div class="qrow" style="{bold}"><span class="qname">{name}</span>'
-                    f'<span class="qbar" style="width:{w * 1.6:.0f}px;background:{color}"></span>{q:+.2f}'
+                    f'<span class="qbar" style="width:{w * 2.2:.0f}px;background:{color}"></span>{q:+.2f}'
                     f'{"  &larr; chosen" if chosen else ""}</div>')
     return "".join(rows)
 
 
-def render_step(box, ev, has_q):
+def step_card(ev, has_q):
+    """One trace card as HTML: coloured left edge, badge, cost line, output, and a fold-out with the DQN's scores."""
     name, color = AGENT[ev["action"]]
-    with box.container(border=True):
-        st.markdown(f'<span class="badge" style="background:{color}">Step {ev["step"]} &middot; {name}</span>'
-                    f'&nbsp; cost **{ev["cost"]:.3f}** &middot; {ev["tin"] + ev["tout"]} tokens &middot; {ev["seconds"]:.1f}s',
-                    unsafe_allow_html=True)
-        st.text(ev["detail"][:500])
-        if has_q and ev["q"]:
-            with st.expander("Why this action? (the DQN's scores)"):
-                st.markdown(q_bars(ev), unsafe_allow_html=True)
+    why = (f'<details><summary>Why this action? (the DQN\'s scores)</summary>{q_bars(ev)}</details>'
+           if has_q and ev["q"] else "")
+    return (f'<div class="step" style="border-left-color:{color}"><span class="badge" style="background:{color}">'
+            f'Step {ev["step"]} &middot; {name}</span><span class="meta">cost <b>{ev["cost"]:.3f}</b> &middot; '
+            f'{ev["tin"] + ev["tout"]} tokens &middot; {ev["seconds"]:.1f}s</span>'
+            f'<pre>{html.escape(ev["detail"][:600])}</pre>{why}</div>')
 
 
 def run_episode(task, ctrl, mode, budget, draw):
@@ -158,29 +172,30 @@ with st.sidebar:
                 "**DQN**: the reinforcement-learning method. It learns by trial and error, rewarded for correct answers and "
                 "charged for cost.")
 
-st.markdown("""<div class="hero"><div class="eyebrow">Reinforcement learning &middot; Multi-agent LLM orchestration</div>
+st.markdown("""<div class="hero"><div class="hero-l"><div class="eyebrow">Reinforcement learning &middot; Multi-agent LLM orchestration</div>
 <div class="hero-title">ORBIT</div><div class="gold-rule"></div>
 <div class="tag">A learned controller that decides which AI helper to call next, and when to stop.</div></div>
-<div class="how"><div><b>1 &nbsp;Pick a task</b><span>A coding, maths or research question.</span></div>
-<div><b>2 &nbsp;Pick who decides</b><span>The learned controller, or a simple baseline.</span></div>
-<div><b>3 &nbsp;Watch it work</b><span>See every helper it calls, what it costs and why.</span></div></div>""",
-            unsafe_allow_html=True)
+<div class="hero-r">
+<div class="stepbox"><div class="stepn">1</div><div><b>Pick a task</b><span>A coding, maths or research question.</span></div></div>
+<div class="stepbox"><div class="stepn">2</div><div><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div></div>
+<div class="stepbox"><div class="stepn">3</div><div><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div></div>
+</div></div>""", unsafe_allow_html=True)
 
-section("1", "Pick a task", "What should the AI helpers work on?")
-pick = st.selectbox("Task", ["(write your own)"] + [short(t) for t in T.values()], index=1, label_visibility="collapsed")
-typed = ""
-if pick == "(write your own)":
-    typed = st.text_input("Your task (maths or research; research only knows our 16 invented documents)",
-                          "Who founded Norvane Labs, and in which year?")
+rail, stage = st.columns([1, 2.1], gap="large")
 
-section("2", "Pick who decides", "Who chooses the next helper? Try the learned one against the others.")
-col_c, col_s = st.columns([3, 2], gap="large")
-with col_c:
-    ctrl_name = st.radio("Controller", list(CS), index=list(CS).index("DQN (refit on real runs)"), key="ctrl",
-                         captions=[c.blurb for c in CS.values()])
-with col_s:
+with rail:
     with st.container(border=True):
-        st.markdown("**Settings**")
+        st.markdown(panel_head("1", "Pick a task", "What should the helpers work on?"), unsafe_allow_html=True)
+        pick = st.selectbox("Task", ["(write your own)"] + [short(t) for t in T.values()], index=1, label_visibility="collapsed")
+        typed = ""
+        if pick == "(write your own)":
+            typed = st.text_input("Your task (maths or research; research only knows our 16 invented documents)",
+                                  "Who founded Norvane Labs, and in which year?")
+    with st.container(border=True):
+        st.markdown(panel_head("2", "Pick who decides", "Who chooses the next helper?"), unsafe_allow_html=True)
+        ctrl_name = st.radio("Controller", list(CS), index=list(CS).index("DQN (refit on real runs)"), key="ctrl",
+                             captions=[c.blurb for c in CS.values()], label_visibility="collapsed")
+        st.markdown("---")
         modes = ["Live - Ollama qwen2.5:3b (local)", "Replay (recorded, offline)"]
         if has_groq:
             modes.insert(1, "Live - Groq gpt-oss-20b")
@@ -194,12 +209,6 @@ with col_s:
         if mode.startswith("Replay"):
             draw = st.number_input("Replay draw (which recorded answers are used)", 0, 999, 0)
 
-section("3", "Run it", "Press the button and watch the helpers being called.")
-st.markdown('<div class="legend">' + "".join(
-    f'<div><span class="badge" style="background:{c}">{n}</span>&nbsp; {d}</div>' for n, c, d in HELPERS) + '</div>',
-    unsafe_allow_html=True)
-tab_live, tab_cmp = st.tabs(["Live run: watch one controller", "Compare: all controllers, same task"])
-
 
 def get_task():
     if pick == "(write your own)":
@@ -207,71 +216,76 @@ def get_task():
     return T[pick.split("] ")[1].split(":")[0]]
 
 
-with tab_live:
-    st.caption("Runs the chosen controller once. Each helper call appears below as it happens.")
-    if st.button("RUN", type="primary", key="run"):
-        try:
-            task = get_task()
-        except ValueError as e:
-            st.error(str(e))
-            st.stop()
-        if mode.startswith("Replay") and task["id"] not in records():
-            st.error("Replay only has the 50 built-in tasks. Pick one from the list or switch to a live mode.")
-            st.stop()
-        ctrl = CS[ctrl_name]
-        left, right = st.columns([3, 2])
-        with right:
-            st.markdown("#### Meter")
-            meter, stats = st.empty(), st.empty()
-        with left:
-            st.markdown(f"#### Agent trace &nbsp;<small>({task['type']} task)</small>", unsafe_allow_html=True)
-            trace = st.container()
-        final, n_tok, n_sec = None, 0, 0.0
-        for ev in run_episode(task, ctrl, mode, budget, draw):
-            if ev["kind"] == "step":
-                render_step(trace.empty(), ev, ctrl.agent is not None)
-                n_tok += ev["tin"] + ev["tout"]
-                n_sec += ev["seconds"]
-                meter.progress(min(1.0, ev["money_left"] / budget), text=f"Money left {ev['money_left']:.2f} of {budget:.2f}")
-                stats.markdown(f"**Spent** {ev['spent']:.3f} &nbsp; **Tokens** {n_tok} &nbsp; **LLM time** {n_sec:.1f}s")
-            else:
-                final = ev
-        with left:
-            st.markdown("#### Final answer")
-            if final["answer"] is None:
-                st.warning("The controller stopped without producing any answer.")
-            else:
-                st.code(final["answer"], language=None)
-            verdict = {True: "Correct", False: "Wrong", None: "Not graded (custom task)"}[final["correct"]]
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric("Result", verdict)
-            c2.metric("Cost", f"{final['cost']:.3f}")
-            c3.metric("Tokens", final["tokens"])
-            c4.metric("Steps", final["steps"])
-            if final["forced_end"]:
-                st.caption("The episode ended because the budget or step limit ran out, not because the controller chose to stop.")
+with stage:
+    with st.container(border=True):
+        st.markdown(panel_head("3", "Run it", "Press the button and watch the helpers being called."), unsafe_allow_html=True)
+        st.markdown('<div class="legend">' + "".join(
+            f'<div><span class="badge" style="background:{c}">{n}</span> {d}</div>' for n, c, d in HELPERS) + '</div>',
+            unsafe_allow_html=True)
+        tab_live, tab_cmp = st.tabs(["Live run: watch one controller", "Compare: all controllers, same task"])
 
-with tab_cmp:
-    st.write("Runs every controller on the same task. In live mode each run samples the model again, so results can vary run to run.")
-    if st.button("RUN ALL CONTROLLERS", type="primary", key="cmp"):
-        try:
-            task = get_task()
-        except ValueError as e:
-            st.error(str(e))
-            st.stop()
-        if mode.startswith("Replay") and task["id"] not in records():
-            st.error("Replay only has the 50 built-in tasks.")
-            st.stop()
-        rows = []
-        with st.spinner("Running..."):
-            for name, ctrl in CS.items():
-                final = [e for e in run_episode(task, ctrl, mode, budget, draw) if e["kind"] == "final"][0]
-                c = final["calls"]
-                rows.append({"Controller": name,
-                             "Result": {True: "Correct", False: "Wrong", None: "n/a"}[final["correct"]],
-                             "Cost": round(final["cost"], 3), "Tokens": final["tokens"],
-                             "LLM seconds": round(final["llm_seconds"], 1), "Steps": final["steps"],
-                             "Calls (res/sol/ver/sum)": f"{c['researcher']}/{c['solver']}/{c['verifier']}/{c['summarizer']}"})
-        df = pd.DataFrame(rows)
-        st.dataframe(df, hide_index=True, use_container_width=True)
-        st.bar_chart(df, x="Controller", y="Cost", color="#14146B", horizontal=True)
+        with tab_live:
+            if st.button("RUN", type="primary", key="run"):
+                try:
+                    task = get_task()
+                except ValueError as e:
+                    st.error(str(e))
+                    st.stop()
+                if mode.startswith("Replay") and task["id"] not in records():
+                    st.error("Replay only has the 50 built-in tasks. Pick one from the list or switch to a live mode.")
+                    st.stop()
+                ctrl = CS[ctrl_name]
+                cols = st.columns(4)
+                ph = [c.empty() for c in cols]
+                meter, answer = st.empty(), st.empty()
+                st.markdown(f"#### Agent trace &nbsp;<small>&mdash; {task['type']} task &middot; {ctrl.name}</small>", unsafe_allow_html=True)
+                trace = st.empty()
+                cards, n_tok, final = [], 0, None
+                ph[0].metric("Result", "Running...")
+                for ev in run_episode(task, ctrl, mode, budget, draw):
+                    if ev["kind"] == "step":
+                        cards.append(step_card(ev, ctrl.agent is not None))
+                        trace.markdown("".join(cards), unsafe_allow_html=True)
+                        n_tok += ev["tin"] + ev["tout"]
+                        ph[1].metric("Cost", f"{ev['spent']:.3f}")
+                        ph[2].metric("Tokens", n_tok)
+                        ph[3].metric("Steps", ev["step"])
+                        meter.progress(min(1.0, ev["money_left"] / budget), text=f"Money left {ev['money_left']:.2f} of {budget:.2f}")
+                    else:
+                        final = ev
+                ph[0].metric("Result", {True: "Correct", False: "Wrong", None: "Not graded"}[final["correct"]])
+                with answer.container():
+                    st.markdown("#### Final answer")
+                    if final["answer"] is None:
+                        st.warning("The controller stopped without producing any answer.")
+                    else:
+                        st.code(final["answer"], language=None)
+                    if final["forced_end"]:
+                        st.caption("The episode ended because the budget or step limit ran out, not because the controller chose to stop.")
+            else:
+                st.caption("Runs the chosen controller once. Results and each helper call appear here as they happen.")
+
+        with tab_cmp:
+            st.write("Runs every controller on the same task. In live mode each run samples the model again, so results can vary run to run.")
+            if st.button("RUN ALL CONTROLLERS", type="primary", key="cmp"):
+                try:
+                    task = get_task()
+                except ValueError as e:
+                    st.error(str(e))
+                    st.stop()
+                if mode.startswith("Replay") and task["id"] not in records():
+                    st.error("Replay only has the 50 built-in tasks.")
+                    st.stop()
+                rows = []
+                with st.spinner("Running..."):
+                    for name, ctrl in CS.items():
+                        final = [e for e in run_episode(task, ctrl, mode, budget, draw) if e["kind"] == "final"][0]
+                        c = final["calls"]
+                        rows.append({"Controller": name,
+                                     "Result": {True: "Correct", False: "Wrong", None: "n/a"}[final["correct"]],
+                                     "Cost": round(final["cost"], 3), "Tokens": final["tokens"],
+                                     "LLM seconds": round(final["llm_seconds"], 1), "Steps": final["steps"],
+                                     "Calls (res/sol/ver/sum)": f"{c['researcher']}/{c['solver']}/{c['verifier']}/{c['summarizer']}"})
+                df = pd.DataFrame(rows)
+                st.dataframe(df, hide_index=True, use_container_width=True)
+                st.bar_chart(df, x="Controller", y="Cost", color="#0B0B52", horizontal=True)
