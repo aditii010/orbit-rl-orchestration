@@ -342,3 +342,8 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   researcher cards, slider and progress; beige only as the title colour on navy. Trace cards are HTML with a coloured left edge and a
   fold-out (details) with the DQN's scores.
 - Checked by screenshots at 1600 px wide (live run and compare). 69 tests pass.
+
+## 2026-11-03 Dashboard step 5: fonts
+- User feedback: fancy font only for headings. Now Bodoni Moda only for ORBIT, panel titles and the "Final answer" / "Agent trace"
+  headings; everything else (steps, controls, trace cards, tables, metrics) is Inter with a system sans-serif fallback. Sizes reduced
+  to normal (they had been enlarged for the old serif body font).

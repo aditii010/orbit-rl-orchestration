@@ -16,27 +16,26 @@ from llm.trace_env import load_cache
 
 st.set_page_config(page_title="ORBIT", layout="wide", initial_sidebar_state="collapsed")
 # Palette (from the user's reference): navy #0B0B52, soft beige #F6E4C4, clear blue #7B93CC, gold #9B7B2E.
-# Fonts: Bodoni Moda (display), Cormorant Garamond (text). Free lookalikes of the user's Amethyst and Sapphire.
+# Fonts: Bodoni Moda for headings only (free lookalike of the user's Amethyst); Inter for all other text.
 AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#4F6FB8"), "INVOKE_SOLVER": ("Solver", "#0B0B52"),
          "INVOKE_VERIFIER": ("Verifier", "#9B7B2E"), "INVOKE_SUMMARIZER": ("Summarizer", "#5B4B8A"),
          "RETRY_SOLVER": ("Solver (retry)", "#A5601F"), "STOP": ("STOP", "#6B6B6B")}
 HELPERS = [("Researcher", "#4F6FB8", "looks up facts"), ("Solver", "#0B0B52", "writes the answer"),
            ("Verifier", "#9B7B2E", "checks it"), ("Summarizer", "#5B4B8A", "tidies it"), ("STOP", "#6B6B6B", "hands it in")]
 st.markdown("""<style>
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Inter:wght@400;500;600;700&display=swap');
 html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp button, .stApp input, .stApp textarea, .stApp summary {
-  font-family: 'Cormorant Garamond', Georgia, serif !important; }
+  font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif !important; }
 .stApp span[data-testid="stIconMaterial"], .stApp .material-symbols-rounded { font-family: 'Material Symbols Rounded' !important; }
-.stApp { background: #EEF2FA; color: #0B0B52; font-size: 1.2rem; }
+.stApp { background: #EEF2FA; color: #0B0B52; font-size: 1rem; }
 .block-container { max-width: none !important; padding: 1.2rem 2.6rem 3rem !important; }
 header[data-testid="stHeader"] { background: transparent; } footer, [data-testid="stToolbar"] { visibility: hidden; }
 [data-testid="stSidebar"] { background: #0B0B52; }
 [data-testid="stSidebar"] * { color: #F6E4C4 !important; }
-.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp .hero-title, .stApp .ph-t, .stApp .num, .stApp .stepn,
-.stApp div[data-testid="stMetricValue"], .stApp div[data-testid="stMetricValue"] div { font-family: 'Bodoni Moda', Georgia, serif !important; }
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp .hero-title, .stApp .ph-t { font-family: 'Bodoni Moda', Georgia, serif !important; }
 .stApp h4 { color: #0B0B52; }
-[data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 1.18rem !important; font-weight: 600; }
-[data-testid="stCaptionContainer"] p { font-size: 1.05rem !important; color: #44447a; }
+[data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 0.98rem !important; font-weight: 600; }
+[data-testid="stCaptionContainer"] p { font-size: 0.9rem !important; color: #44447a; }
 /* hero: full-width navy band */
 .hero { display: flex; align-items: center; justify-content: space-between; gap: 48px; background: #0B0B52; color: #F6E4C4;
   padding: 30px 46px; border-radius: 4px; border-bottom: 4px solid #9B7B2E; margin-bottom: 22px; }
@@ -44,42 +43,42 @@ header[data-testid="stHeader"] { background: transparent; } footer, [data-testid
 .eyebrow { letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.85rem; color: #C9A24A; font-weight: 700; }
 .hero-title { font-size: 5.2rem; font-weight: 700; letter-spacing: 0.2em; line-height: 1.0; margin: 6px 0 2px; color: #F6E4C4; }
 .gold-rule { width: 150px; height: 2px; background: #9B7B2E; margin: 12px 0 14px; }
-.tag { font-size: 1.7rem; font-style: italic; color: #DCE4F7; line-height: 1.3; max-width: 640px; }
+.tag { font-size: 1.3rem; font-weight: 400; color: #DCE4F7; line-height: 1.4; max-width: 620px; }
 .stepbox { display: flex; align-items: center; gap: 16px; background: rgba(123,147,204,0.18); border: 1px solid #7B93CC;
   border-radius: 3px; padding: 10px 18px; }
 .stepn { width: 38px; height: 38px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
   justify-content: center; font-weight: 700; flex: none; }
-.stepbox b { display: block; font-size: 1.25rem; color: #F6E4C4; } .stepbox span { color: #DCE4F7; font-size: 1.08rem; }
+.stepbox b { display: block; font-size: 1.05rem; color: #F6E4C4; } .stepbox span { color: #DCE4F7; font-size: 0.92rem; }
 /* panels: navy header strip + white body */
 div[data-testid="stVerticalBlockBorderWrapper"] { background: #FFFFFF; border: 1px solid #B9C6E4 !important; border-radius: 4px; }
 .panelhead { margin: -1rem -1rem 0.9rem -1rem; background: #0B0B52; color: #F6E4C4; padding: 10px 18px; display: flex; align-items: center;
   gap: 14px; border-bottom: 3px solid #9B7B2E; border-radius: 3px 3px 0 0; }
 .num { width: 34px; height: 34px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
   justify-content: center; font-weight: 700; flex: none; }
-.ph-t { font-size: 1.5rem; font-weight: 700; line-height: 1.1; color: #F6E4C4; } .ph-s { font-size: 1.02rem; font-style: italic; color: #B9C6E4; }
-.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; font-size: 1.05rem; }
-.badge { display: inline-block; padding: 2px 12px; border-radius: 3px; color: #fff; font-weight: 700; font-size: 0.98rem; letter-spacing: 0.03em; }
+.ph-t { font-size: 1.5rem; font-weight: 700; line-height: 1.1; color: #F6E4C4; } .ph-s { font-size: 0.86rem; color: #B9C6E4; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; font-size: 0.92rem; }
+.badge { display: inline-block; padding: 2px 12px; border-radius: 3px; color: #fff; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.02em; }
 .step { background: #fff; border: 1px solid #C9D3EA; border-left: 6px solid #0B0B52; border-radius: 3px; padding: 10px 16px; margin: 0 0 10px; }
-.step .meta { margin-left: 10px; color: #33337a; font-size: 1.05rem; }
+.step .meta { margin-left: 10px; color: #33337a; font-size: 0.9rem; }
 .step pre { margin: 8px 0 4px; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, Menlo, monospace !important;
   font-size: 0.92rem; background: #F3F6FC; padding: 8px 10px; border-radius: 2px; color: #0B0B52; }
 .step summary { cursor: pointer; color: #3F5AA8; font-weight: 700; margin-top: 4px; }
-.qrow { display: flex; align-items: center; margin: 3px 0; font-size: 1rem; }
+.qrow { display: flex; align-items: center; margin: 3px 0; font-size: 0.88rem; }
 .qname { width: 120px; } .qbar { height: 12px; border-radius: 2px; margin-right: 8px; } .qoff { color: #8a8aa8; font-style: italic; }
 div[data-testid="stMetric"] { background: #F3F6FC; border: 1px solid #C9D3EA; border-top: 4px solid #9B7B2E; padding: 8px 14px; border-radius: 3px; }
-div[data-testid="stMetricValue"] { color: #0B0B52; font-size: 1.7rem; }
+div[data-testid="stMetricValue"] { color: #0B0B52; font-size: 1.6rem; font-weight: 700; }
 div[data-testid="stMetricValue"] > div { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
-button[kind="primary"] { background: #9B7B2E; border: 1px solid #9B7B2E; color: #fff; letter-spacing: 0.1em; font-weight: 700; font-size: 1.15rem; padding: 4px 28px; }
+button[kind="primary"] { background: #9B7B2E; border: 1px solid #9B7B2E; color: #fff; letter-spacing: 0.08em; font-weight: 600; font-size: 0.95rem; padding: 4px 26px; }
 button[kind="primary"]:hover { background: #0B0B52; border-color: #0B0B52; color: #F6E4C4; }
-.stTabs [data-baseweb="tab"] p { font-size: 1.3rem !important; font-weight: 700; }
+.stTabs [data-baseweb="tab"] p { font-size: 1.02rem !important; font-weight: 600; }
 .stTabs [aria-selected="true"] p { color: #0B0B52; }
 .stTabs [data-baseweb="tab-highlight"] { background: #9B7B2E; height: 3px; }
-.stApp [data-testid="stSelectbox"] div { font-size: 1.12rem; }
+.stApp [data-testid="stSelectbox"] div { font-size: 0.95rem; }
 div[data-testid="stProgress"] > div > div > div { background: #4F6FB8; }
 .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"], .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"] * {
-  color: #33337a !important; opacity: 1 !important; font-size: 1.08rem !important; }
-.stApp [data-testid="stCode"] code, .stApp [data-testid="stCode"] pre { font-size: 1.05rem !important; }
-div[data-testid="stProgress"] p { font-size: 1.05rem !important; }
+  color: #33337a !important; opacity: 1 !important; font-size: 0.9rem !important; }
+.stApp [data-testid="stCode"] code, .stApp [data-testid="stCode"] pre { font-size: 0.95rem !important; }
+div[data-testid="stProgress"] p { font-size: 0.9rem !important; }
 </style>""", unsafe_allow_html=True)
 
 
