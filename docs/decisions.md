@@ -400,3 +400,19 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   docs/logs/sim_baselines_test.log: fixed pipeline +0.0034, single +0.1528, difficulty-aware rule +0.1732 on 10,000 test tasks
   (the fixed pipeline is far worse than I had remembered: it ties with doing nothing).
 - Charts are hand-built HTML bars because Streamlit's chart sizing squashed a two-bar chart. 77 tests pass.
+
+## 2026-11-03 Dashboard step 13: the race (user's vision) and why I did not rig it
+- User: wanted to give a task and watch two sides live, step by step, and see the DQN emerge as winner. Rebuilt the main view as a RACE:
+  left corner (any controller, default fixed pipeline) vs right corner (default DQN refit), steps alternate so both columns fill in
+  together, per-side meter/cost/steps/result and plain-words narration, a WINNER tag, and a score banner. The score is the training
+  reward (quality minus 1.25*cost, -0.3 if no answer); tested equal to the graded run (tests/test_engine.py).
+  SCOREBOARD races the two corners on the 24 held-out tasks (10 recorded draws each) with a live tally. RUN ONE shows the right corner alone.
+- Checked BEFORE building what the data allows (demo model = seed 0): the four single-task races are all won by the DQN, and the
+  scoreboard vs fixed pipeline is a clear DQN win (16 wins, 0 ties, 8 losses, +0.196). But vs single agent +0.068 (6 wins, 7 ties, 11 losses),
+  vs tuned rule -0.056 (1 win, 15 ties, 8 losses), vs sim-only DQN +0.064. So "DQN beats everything" is NOT true and the page does not
+  say it: the winner text comes from the numbers, and tests/test_dashboard.py asserts the page does not claim a scoreboard win against the
+  tuned rule. The default opponent is the fixed pipeline (the strategy the project was designed to beat); the opponent is the user's choice.
+  Seed 0 (+0.536 on these 24 tasks) is below the 5-seed average (+0.580); the seed was fixed before any test numbers were seen and is not
+  changed now. This is stated in the Limitations tab.
+- Also: auto-scroll to the results (they used to appear below the screen unnoticed, so clicking seemed to do nothing), a Running banner, plain-words
+  narration, a 0.7 s pause per step in replay so recordings look live (ORBIT_FAST=1 disables it for tests).

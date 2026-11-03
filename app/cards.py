@@ -40,3 +40,31 @@ def step_card(ev, has_q):
             f'Step {ev["step"]} &middot; {name}</span><span class="meta">cost <b>{ev["cost"]:.3f}</b> &middot; '
             f'{ev["tin"] + ev["tout"]} tokens &middot; {ev["seconds"]:.1f}s</span>'
             f'<div class="{cls}">{_one_line(ev["detail"][:600])}</div>{why}</div>')
+
+
+_PLAIN = {"INVOKE_RESEARCHER": "Asked the <b>Researcher</b> to look things up.",
+          "INVOKE_SOLVER": "Asked the <b>Solver</b> to write an answer.",
+          "RETRY_SOLVER": "Asked the <b>Solver</b> to try again.",
+          "INVOKE_SUMMARIZER": "Asked the <b>Summarizer</b> to tidy the answer.",
+          "STOP": "Decided it had done enough and <b>handed in</b> the answer."}
+
+
+def narrate(steps, final=None):
+    """The run in plain words: one numbered line per step, plus a closing sentence once the run is over."""
+    lines = []
+    for ev in steps:
+        if ev["action"] == "INVOKE_VERIFIER":
+            text = "Ran the <b>Verifier</b> to check the answer: it <b>%s</b>." % ("passed" if ev["detail"].startswith("PASS") else "failed")
+        else:
+            text = _PLAIN[ev["action"]]
+        if final is not None and final["forced_end"] and ev is steps[-1] and ev["action"] != "STOP":
+            text += " <i>The money or step limit ran out, so the run had to end here.</i>"
+        cost = "" if ev["action"] == "STOP" else f' <span class="pc">cost {ev["cost"]:.3f}</span>'
+        lines.append(f"<li>{text}{cost}</li>")
+    out = '<ol class="plain">' + "".join(lines) + "</ol>"
+    if final is not None:
+        verdict = {True: "the answer is <b>correct</b>", False: "the answer is <b>wrong</b>", None: "there is no answer key for your own task"}[final["correct"]]
+        if final["answer"] is None:
+            verdict = "it never produced an answer"
+        out += f'<div class="plainend">So: {verdict}, and the whole run cost <b>{final["cost"]:.3f}</b> in {final["steps"]} steps.</div>'
+    return out

@@ -23,3 +23,12 @@ def test_html_in_model_output_is_escaped():
 def test_scores_fold_out_only_for_dqn():
     assert "Why this action" in step_card(ev("x"), has_q=True)
     assert "Why this action" not in step_card(ev("x", q=False), has_q=False)
+
+
+def test_plain_words_describe_each_step_and_the_outcome():
+    from app.cards import narrate
+    steps = [dict(ev("x"), action="INVOKE_SOLVER"), dict(ev("PASS"), action="INVOKE_VERIFIER", step=3), dict(ev("."), action="STOP", step=4, cost=0.0)]
+    final = {"kind": "final", "answer": "x", "correct": True, "cost": 0.11, "steps": 3, "forced_end": False}
+    out = narrate(steps, final)
+    assert "Solver</b> to write an answer" in out and "it <b>passed</b>" in out and "<b>correct</b>" in out and "0.110" in out
+    assert "\n" not in out                      # single line, so markdown cannot cut it

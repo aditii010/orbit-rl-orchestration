@@ -50,3 +50,31 @@ def test_controllers_build_and_dqn_reports_masked_q():
     ev = list(run_replay(REC["res00"], TASKS["res00"], cs["DQN (simulator only)"], budget=1.0, seed=0))
     first = ev[0]
     assert first["q"] is not None and len(first["q"]) == 6
+
+
+def test_score_matches_training_reward():
+    from app.engine import score
+    fin = {"answer": "x", "correct": True, "cost": 0.4}
+    assert abs(score(fin) - (1.0 - 0.5 * 0.4 / 0.4)) < 1e-9          # 1 - lambda*cost/reference
+    assert abs(score({**fin, "correct": False}) - (-0.5)) < 1e-9
+    assert abs(score({"answer": None, "correct": False, "cost": 0.0}) + 0.3) < 1e-9
+    assert score({**fin, "correct": None}) is None
+
+
+def test_lockstep_alternates_and_finishes_both():
+    from app.engine import lockstep, verdict
+    def g(tag, n):
+        for i in range(n):
+            yield f"{tag}{i}"
+    order = [(side, ev) for side, ev in lockstep(g("a", 3), g("b", 1))]
+    assert order == [("A", "a0"), ("B", "b0"), ("A", "a1"), ("A", "a2")]
+    assert verdict(0.9, 0.5) == "A" and verdict(0.5, 0.9) == "B" and verdict(0.5, 0.502) == "tie" and verdict(None, 0.1) is None
+
+
+def test_replay_score_matches_the_graded_run():
+    from app.engine import replay_score, score
+    cs = build_controllers()
+    for tid, d in (("code02", 3), ("res01", 0)):
+        ev = list(run_replay(REC[tid], TASKS[tid], cs["DQN (refit on real runs)"], budget=0.8, seed=d))[-1]
+        r, c = replay_score(REC[tid], cs["DQN (refit on real runs)"], 0.8, d)
+        assert abs(c - ev["cost"]) < 1e-9 and abs(r - score(ev)) < 1e-9, tid

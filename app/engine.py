@@ -202,3 +202,60 @@ def run_replay(record, task, ctrl, budget=0.8, seed=0, max_steps=MAX_STEPS):
     fin = _final(task, {**st, "tokens": tokens, "seconds": seconds, "calls": env.calls,
                         "forced": info["forced_end"]}, answer, seconds)
     yield fin
+
+
+# ---------------------------------------------------------------- racing two controllers
+def score(final):
+    """The reward the DQN was trained on (llm/trace_env.py): 1 for a correct answer, 0 for a wrong one, minus lambda*cost/reference,
+    and a flat penalty when no answer was produced. None when the task has no answer key (a custom task)."""
+    c = DEFAULT_CONFIG
+    cost_term = c["lambda_cost"] * final["cost"] / c["reference_cost"]
+    if final["answer"] is None:
+        return -c["no_candidate_penalty"] - cost_term
+    if final["correct"] is None:
+        return None
+    return float(final["correct"]) - cost_term
+
+
+def lockstep(gen_a, gen_b):
+    """Alternate between two episode generators so a page can show both live. Yields ('A' or 'B', event) until both are exhausted."""
+    gens = {"A": gen_a, "B": gen_b}
+    while gens:
+        for side in list(gens):
+            try:
+                yield side, next(gens[side])
+            except StopIteration:
+                del gens[side]
+
+
+def verdict(score_a, score_b, tol=0.005):
+    """'A', 'B' or 'tie' (None if a score is missing)."""
+    if score_a is None or score_b is None:
+        return None
+    return "tie" if abs(score_a - score_b) <= tol else ("A" if score_a > score_b else "B")
+
+
+def replay_score(record, ctrl, budget, draw):
+    """Fast score of one recorded episode using the training environment's own reward (no grading subprocess). Returns (reward, cost)."""
+    env = TraceEnv([record])
+    env.reset(draw)
+    env.budget = budget
+    total, done = 0.0, False
+    while not done:
+        _, r, done, info = env.step(ctrl.policy(env._observe(), env.action_mask()))
+        total += r
+    return total, info["total_cost"]
+
+
+def board_scores(records, controllers, budget=0.8, draws=range(10)):
+    """Mean score and cost of every controller on every record, averaged over several recorded draws.
+    Returns {name: (scores array, costs array)}, arrays in the order of `records`."""
+    out = {}
+    for name, ctrl in controllers.items():
+        sc, co = [], []
+        for rec in records:
+            runs = [replay_score(rec, ctrl, budget, d) for d in draws]
+            sc.append(sum(r for r, _ in runs) / len(runs))
+            co.append(sum(c for _, c in runs) / len(runs))
+        out[name] = (np.array(sc), np.array(co))
+    return out
