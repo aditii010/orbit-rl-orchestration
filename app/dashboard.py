@@ -1,6 +1,5 @@
 """ORBIT dashboard. Run from the project root:  streamlit run app/dashboard.py
-Desktop layout: slate hero band, a left rail with the controls, a right stage with the live run and the comparison."""
-import html
+Desktop layout: frosted-glass cards on a gradient, a left rail with the controls, a right stage with the live run and the comparison."""
 import os
 import sys
 
@@ -9,6 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pandas as pd
 import streamlit as st
 
+from app.cards import AGENT, step_card
 from app.engine import build_controllers, custom_task, run_live, run_replay
 from llm.client import LLM
 from llm.tasks import all_tasks
@@ -17,9 +17,6 @@ from llm.trace_env import load_cache
 st.set_page_config(page_title="ORBIT", layout="wide", initial_sidebar_state="collapsed")
 # Palette (user's 'Rich Beige Complementary'): Moist Gold #DBDE70, Cuddle #BECAE9, Orchid Hue #E2E99C, Asagi Koi #47565A, Old World #ADB6CE.
 # Fonts: Bodoni Moda for headings only (free lookalike of the user's Amethyst); Inter for all other text.
-AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#5E6FA8"), "INVOKE_SOLVER": ("Solver", "#47565A"),
-         "INVOKE_VERIFIER": ("Verifier", "#7C8120"), "INVOKE_SUMMARIZER": ("Summarizer", "#7A6A8F"),
-         "RETRY_SOLVER": ("Solver (retry)", "#A5601F"), "STOP": ("STOP", "#7D8A8E")}
 HELPERS = [("Researcher", "#5E6FA8", "looks up facts"), ("Solver", "#47565A", "writes the answer"),
            ("Verifier", "#7C8120", "checks it"), ("Summarizer", "#7A6A8F", "tidies it"), ("STOP", "#7D8A8E", "hands it in")]
 st.markdown("""<style>
@@ -29,55 +26,65 @@ html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, 
 .stApp span[data-testid="stIconMaterial"], .stApp .material-symbols-rounded { font-family: 'Material Symbols Rounded' !important; }
 /* palette: Asagi Koi #47565A (slate), Cuddle #BECAE9, Old World #ADB6CE, Orchid Hue #E2E99C, Moist Gold #DBDE70 */
 .stApp { background: linear-gradient(135deg, #AEBCE6 0%, #C9D3EE 28%, #E2E99C 68%, #D3D75A 100%) fixed; color: #2B373B; font-size: 1rem; }
-.block-container { max-width: none !important; padding: 1.2rem 2.6rem 3rem !important; }
+.block-container { max-width: none !important; padding: 0.6rem 2.6rem 3rem !important; }
 header[data-testid="stHeader"] { background: transparent; } footer, [data-testid="stToolbar"] { visibility: hidden; }
-[data-testid="stSidebar"] { background: #47565A; }
-[data-testid="stSidebar"] * { color: #E2E99C !important; }
+[data-testid="stSidebar"] { background: #47565A; } [data-testid="stSidebar"] * { color: #E2E99C !important; }
 .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp .hero-title, .stApp .ph-t { font-family: 'Bodoni Moda', Georgia, serif !important; }
 .stApp h4 { color: #2B373B; }
 [data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 0.98rem !important; font-weight: 600; }
 [data-testid="stCaptionContainer"] p { font-size: 0.9rem !important; color: #47565A; }
-/* hero: full-width slate band, centred heading, flowchart below */
-.hero { display: flex; flex-direction: column; align-items: center; text-align: center; color: #E2E99C;
-  background: linear-gradient(135deg, #36444A 0%, #47565A 50%, #63777C 100%);
-  padding: 38px 46px 34px; border-radius: 4px; border-bottom: 5px solid #DBDE70; margin-bottom: 22px; }
-.eyebrow { letter-spacing: 0.34em; text-transform: uppercase; font-size: 0.9rem; color: #DBDE70; font-weight: 600; }
-.hero-title { font-size: 8.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 8px 0 0; color: #E2E99C; }
-.gold-rule { width: 220px; height: 2px; background: #DBDE70; margin: 18px auto 18px; }
-.stApp .tag { font-family: 'Cormorant Garamond', Georgia, serif !important; font-style: italic; font-weight: 600; font-size: 2.1rem;
-  color: #E2E99C; line-height: 1.25; max-width: 820px; letter-spacing: 0.01em; }
-.flow { display: flex; align-items: stretch; justify-content: center; gap: 0; margin-top: 30px; width: 100%; max-width: 1100px; }
-.node { flex: 1; background: rgba(190,202,233,0.16); border: 1px solid #BECAE9; border-top: 4px solid #DBDE70; border-radius: 3px;
-  padding: 16px 20px; text-align: center; }
-.node b { display: block; font-size: 1.2rem; color: #E2E99C; margin-bottom: 4px; }
-.node span { color: #E4E9F7; font-size: 0.95rem; line-height: 1.35; }
-.arrow { flex: none; width: 74px; display: flex; align-items: center; justify-content: center; }
-/* panels: slate header strip + white body */
-div[data-testid="stVerticalBlockBorderWrapper"] { background: rgba(255,255,255,0.9); border: 1px solid #ADB6CE !important; border-radius: 4px; }
-.panelhead { margin: -1rem -1rem 0.9rem -1rem; background: linear-gradient(135deg, #36444A, #5A6C71); padding: 10px 18px;
-  display: flex; align-items: center; gap: 14px; border-bottom: 4px solid #DBDE70; border-radius: 3px 3px 0 0; }
-.num { width: 34px; height: 34px; border-radius: 50%; background: #DBDE70; color: #2B373B; display: flex; align-items: center;
+/* hero: no band, text straight on the gradient, animated orbit behind the title */
+.hero { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px 10px; margin-bottom: 18px; }
+.hero > * { position: relative; z-index: 1; }
+.orbit { position: absolute !important; left: 0; top: 18px; width: 100%; height: 260px; z-index: 0 !important; opacity: 0.55; pointer-events: none; }
+.chip { display: inline-block; letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.78rem; font-weight: 600; color: #36444A;
+  background: rgba(255,255,255,0.5); border: 1px solid rgba(71,86,90,0.25); padding: 6px 18px; border-radius: 999px; backdrop-filter: blur(8px); }
+.hero-title { font-size: 9.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 14px 0 0;
+  color: #36444A; background: linear-gradient(135deg, #2B373B 10%, #47565A 55%, #5E6FA8 100%); -webkit-background-clip: text;
+  background-clip: text; -webkit-text-fill-color: transparent; }
+.stApp .tag { font-family: 'Cormorant Garamond', Georgia, serif !important; font-style: italic; font-weight: 600; font-size: 2.3rem;
+  color: #36444A; line-height: 1.25; max-width: 860px; margin-top: 6px; }
+.flow { display: flex; align-items: stretch; justify-content: center; margin-top: 30px; width: 100%; max-width: 1150px; }
+.node { flex: 1; background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.8); border-radius: 18px; padding: 18px 22px;
+  text-align: center; box-shadow: 0 10px 30px rgba(71,86,90,0.14); backdrop-filter: blur(12px); transition: transform .2s, box-shadow .2s; }
+.node:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(71,86,90,0.2); }
+.ico { width: 46px; height: 46px; margin: 0 auto 8px; border-radius: 50%; background: #47565A; display: flex; align-items: center; justify-content: center; }
+.node b { display: block; font-size: 1.15rem; color: #2B373B; margin-bottom: 3px; }
+.node span { color: #47565A; font-size: 0.93rem; line-height: 1.35; }
+.arrow { flex: none; width: 70px; display: flex; align-items: center; justify-content: center; }
+/* glass cards */
+div[data-testid="stVerticalBlockBorderWrapper"] { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.8) !important; border-radius: 20px; box-shadow: 0 12px 36px rgba(71,86,90,0.13); }
+.ph { display: flex; align-items: center; gap: 12px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(71,86,90,0.18); }
+.num { width: 32px; height: 32px; border-radius: 10px; background: #47565A; color: #E2E99C; display: flex; align-items: center;
   justify-content: center; font-weight: 700; flex: none; }
-.ph-t { font-size: 1.5rem; font-weight: 700; line-height: 1.1; color: #E2E99C; } .ph-s { font-size: 0.86rem; color: #BECAE9; }
-.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; font-size: 0.92rem; }
-.badge { display: inline-block; padding: 2px 12px; border-radius: 3px; color: #fff; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.02em; }
-.step { background: #fff; border: 1px solid #C4CCE0; border-left: 6px solid #47565A; border-radius: 3px; padding: 10px 16px; margin: 0 0 10px; }
+.ph-t { font-size: 1.55rem; font-weight: 700; line-height: 1.1; color: #2B373B; } .ph-s { font-size: 0.86rem; color: #5a6a6f; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 12px; font-size: 0.92rem; }
+.badge { display: inline-block; padding: 2px 12px; border-radius: 999px; color: #fff; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.02em; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.step { background: rgba(255,255,255,0.92); border-left: 6px solid #47565A; border-radius: 12px; padding: 10px 16px; margin: 0 0 10px;
+  box-shadow: 0 4px 14px rgba(71,86,90,0.10); }
+.step.new { animation: rise .4s ease both; }
 .step .meta { margin-left: 10px; color: #47565A; font-size: 0.9rem; }
-.step pre { margin: 8px 0 4px; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, Menlo, monospace !important;
-  font-size: 0.92rem; background: #F1F4FA; padding: 8px 10px; border-radius: 2px; color: #2B373B; }
+.step .out { margin: 8px 0 4px; white-space: pre-wrap; word-break: break-word; font-size: 0.95rem; color: #2B373B; line-height: 1.45; }
+.step .out.code { font-family: ui-monospace, Menlo, monospace !important; font-size: 0.9rem; background: #F1F4FA; padding: 8px 10px; border-radius: 8px; }
 .step summary { cursor: pointer; color: #47608F; font-weight: 700; margin-top: 4px; }
 .qrow { display: flex; align-items: center; margin: 3px 0; font-size: 0.88rem; }
-.qname { width: 120px; } .qbar { height: 12px; border-radius: 2px; margin-right: 8px; } .qoff { color: #7D8A8E; font-style: italic; }
-div[data-testid="stMetric"] { background: #F1F4FA; border: 1px solid #C4CCE0; border-top: 4px solid #DBDE70; padding: 8px 14px; border-radius: 3px; }
-div[data-testid="stMetricValue"] { color: #2B373B; font-size: 1.6rem; font-weight: 700; }
+.qname { width: 120px; } .qbar { height: 12px; border-radius: 6px; margin-right: 8px; } .qoff { color: #7D8A8E; font-style: italic; }
+div[data-testid="stMetric"] { background: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.9); padding: 10px 16px; border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(71,86,90,0.08); }
+div[data-testid="stMetricLabel"] p { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.74rem !important; color: #5a6a6f; }
+div[data-testid="stMetricValue"] { color: #2B373B; font-size: 1.7rem; font-weight: 700; }
 div[data-testid="stMetricValue"] > div { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
-button[kind="primary"] { background: #DBDE70; border: 1px solid #47565A; color: #2B373B; letter-spacing: 0.08em; font-weight: 700; font-size: 0.95rem; padding: 4px 26px; }
-button[kind="primary"]:hover { background: #47565A; border-color: #47565A; color: #E2E99C; }
+button[kind="primary"] { background: #47565A; border: none; color: #E2E99C; letter-spacing: 0.1em; font-weight: 700; font-size: 0.95rem;
+  padding: 6px 34px; border-radius: 999px; box-shadow: 0 6px 16px rgba(71,86,90,0.28); transition: transform .15s, background .15s; }
+button[kind="primary"]:hover { background: #DBDE70; color: #2B373B; transform: translateY(-2px); }
 .stTabs [data-baseweb="tab"] p { font-size: 1.02rem !important; font-weight: 600; }
 .stTabs [aria-selected="true"] p { color: #2B373B; }
-.stTabs [data-baseweb="tab-highlight"] { background: #7C8120; height: 3px; }
+.stTabs [data-baseweb="tab-highlight"] { background: #47565A; height: 3px; border-radius: 3px; }
 .stApp [data-testid="stSelectbox"] div { font-size: 0.95rem; }
-div[data-testid="stProgress"] > div > div > div { background: #8E9A2A; }
+div[data-baseweb="select"] > div, div[data-testid="stNumberInput"] input { border-radius: 12px; }
+div[data-testid="stProgress"] > div > div > div { background: #7C8120; border-radius: 6px; }
 .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"], .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"] * {
   color: #47565A !important; opacity: 1 !important; font-size: 0.9rem !important; }
 .stApp [data-testid="stCode"] code, .stApp [data-testid="stCode"] pre { font-size: 0.95rem !important; }
@@ -86,7 +93,7 @@ div[data-testid="stProgress"] p { font-size: 0.9rem !important; }
 
 
 def panel_head(num, title, sub):
-    return (f'<div class="panelhead"><div class="num">{num}</div><div><div class="ph-t">{title}</div>'
+    return (f'<div class="ph"><div class="num">{num}</div><div><div class="ph-t">{title}</div>'
             f'<div class="ph-s">{sub}</div></div></div>')
 
 
@@ -120,35 +127,6 @@ def short(t):
     return f"[{t['type']}] {t['id']}: {txt[:70]}"
 
 
-def q_bars(ev):
-    """Small HTML bar chart: the controller's score (Q-value) for each action; illegal actions greyed out."""
-    legal = [q for q, ok in zip(ev["q"], ev["legal"]) if ok]
-    lo, hi = min(legal), max(legal)
-    rows = []
-    for (key, (name, color)), q, ok in zip(AGENT.items(), ev["q"], ev["legal"]):
-        chosen = key == ev["action"]
-        if not ok:
-            rows.append(f'<div class="qrow qoff"><span class="qname">{name}</span>not allowed now</div>')
-            continue
-        w = 6 + 94 * (q - lo) / (hi - lo + 1e-9)
-        bold = "font-weight:700;" if chosen else ""
-        rows.append(f'<div class="qrow" style="{bold}"><span class="qname">{name}</span>'
-                    f'<span class="qbar" style="width:{w * 2.2:.0f}px;background:{color}"></span>{q:+.2f}'
-                    f'{"  &larr; chosen" if chosen else ""}</div>')
-    return "".join(rows)
-
-
-def step_card(ev, has_q):
-    """One trace card as HTML: coloured left edge, badge, cost line, output, and a fold-out with the DQN's scores."""
-    name, color = AGENT[ev["action"]]
-    why = (f'<details><summary>Why this action? (the DQN\'s scores)</summary>{q_bars(ev)}</details>'
-           if has_q and ev["q"] else "")
-    return (f'<div class="step" style="border-left-color:{color}"><span class="badge" style="background:{color}">'
-            f'Step {ev["step"]} &middot; {name}</span><span class="meta">cost <b>{ev["cost"]:.3f}</b> &middot; '
-            f'{ev["tin"] + ev["tout"]} tokens &middot; {ev["seconds"]:.1f}s</span>'
-            f'<pre>{html.escape(ev["detail"][:600])}</pre>{why}</div>')
-
-
 def run_episode(task, ctrl, mode, budget, draw):
     """Returns a generator of events for the chosen mode."""
     if mode == "Replay (recorded, offline)":
@@ -174,13 +152,13 @@ with st.sidebar:
                 "**DQN**: the reinforcement-learning method. It learns by trial and error, rewarded for correct answers and "
                 "charged for cost.")
 
-st.markdown("""<div class="hero"><div class="eyebrow">Reinforcement learning &middot; Multi-agent LLM orchestration</div>
-<div class="hero-title">ORBIT</div><div class="gold-rule"></div>
+st.markdown("""<div class="hero"><svg class="orbit" viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet" height="260"><g transform="rotate(-7 500 130)"><ellipse cx="500" cy="130" rx="470" ry="62" fill="none" stroke="#47565A" stroke-opacity="0.5" stroke-width="1.2"/><ellipse cx="500" cy="130" rx="380" ry="40" fill="none" stroke="#47565A" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 6"/><circle r="9" fill="#DBDE70" stroke="#47565A" stroke-width="1.5"><animateMotion dur="14s" repeatCount="indefinite" path="M30,130 a470,62 0 1,0 940,0 a470,62 0 1,0 -940,0"/></circle><circle r="6" fill="#5E6FA8"><animateMotion dur="9s" repeatCount="indefinite" path="M120,130 a380,40 0 1,1 760,0 a380,40 0 1,1 -760,0"/></circle></g></svg><div class="chip">Reinforcement learning &middot; Multi-agent LLM orchestration</div>
+<div class="hero-title">ORBIT</div>
 <div class="tag">A learned controller that decides which AI helper to call next, and when to stop.</div>
 <div class="flow">
-<div class="node"><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#DBDE70" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#DBDE70"/></svg></div>
-<div class="node"><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#DBDE70" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#DBDE70"/></svg></div>
-<div class="node"><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div>
+<div class="node"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2E99C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></div><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="54" height="22" viewBox="0 0 54 22"><line x1="2" y1="11" x2="42" y2="11" stroke="#47565A" stroke-width="2.4" stroke-dasharray="1 5" stroke-linecap="round"/><polygon points="40,4 53,11 40,18" fill="#47565A"/></svg></div>
+<div class="node"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2E99C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 9-9 9-9-9z"/></svg></div><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="54" height="22" viewBox="0 0 54 22"><line x1="2" y1="11" x2="42" y2="11" stroke="#47565A" stroke-width="2.4" stroke-dasharray="1 5" stroke-linecap="round"/><polygon points="40,4 53,11 40,18" fill="#47565A"/></svg></div>
+<div class="node"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2E99C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div>
 </div></div>""", unsafe_allow_html=True)
 
 rail, stage = st.columns([1, 2.1], gap="large")
@@ -247,7 +225,7 @@ with stage:
                 for ev in run_episode(task, ctrl, mode, budget, draw):
                     if ev["kind"] == "step":
                         cards.append(step_card(ev, ctrl.agent is not None))
-                        trace.markdown("".join(cards), unsafe_allow_html=True)
+                        trace.markdown("".join(cards[:-1]) + cards[-1].replace('class="step"', 'class="step new"', 1), unsafe_allow_html=True)
                         n_tok += ev["tin"] + ev["tout"]
                         ph[1].metric("Cost", f"{ev['spent']:.3f}")
                         ph[2].metric("Tokens", n_tok)

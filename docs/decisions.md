@@ -363,3 +363,13 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 - Page gradient (periwinkle to yellow-green) is much stronger; hero and panel headers are slate (Asagi Koi) with Orchid Hue titles and
   Moist Gold rules, numbers and buttons; agent colours re-derived from the palette (olive verifier, slate solver, periwinkle researcher).
   Text colour is a darker slate (#2B373B) for contrast. Checked by screenshot.
+
+## 2026-11-03 Dashboard step 9: frosted-glass redesign (no coloured bands) and a card bug found by looking
+- User feedback: remove the bands around text, make it feel like a front-end developer's work. Now: text sits directly on the gradient;
+  cards are translucent glass with rounded corners and soft shadows; pill buttons and badges; flowchart nodes with document / diamond
+  (decision) / eye icons; an animated orbit (two rings, two moving dots) behind the title; newest trace card slides in.
+- Bug found only because I screenshotted a CODING run (research runs looked fine): the HTML trace card broke whenever the model's code
+  contained a blank line (markdown ends an HTML block at a blank line), and Streamlit does not honour <pre>. Fix: card HTML is one
+  line (newlines become &#10;) in a div with white-space: pre-wrap. Moved card code to app/cards.py with tests/test_cards.py
+  (one line, HTML escaped, scores fold-out only for DQN). 72 tests pass.
+- Lesson: Streamlit caches imported modules, so after editing app/cards.py or app/engine.py restart the server (pkill -f "streamlit run").
