@@ -427,3 +427,7 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 ## 2026-11-03 Dashboard step 15: plainer shortcut names and captions
 - Renamed the five shortcuts (Smart vs always-everyone, Simulator-only vs retrained, Catches a wrong answer, Short on money, Scoreboard: 24 new tasks)
   and put a one-sentence caption under each, because the user did not understand "why we retrain" and "failed check, retry". Runbook updated.
+
+## 2026-11-03 Dashboard step 16: technical names for the shortcuts
+- User found the plain-language names unprofessional. Now: DQN vs Fixed Pipeline; Zero-Shot vs Refit DQN; Verify-and-Retry vs Single Agent;
+  Low-Budget Regime; Held-Out Evaluation (24 tasks). Captions rewritten in technical wording. Behaviour unchanged. Runbook updated.

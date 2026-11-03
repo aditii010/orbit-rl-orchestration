@@ -235,16 +235,16 @@ _, TEST_RECS = split_tasks(list(records().values()))        # the 24 tasks the r
 REPLAY_DELAY = 0.0 if os.environ.get("ORBIT_FAST") else 0.7   # replay is instant, so pause a little to make it watchable
 # One-click shortcuts: (button text, task id, left corner, right corner, mode, budget, replay draw, what to start).
 # The four races were checked in advance: the retrained DQN wins each one (see docs/DEMO.md).
-PRESETS = [("Smart vs always-everyone", "code04", "Fixed pipeline", R_NAME, LIVE_Q, 0.8, 0, "race",
-            "Same coding task. The fixed pipeline calls every helper; the DQN calls only the ones it needs."),
-           ("Simulator-only vs retrained", "res01", "DQN (simulator only)", R_NAME, LIVE_Q, 0.8, 0, "race",
-            "A research question. The simulator-only DQN skips the Researcher and fails; the retrained one looks things up first."),
-           ("Catches a wrong answer", "code02", "Single agent", R_NAME, REPLAY, 0.8, 3, "race",
-            "A coding task whose first answer is wrong. The DQN checks, retries and fixes it; the single agent hands in the mistake."),
-           ("Short on money", "res01", "Fixed pipeline", R_NAME, REPLAY, 0.15, 0, "race",
-            "Only 0.15 to spend. The DQN drops the wasteful calls and still gets it right, for less."),
-           ("Scoreboard: 24 new tasks", "code04", "Fixed pipeline", R_NAME, REPLAY, 0.8, 0, "board",
-            "Races the two on 24 tasks the DQN never trained on, with a live tally.")]
+PRESETS = [("DQN vs Fixed Pipeline", "code04", "Fixed pipeline", R_NAME, LIVE_Q, 0.8, 0, "race",
+            "Coding task. Fixed pipeline (researcher, solver, verifier, summarizer) against the DQN's selective policy under the cost penalty."),
+           ("Zero-Shot vs Refit DQN", "res01", "DQN (simulator only)", R_NAME, LIVE_Q, 0.8, 0, "race",
+            "Research query. Simulator-trained policy applied zero-shot against the policy refit on recorded traces: the sim-to-real gap."),
+           ("Verify-and-Retry vs Single Agent", "code02", "Single agent", R_NAME, REPLAY, 0.8, 3, "race",
+            "Coding task whose first sample fails the verifier. The DQN retries on FAIL; the single-agent baseline returns the failed sample."),
+           ("Low-Budget Regime", "res01", "Fixed pipeline", R_NAME, REPLAY, 0.15, 0, "race",
+            "Budget capped at 0.15. The cost-aware policy drops redundant calls and stays correct at lower cost."),
+           ("Held-Out Evaluation (24 tasks)", "code04", "Fixed pipeline", R_NAME, REPLAY, 0.8, 0, "board",
+            "Both policies on 24 held-out tasks, 10 recorded draws each. Reports wins, ties, losses and mean advantage.")]
 
 
 def apply_preset(i):
