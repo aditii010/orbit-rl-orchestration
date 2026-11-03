@@ -2,6 +2,7 @@
 Desktop layout: frosted-glass cards on a gradient, a left rail with the controls, a right stage with the live run and the comparison."""
 import os
 import sys
+import urllib.error
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -10,6 +11,7 @@ import streamlit as st
 
 from app.cards import AGENT, step_card
 from app.engine import build_controllers, custom_task, run_live, run_replay
+from app.results_data import ABLATE, REAL, SHIFT, SIM, SIM_BLIND
 from llm.client import LLM
 from llm.tasks import all_tasks
 from llm.trace_env import load_cache
@@ -90,6 +92,14 @@ div[data-testid="stProgress"] p { font-size: 0.9rem !important; }
   padding: 2px 8px; border-radius: 2px; margin-bottom: 8px; }
 .callout { border-left: 2px solid #5E6FA8; padding: 2px 0 2px 14px; margin-top: 12px; font-size: 0.93rem; line-height: 1.5; color: #2B373B; }
 .empty { text-align: center; color: #47565A; font-size: 1rem; padding: 26px 20px 30px; border: 1px dashed rgba(43,55,59,0.45); border-radius: 2px; }
+button[kind="secondary"] { border: 1px solid rgba(43,55,59,0.45); border-radius: 2px; background: rgba(255,255,255,0.45); color: #2B373B; font-size: 0.82rem;
+  font-weight: 600; padding: 4px 8px; line-height: 1.25; min-height: 2.6rem; }
+button[kind="secondary"]:hover { background: #DBDE70; border-color: #2B373B; color: #2B373B; }
+.qd { letter-spacing: 0.22em; text-transform: uppercase; font-size: 0.74rem; font-weight: 700; color: #47565A; margin: 4px 0 6px; }
+.bars { margin: 8px 0 14px; } .brow { display: flex; align-items: center; margin: 7px 0; }
+.blab { width: 38%; text-align: right; padding-right: 16px; font-size: 0.93rem; line-height: 1.25; color: #2B373B; }
+.btrack { flex: 1; display: flex; align-items: center; } .bfill { height: 26px; border-radius: 1px; }
+.bval { margin-left: 10px; font-size: 0.92rem; font-weight: 600; color: #2B373B; }
 </style>""", unsafe_allow_html=True)
 
 
@@ -139,6 +149,36 @@ def run_episode(task, ctrl, mode, budget, draw):
     return run_live(task, ctrl, llm, budget=budget)
 
 
+def safe_events(task, ctrl, mode, budget, draw):
+    """run_episode with a friendly message instead of a traceback when a model is unreachable."""
+    try:
+        yield from run_episode(task, ctrl, mode, budget, draw)
+    except Exception as e:                                        # noqa: BLE001 (show any failure to the user)
+        if type(e).__name__ in ("StopException", "RerunException"):
+            raise
+        if isinstance(e, urllib.error.URLError):
+            st.error("Could not reach the model. If you chose Ollama, open the Ollama app and try again. "
+                     "Or switch to **Replay** in box 03, which needs no model.")
+        elif type(e).__name__ == "BudgetExceeded" or "429" in str(e):
+            st.error("The Groq free limit was hit. Switch to Ollama or Replay in box 03.")
+        else:
+            st.error(f"Something went wrong: {e}. Switching to **Replay** in box 03 always works.")
+        st.stop()
+
+
+def bars(rows):
+    """Horizontal bars as HTML. rows = (label, value, highlight). The learned controller is dark slate, the rest soft grey-blue.
+    Bar length is proportional to |value|; the printed value keeps its sign."""
+    mx = max(abs(v) for _, v, _ in rows) or 1.0
+    out = []
+    for name, v, hl in rows:
+        w = max(1.5, 82 * abs(v) / mx)
+        out.append(f'<div class="brow"><div class="blab">{name}</div><div class="btrack">'
+                   f'<div class="bfill" style="width:{w:.1f}%;background:{"#47565A" if hl else "#ADB6CE"}"></div>'
+                   f'<span class="bval">{v:+.3f}</span></div></div>')
+    return '<div class="bars">' + "".join(out) + "</div>"
+
+
 # ---------------------------------------------------------------- page
 CS = controllers()
 T = tasks()
@@ -168,6 +208,21 @@ def get_task():
     return T[pick.split("] ")[1].split(":")[0]]
 
 
+LIVE_Q, REPLAY = "Live - Ollama qwen2.5:3b (local)", "Replay (recorded, offline)"
+LABEL = {t["id"]: short(t) for t in T.values()}
+# One-click demo shortcuts: (button text, task id, controller, mode, budget, replay draw). Chosen by testing, see docs/DEMO.md.
+PRESETS = [("Coding: solve, check, stop", "code04", "DQN (refit on real runs)", LIVE_Q, 0.8, 0),
+           ("Research: simulator-only DQN fails", "res01", "DQN (simulator only)", LIVE_Q, 0.8, 0),
+           ("Research: retrained DQN succeeds", "res01", "DQN (refit on real runs)", LIVE_Q, 0.8, 0),
+           ("Failed check, then retry", "code02", "DQN (refit on real runs)", REPLAY, 0.8, 3),
+           ("Tight budget", "res01", "DQN (refit on real runs)", REPLAY, 0.15, 0)]
+
+
+def apply_preset(i):
+    _, tid, ctrl, mode_, bud, drw = PRESETS[i]
+    st.session_state.update(task=LABEL[tid], ctrl=ctrl, mode=mode_, budget=bud, draw=drw, autorun=True)
+
+
 def preview_html():
     """What the chosen task actually says, so the user sees it before running."""
     if pick == "(write your own)":
@@ -181,11 +236,22 @@ def preview_html():
     return f'<div class="preview"><span class="tchip">{t["type"]}</span>{body}</div>'
 
 
+st.session_state.setdefault("task", LABEL["res01"])
+st.session_state.setdefault("ctrl", "DQN (refit on real runs)")
+st.session_state.setdefault("mode", LIVE_Q)
+st.session_state.setdefault("budget", 0.8)
+st.session_state.setdefault("draw", 0)
+
+st.markdown('<div class="qd">Quick demo &mdash; one click sets everything and runs it</div>', unsafe_allow_html=True)
+for col, (i, preset) in zip(st.columns(len(PRESETS), gap="small"), enumerate(PRESETS)):
+    col.button(preset[0], key=f"preset{i}", on_click=apply_preset, args=(i,), use_container_width=True)
+st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+
 c1, c2, c3 = st.columns(3, gap="large")
 with c1:
     with st.container():
         st.markdown(panel_head("01", "Pick a task", "What should the helpers work on?"), unsafe_allow_html=True)
-        pick = st.selectbox("Task", ["(write your own)"] + [short(t) for t in T.values()], index=1, label_visibility="collapsed")
+        pick = st.selectbox("Task", ["(write your own)"] + [short(t) for t in T.values()], key="task", label_visibility="collapsed")
         typed = ""
         if pick == "(write your own)":
             typed = st.text_input("Your task (maths or research; research only knows our 16 invented documents)",
@@ -194,26 +260,25 @@ with c1:
 with c2:
     with st.container():
         st.markdown(panel_head("02", "Pick who decides", "Who chooses the next helper?"), unsafe_allow_html=True)
-        ctrl_name = st.radio("Controller", list(CS), index=list(CS).index("DQN (refit on real runs)"), key="ctrl",
-                             label_visibility="collapsed")
+        ctrl_name = st.radio("Controller", list(CS), key="ctrl", label_visibility="collapsed")
         st.markdown(f'<div class="callout"><b>{ctrl_name}</b><br>{CS[ctrl_name].blurb}</div>', unsafe_allow_html=True)
 with c3:
     with st.container():
         st.markdown(panel_head("03", "Set the rules and run", "Where it runs, how much it may spend."), unsafe_allow_html=True)
-        modes = ["Live - Ollama qwen2.5:3b (local)", "Replay (recorded, offline)"]
+        modes = [LIVE_Q, REPLAY]
         if has_groq:
             modes.insert(1, "Live - Groq gpt-oss-20b")
         mode = st.radio("Where do the helpers run?", modes, key="mode",
                         help="Live = a real AI model answers now. Replay = recorded answers, instant, works offline.")
         if mode.startswith("Live - Groq"):
             st.caption("The controllers were trained on qwen costs; costs are measured the same way (tokens) but not re-trained.")
-        budget = st.slider("Money budget", 0.2, 1.2, 0.8, 0.05, key="budget",
+        budget = st.slider("Money budget", min_value=0.1, max_value=1.2, step=0.05, key="budget",
                            help="One helper call costs about 0.02 to 0.15. When the money runs out, the task ends.")
         draw = 0
         if mode.startswith("Replay"):
-            draw = st.number_input("Replay draw (which recorded answers are used)", 0, 999, 0)
+            draw = st.number_input("Replay draw (which recorded answers are used)", min_value=0, max_value=999, key="draw")
         b1, b2 = st.columns(2)
-        run_clicked = b1.button("RUN", type="primary", key="run", use_container_width=True)
+        run_clicked = b1.button("RUN", type="primary", key="run", use_container_width=True) or st.session_state.pop("autorun", False)
         cmp_clicked = b2.button("COMPARE ALL", type="primary", key="cmp", use_container_width=True)
 
 st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
@@ -244,7 +309,7 @@ with st.container():
         trace = st.empty()
         cards, n_tok, final = [], 0, None
         ph[0].metric("Result", "Running...")
-        for ev in run_episode(task, ctrl, mode, budget, draw):
+        for ev in safe_events(task, ctrl, mode, budget, draw):
             if ev["kind"] == "step":
                 cards.append(step_card(ev, ctrl.agent is not None))
                 trace.markdown("".join(cards[:-1]) + cards[-1].replace('class="step"', 'class="step new"', 1), unsafe_allow_html=True)
@@ -270,7 +335,7 @@ with st.container():
         rows = []
         with st.spinner("Running..."):
             for name, ctrl in CS.items():
-                final = [e for e in run_episode(task, ctrl, mode, budget, draw) if e["kind"] == "final"][0]
+                final = [e for e in safe_events(task, ctrl, mode, budget, draw) if e["kind"] == "final"][0]
                 c = final["calls"]
                 rows.append({"Controller": name,
                              "Result": {True: "Correct", False: "Wrong", None: "n/a"}[final["correct"]],
@@ -280,3 +345,49 @@ with st.container():
         df = pd.DataFrame(rows)
         st.dataframe(df, hide_index=True, use_container_width=True)
         st.bar_chart(df, x="Controller", y="Cost", color="#47565A", horizontal=True)
+
+
+st.markdown("<div style='height:18px'></div>", unsafe_allow_html=True)
+with st.container():
+    st.markdown(panel_head("05", "What we measured", "Every number comes from a test written down before it was run. Logs are in docs/logs."),
+                unsafe_allow_html=True)
+    t_sim, t_rob, t_real, t_lim = st.tabs(["In the simulator", "Robustness and ablations", "On real language models", "Limitations and future work"])
+    with t_sim:
+        st.caption("10,000 unseen tasks. Return = answer quality minus a cost penalty.")
+        st.markdown(bars([(n, v, h) for n, v, h in SIM]), unsafe_allow_html=True)
+        st.markdown("**Take away:** calling every helper every time is the worst choice, and the learned controller beats the best "
+                    "hand-written rule by about 9%.")
+        st.markdown("##### Without difficulty and confidence (the signals real language models cannot give us)")
+        st.markdown(bars(SIM_BLIND), unsafe_allow_html=True)
+        st.markdown("Even blind, the learned controller beats the best hand-written rule by about 16%, and all 5 training runs agree.")
+    with t_rob:
+        st.markdown("##### Still ahead when the world changes")
+        st.dataframe(pd.DataFrame([(c, a, b, d, round(d - b, 3)) for c, a, b, d in SHIFT],
+                                  columns=["World", "Single agent", "Best rule", "DQN", "DQN minus rule"]),
+                     hide_index=True, use_container_width=True)
+        st.markdown("##### What each ingredient is worth (change in return vs the full DQN)")
+        st.markdown(bars([(n, v, False) for n, v in ABLATE]), unsafe_allow_html=True)
+        st.markdown("**Take away:** the cost penalty is by far the most important part. Without it the controller learns to call "
+                    "everything and the return collapses. The other signals each add only a little, because they overlap.")
+    with t_real:
+        st.caption("Recorded runs of two real models on 50 tasks (24 held out for testing). Higher is better.")
+        for model, (single, fixed, rule, dqn) in REAL.items():
+            st.markdown(f"##### {model}")
+            st.markdown(bars([("Single agent", single, False), ("Fixed pipeline", fixed, False),
+                                  ("Hand-tuned rule", rule, False), ("DQN retrained on real runs", dqn, True)]), unsafe_allow_html=True)
+        st.markdown("**Take away:** calling the right helper matters. On research questions, one or two researcher calls lift success "
+                    "from 0% to 43% (qwen) and to 93% (gpt-oss). The always-use-everyone pipeline loses on both models.")
+    with t_lim:
+        st.markdown("""**What this study does not show**
+- The real-model results come from recorded runs on 50 tasks (24 for testing) and two models, so the error bars are wide.
+- A well-tuned hand rule is as good as the retrained DQN on qwen (+0.576 vs +0.580) and slightly better on gpt-oss (+0.819 vs +0.770).
+- A DQN trained only in the simulator does not transfer to research questions: it never calls the researcher. Retraining on real runs fixes this.
+- A retry replays the next recorded answer; the effect of telling the solver why it was rejected is not captured.
+- The conversion from tokens to cost units is a choice we calibrated; a different choice would shift the best policy.
+
+**Future work**
+- More tasks and more models, to tighten the error bars.
+- Learn online from live model calls instead of recordings.
+- Make the simulator more realistic (randomise skill and cost) so a simulator-trained controller transfers without retraining.
+- A learned difficulty estimate, so the controller can use difficulty with real models.
+- Add an LLM-as-router baseline, with its routing calls counted in the cost.""")

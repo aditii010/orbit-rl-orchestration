@@ -387,3 +387,16 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   description of the selected one; 03 where it runs, budget, RUN and COMPARE ALL buttons), then one full-width "Watch it work" section.
   The Live/Compare tabs are gone: RUN shows the live trace, COMPARE ALL shows the table, below the controls.
 - Kept: animated orbit behind the title, astronomy icons, gradient background, palette. 72 tests pass.
+
+## 2026-11-03 Dashboard step 12: the whole demo made to work (docs/DEMO.md)
+- Tested live: qwen2.5:3b on 5 tasks x 3 controllers (all run, 0.3 to 8 s per episode, see transcript), Groq gpt-oss-20b on 2 tasks, and a
+  real browser click of the live "Research: retrained" shortcut. All worked.
+- Added: five one-click "Quick demo" shortcuts (set task, controller, mode, budget, replay draw and autorun). Moments were found by search,
+  not chosen by hand: code02 draw 3 in replay (first answer fails the check, controller retries, correct; single agent wrong); res01 at
+  budget 0.15 (3 steps, cost 0.117 vs 0.254 at 0.8). Friendly error boxes when Ollama or Groq is unreachable. run_demo.sh launcher
+  (starts Ollama, checks the model, warms it, restarts the dashboard).
+- Added section 05 "What we measured": simulator, robustness and ablation, real models, limitations and future work (negative real-model
+  findings sit in the limitations tab, as agreed). Every number comes from a log, tested in tests/test_results_data.py. New log
+  docs/logs/sim_baselines_test.log: fixed pipeline +0.0034, single +0.1528, difficulty-aware rule +0.1732 on 10,000 test tasks
+  (the fixed pipeline is far worse than I had remembered: it ties with doing nothing).
+- Charts are hand-built HTML bars because Streamlit's chart sizing squashed a two-bar chart. 77 tests pass.
