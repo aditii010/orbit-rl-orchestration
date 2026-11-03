@@ -32,3 +32,34 @@ def test_plain_words_describe_each_step_and_the_outcome():
     out = narrate(steps, final)
     assert "Solver</b> to write an answer" in out and "it <b>passed</b>" in out and "<b>correct</b>" in out and "0.110" in out
     assert "\n" not in out                      # single line, so markdown cannot cut it
+
+
+def _steps(actions_costs):
+    out, spent = [], 0.0
+    for i, (a, c) in enumerate(actions_costs, 1):
+        spent += c
+        out.append(dict(ev("x"), action=a, step=i, cost=c, spent=spent))
+    return out
+
+
+def test_race_chart_is_one_line_valid_svg_with_both_flags():
+    import xml.etree.ElementTree as ET
+    from app.cards import race_chart
+    a = _steps([("INVOKE_SOLVER", 0.1), ("STOP", 0.0)])
+    b = _steps([("INVOKE_RESEARCHER", 0.02), ("INVOKE_SOLVER", 0.1), ("INVOKE_VERIFIER", 0.02), ("STOP", 0.0)])
+    fa = {"answer": "x", "correct": False, "cost": 0.1}
+    fb = {"answer": "y", "correct": True, "cost": 0.14}
+    svg = race_chart(("Single agent", "DQN (refit)"), (a, b), (fa, fb), (-0.125, 0.825), "B", 0.8)
+    assert "\n" not in svg
+    ET.fromstring(svg.replace("&#10003;", "ok").replace("&#10007;", "x").replace("&#9733;", "*"))    # well-formed XML
+    assert "correct" in svg and "wrong" in svg and "WINNER" in svg and "Single agent" in svg
+
+
+def test_board_chart_is_one_line_valid_svg_and_sorted_best_first():
+    import xml.etree.ElementTree as ET
+    from app.cards import board_chart
+    rows = [("t1", "coding", 0.5, 0.4), ("t2", "coding", 0.1, 0.9), ("t3", "research", 0.3, 0.3)]
+    svg = board_chart(rows, ("Fixed pipeline", "DQN"))
+    assert "\n" not in svg
+    ET.fromstring(svg)
+    assert svg.index("t2") < svg.index("t3") < svg.index("t1")          # biggest right-corner advantage first

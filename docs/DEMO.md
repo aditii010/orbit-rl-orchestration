@@ -23,6 +23,8 @@ Use the **Quick demo** buttons. One click sets the task, the two corners, the bu
 | 6 | Change the **left corner** to *Tuned rule* and press **SCOREBOARD** | (only if asked) "Against a hand-tuned rule it does not win." | The page honestly reports the rule ahead, or too close to call. Do not hide this; it is in the Limitations tab. |
 | 7 | Scroll to **05 What we measured** | "In the simulator the DQN beats the best hand-written rule by about 9 percent, and by about 16 percent when it cannot see difficulty or confidence. On real models, calling the right helper matters; the limits are on the last tab." | Charts and the Limitations tab. |
 
+After every race the page draws **one combined picture**: money spent step by step for both corners (each dot is a helper call, the flag at the end says correct or wrong with the score). After the scoreboard it draws **one row per task** with both corners' scores. Point at these when you explain who won and why.
+
 Note the winner is decided by the real score (answer quality minus cost penalty, the same reward the DQN was trained on). The page never declares the DQN the winner unless the numbers say so.
 
 ## 2. What to expect (so nothing surprises you)

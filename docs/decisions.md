@@ -416,3 +416,10 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   changed now. This is stated in the Limitations tab.
 - Also: auto-scroll to the results (they used to appear below the screen unnoticed, so clicking seemed to do nothing), a Running banner, plain-words
   narration, a 0.7 s pause per step in replay so recordings look live (ORBIT_FAST=1 disables it for tests).
+
+## 2026-11-03 Dashboard step 14: combined result pictures
+- User asked for a graph at the end showing both corners together. After each race: one SVG with money spent so far per step for both
+  corners (dot per helper call in the helper's colour, budget line when it matters, flags at the right edge with correct/wrong and the score,
+  winner marked). After the scoreboard: a dumbbell chart, one row per unseen task, sorted by the right corner's advantage (olive = right better,
+  copper = left better), which also exposes the losses (e.g. code03). Both drawn as one-line inline SVG (tests: well-formed XML, one line).
+- Checked by screenshots of the retry race and the scoreboard. 87 tests pass.

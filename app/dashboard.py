@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
-from app.cards import AGENT, narrate, step_card
+from app.cards import AGENT, board_chart, narrate, race_chart, step_card
 from app.engine import board_scores, build_controllers, custom_task, lockstep, run_live, run_replay, score, verdict
 from app.results_data import ABLATE, REAL, SHIFT, SIM, SIM_BLIND
 from llm.client import LLM
@@ -118,6 +118,7 @@ button[kind="secondary"]:hover { background: #DBDE70; border-color: #2B373B; col
 .winner { border: 1px solid #2B373B; border-left: 8px solid #7C8120; background: rgba(255,255,255,0.7); padding: 14px 18px; margin: 16px 0 10px; font-size: 1.15rem; line-height: 1.45; }
 .wsub { font-size: 0.88rem; color: #47565A; margin-top: 6px; }
 .tally { display: flex; gap: 28px; flex-wrap: wrap; font-size: 1.05rem; padding: 6px 0 10px; } .tally .of { margin-left: auto; color: #47565A; }
+.rchart { width: 100%; max-width: 1080px; height: auto; display: block; margin: 6px auto 12px; }
 </style>""", unsafe_allow_html=True)
 
 
@@ -368,6 +369,11 @@ def do_race(task):
                f"{left_name} {sa:+.2f}, {right_name} {sb:+.2f}.")
     st.markdown(f'<div class="winner">{msg}<div class="wsub">One task is a small sample. Press SCOREBOARD to race the same two '
                 f'on {len(TEST_RECS)} tasks the controller never trained on.</div></div>', unsafe_allow_html=True)
+    st.markdown("##### The race in one picture")
+    st.caption("Each dot is one helper call, coloured by helper. The line is money spent so far, so lower is cheaper. "
+               "The flag at the end says whether the final answer was right, and the score.")
+    st.markdown(race_chart((left_name, right_name), (ui["A"]["steps"], ui["B"]["steps"]), (fa, fb), (sa, sb), v, budget),
+                unsafe_allow_html=True)
     if sa is not None:
         st.markdown(bars([(left_name, sa, v == "A"), (right_name, sb, v == "B")], fmt="{:+.2f}"), unsafe_allow_html=True)
     with st.expander("See every call in detail (and the DQN's scores)"):
@@ -419,6 +425,9 @@ def do_board():
     st.markdown(bars([(left_name, float(a_sc.mean()), False), (right_name, float(b_sc.mean()), True)]), unsafe_allow_html=True)
     st.markdown("**Average cost per task** (lower is cheaper)")
     st.markdown(bars([(left_name, float(a_co.mean()), False), (right_name, float(b_co.mean()), True)], fmt="{:.3f}"), unsafe_allow_html=True)
+    st.markdown("##### Every task, left against right")
+    st.markdown(board_chart([(r["id"], r["type"], float(a), float(b)) for r, a, b in zip(TEST_RECS, a_sc, b_sc)],
+                            (left_name, right_name)), unsafe_allow_html=True)
     with st.expander("Task by task"):
         st.dataframe(pd.DataFrame({"Task": [r["id"] for r in TEST_RECS], "Type": [r["type"] for r in TEST_RECS],
                                    left_name: a_sc.round(3), right_name: b_sc.round(3),
