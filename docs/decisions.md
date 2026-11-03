@@ -357,3 +357,9 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 - Page background is a diagonal gradient in the palette (pale clear blue to soft beige). Hero, panel headers and flow boxes use a lighter
   blue gradient (navy #1C2A82 to clear blue #3F5FB0) instead of flat dark navy. Interpreted "the blue around text" as these bands; ask if
   the user meant something else. Tagline under ORBIT is Cormorant Garamond italic (a display-style face, used for heading text only).
+
+## 2026-11-03 Dashboard step 8: new palette ("Rich Beige Complementary") and stronger gradient
+- User replaced the palette: Moist Gold #DBDE70, Cuddle #BECAE9, Orchid Hue #E2E99C, Asagi Koi #47565A, Old World #ADB6CE.
+- Page gradient (periwinkle to yellow-green) is much stronger; hero and panel headers are slate (Asagi Koi) with Orchid Hue titles and
+  Moist Gold rules, numbers and buttons; agent colours re-derived from the palette (olive verifier, slate solver, periwinkle researcher).
+  Text colour is a darker slate (#2B373B) for contrast. Checked by screenshot.

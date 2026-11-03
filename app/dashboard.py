@@ -1,5 +1,5 @@
 """ORBIT dashboard. Run from the project root:  streamlit run app/dashboard.py
-Desktop layout: navy hero band, a left rail with the controls, a right stage with the live run and the comparison."""
+Desktop layout: slate hero band, a left rail with the controls, a right stage with the live run and the comparison."""
 import html
 import os
 import sys
@@ -15,68 +15,71 @@ from llm.tasks import all_tasks
 from llm.trace_env import load_cache
 
 st.set_page_config(page_title="ORBIT", layout="wide", initial_sidebar_state="collapsed")
-# Palette (from the user's reference): navy #0B0B52, soft beige #F6E4C4, clear blue #7B93CC, gold #9B7B2E.
+# Palette (user's 'Rich Beige Complementary'): Moist Gold #DBDE70, Cuddle #BECAE9, Orchid Hue #E2E99C, Asagi Koi #47565A, Old World #ADB6CE.
 # Fonts: Bodoni Moda for headings only (free lookalike of the user's Amethyst); Inter for all other text.
-AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#4F6FB8"), "INVOKE_SOLVER": ("Solver", "#0B0B52"),
-         "INVOKE_VERIFIER": ("Verifier", "#9B7B2E"), "INVOKE_SUMMARIZER": ("Summarizer", "#5B4B8A"),
-         "RETRY_SOLVER": ("Solver (retry)", "#A5601F"), "STOP": ("STOP", "#6B6B6B")}
-HELPERS = [("Researcher", "#4F6FB8", "looks up facts"), ("Solver", "#0B0B52", "writes the answer"),
-           ("Verifier", "#9B7B2E", "checks it"), ("Summarizer", "#5B4B8A", "tidies it"), ("STOP", "#6B6B6B", "hands it in")]
+AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#5E6FA8"), "INVOKE_SOLVER": ("Solver", "#47565A"),
+         "INVOKE_VERIFIER": ("Verifier", "#7C8120"), "INVOKE_SUMMARIZER": ("Summarizer", "#7A6A8F"),
+         "RETRY_SOLVER": ("Solver (retry)", "#A5601F"), "STOP": ("STOP", "#7D8A8E")}
+HELPERS = [("Researcher", "#5E6FA8", "looks up facts"), ("Solver", "#47565A", "writes the answer"),
+           ("Verifier", "#7C8120", "checks it"), ("Summarizer", "#7A6A8F", "tidies it"), ("STOP", "#7D8A8E", "hands it in")]
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Inter:wght@400;500;600;700&display=swap');
 html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp button, .stApp input, .stApp textarea, .stApp summary {
   font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif !important; }
 .stApp span[data-testid="stIconMaterial"], .stApp .material-symbols-rounded { font-family: 'Material Symbols Rounded' !important; }
-.stApp { background: linear-gradient(135deg, #D3DFF5 0%, #E6EDF9 38%, #F3EEE6 72%, #F4E6CB 100%) fixed; color: #0B0B52; font-size: 1rem; }
+/* palette: Asagi Koi #47565A (slate), Cuddle #BECAE9, Old World #ADB6CE, Orchid Hue #E2E99C, Moist Gold #DBDE70 */
+.stApp { background: linear-gradient(135deg, #AEBCE6 0%, #C9D3EE 28%, #E2E99C 68%, #D3D75A 100%) fixed; color: #2B373B; font-size: 1rem; }
 .block-container { max-width: none !important; padding: 1.2rem 2.6rem 3rem !important; }
 header[data-testid="stHeader"] { background: transparent; } footer, [data-testid="stToolbar"] { visibility: hidden; }
-[data-testid="stSidebar"] { background: #0B0B52; }
-[data-testid="stSidebar"] * { color: #F6E4C4 !important; }
+[data-testid="stSidebar"] { background: #47565A; }
+[data-testid="stSidebar"] * { color: #E2E99C !important; }
 .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp .hero-title, .stApp .ph-t { font-family: 'Bodoni Moda', Georgia, serif !important; }
-.stApp h4 { color: #0B0B52; }
+.stApp h4 { color: #2B373B; }
 [data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 0.98rem !important; font-weight: 600; }
-[data-testid="stCaptionContainer"] p { font-size: 0.9rem !important; color: #44447a; }
-/* hero: full-width navy band, centred heading, flowchart below */
-.hero { display: flex; flex-direction: column; align-items: center; text-align: center; background: linear-gradient(135deg, #1C2A82 0%, #2E479C 55%, #3F5FB0 100%); color: #F6E4C4;
-  padding: 38px 46px 34px; border-radius: 4px; border-bottom: 4px solid #9B7B2E; margin-bottom: 22px; }
-.eyebrow { letter-spacing: 0.34em; text-transform: uppercase; font-size: 0.9rem; color: #C9A24A; font-weight: 600; }
-.hero-title { font-size: 8.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 8px 0 0; color: #F6E4C4; }
-.gold-rule { width: 220px; height: 2px; background: #9B7B2E; margin: 18px auto 18px; }
-.stApp .tag { font-family: 'Cormorant Garamond', Georgia, serif !important; font-style: italic; font-weight: 600; font-size: 2.1rem; color: #F6E4C4; line-height: 1.25; max-width: 820px; letter-spacing: 0.01em; }
+[data-testid="stCaptionContainer"] p { font-size: 0.9rem !important; color: #47565A; }
+/* hero: full-width slate band, centred heading, flowchart below */
+.hero { display: flex; flex-direction: column; align-items: center; text-align: center; color: #E2E99C;
+  background: linear-gradient(135deg, #36444A 0%, #47565A 50%, #63777C 100%);
+  padding: 38px 46px 34px; border-radius: 4px; border-bottom: 5px solid #DBDE70; margin-bottom: 22px; }
+.eyebrow { letter-spacing: 0.34em; text-transform: uppercase; font-size: 0.9rem; color: #DBDE70; font-weight: 600; }
+.hero-title { font-size: 8.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 8px 0 0; color: #E2E99C; }
+.gold-rule { width: 220px; height: 2px; background: #DBDE70; margin: 18px auto 18px; }
+.stApp .tag { font-family: 'Cormorant Garamond', Georgia, serif !important; font-style: italic; font-weight: 600; font-size: 2.1rem;
+  color: #E2E99C; line-height: 1.25; max-width: 820px; letter-spacing: 0.01em; }
 .flow { display: flex; align-items: stretch; justify-content: center; gap: 0; margin-top: 30px; width: 100%; max-width: 1100px; }
-.node { flex: 1; background: rgba(255,255,255,0.13); border: 1px solid #A9BBE6; border-top: 4px solid #9B7B2E; border-radius: 3px;
+.node { flex: 1; background: rgba(190,202,233,0.16); border: 1px solid #BECAE9; border-top: 4px solid #DBDE70; border-radius: 3px;
   padding: 16px 20px; text-align: center; }
-.node b { display: block; font-size: 1.2rem; color: #F6E4C4; margin-bottom: 4px; }
-.node span { color: #DCE4F7; font-size: 0.95rem; line-height: 1.35; }
+.node b { display: block; font-size: 1.2rem; color: #E2E99C; margin-bottom: 4px; }
+.node span { color: #E4E9F7; font-size: 0.95rem; line-height: 1.35; }
 .arrow { flex: none; width: 74px; display: flex; align-items: center; justify-content: center; }
-/* panels: navy header strip + white body */
-div[data-testid="stVerticalBlockBorderWrapper"] { background: #FFFFFF; border: 1px solid #B9C6E4 !important; border-radius: 4px; }
-.panelhead { margin: -1rem -1rem 0.9rem -1rem; background: linear-gradient(135deg, #1C2A82, #34509F); color: #F6E4C4; padding: 10px 18px; display: flex; align-items: center;
-  gap: 14px; border-bottom: 3px solid #9B7B2E; border-radius: 3px 3px 0 0; }
-.num { width: 34px; height: 34px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
+/* panels: slate header strip + white body */
+div[data-testid="stVerticalBlockBorderWrapper"] { background: rgba(255,255,255,0.9); border: 1px solid #ADB6CE !important; border-radius: 4px; }
+.panelhead { margin: -1rem -1rem 0.9rem -1rem; background: linear-gradient(135deg, #36444A, #5A6C71); padding: 10px 18px;
+  display: flex; align-items: center; gap: 14px; border-bottom: 4px solid #DBDE70; border-radius: 3px 3px 0 0; }
+.num { width: 34px; height: 34px; border-radius: 50%; background: #DBDE70; color: #2B373B; display: flex; align-items: center;
   justify-content: center; font-weight: 700; flex: none; }
-.ph-t { font-size: 1.5rem; font-weight: 700; line-height: 1.1; color: #F6E4C4; } .ph-s { font-size: 0.86rem; color: #B9C6E4; }
+.ph-t { font-size: 1.5rem; font-weight: 700; line-height: 1.1; color: #E2E99C; } .ph-s { font-size: 0.86rem; color: #BECAE9; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; font-size: 0.92rem; }
 .badge { display: inline-block; padding: 2px 12px; border-radius: 3px; color: #fff; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.02em; }
-.step { background: #fff; border: 1px solid #C9D3EA; border-left: 6px solid #0B0B52; border-radius: 3px; padding: 10px 16px; margin: 0 0 10px; }
-.step .meta { margin-left: 10px; color: #33337a; font-size: 0.9rem; }
+.step { background: #fff; border: 1px solid #C4CCE0; border-left: 6px solid #47565A; border-radius: 3px; padding: 10px 16px; margin: 0 0 10px; }
+.step .meta { margin-left: 10px; color: #47565A; font-size: 0.9rem; }
 .step pre { margin: 8px 0 4px; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, Menlo, monospace !important;
-  font-size: 0.92rem; background: #F3F6FC; padding: 8px 10px; border-radius: 2px; color: #0B0B52; }
-.step summary { cursor: pointer; color: #3F5AA8; font-weight: 700; margin-top: 4px; }
+  font-size: 0.92rem; background: #F1F4FA; padding: 8px 10px; border-radius: 2px; color: #2B373B; }
+.step summary { cursor: pointer; color: #47608F; font-weight: 700; margin-top: 4px; }
 .qrow { display: flex; align-items: center; margin: 3px 0; font-size: 0.88rem; }
-.qname { width: 120px; } .qbar { height: 12px; border-radius: 2px; margin-right: 8px; } .qoff { color: #8a8aa8; font-style: italic; }
-div[data-testid="stMetric"] { background: #F3F6FC; border: 1px solid #C9D3EA; border-top: 4px solid #9B7B2E; padding: 8px 14px; border-radius: 3px; }
-div[data-testid="stMetricValue"] { color: #0B0B52; font-size: 1.6rem; font-weight: 700; }
+.qname { width: 120px; } .qbar { height: 12px; border-radius: 2px; margin-right: 8px; } .qoff { color: #7D8A8E; font-style: italic; }
+div[data-testid="stMetric"] { background: #F1F4FA; border: 1px solid #C4CCE0; border-top: 4px solid #DBDE70; padding: 8px 14px; border-radius: 3px; }
+div[data-testid="stMetricValue"] { color: #2B373B; font-size: 1.6rem; font-weight: 700; }
 div[data-testid="stMetricValue"] > div { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
-button[kind="primary"] { background: #9B7B2E; border: 1px solid #9B7B2E; color: #fff; letter-spacing: 0.08em; font-weight: 600; font-size: 0.95rem; padding: 4px 26px; }
-button[kind="primary"]:hover { background: #0B0B52; border-color: #0B0B52; color: #F6E4C4; }
+button[kind="primary"] { background: #DBDE70; border: 1px solid #47565A; color: #2B373B; letter-spacing: 0.08em; font-weight: 700; font-size: 0.95rem; padding: 4px 26px; }
+button[kind="primary"]:hover { background: #47565A; border-color: #47565A; color: #E2E99C; }
 .stTabs [data-baseweb="tab"] p { font-size: 1.02rem !important; font-weight: 600; }
-.stTabs [aria-selected="true"] p { color: #0B0B52; }
-.stTabs [data-baseweb="tab-highlight"] { background: #9B7B2E; height: 3px; }
+.stTabs [aria-selected="true"] p { color: #2B373B; }
+.stTabs [data-baseweb="tab-highlight"] { background: #7C8120; height: 3px; }
 .stApp [data-testid="stSelectbox"] div { font-size: 0.95rem; }
-div[data-testid="stProgress"] > div > div > div { background: #4F6FB8; }
+div[data-testid="stProgress"] > div > div > div { background: #8E9A2A; }
 .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"], .stApp [data-testid="stRadio"] [data-testid="stCaptionContainer"] * {
-  color: #33337a !important; opacity: 1 !important; font-size: 0.9rem !important; }
+  color: #47565A !important; opacity: 1 !important; font-size: 0.9rem !important; }
 .stApp [data-testid="stCode"] code, .stApp [data-testid="stCode"] pre { font-size: 0.95rem !important; }
 div[data-testid="stProgress"] p { font-size: 0.9rem !important; }
 </style>""", unsafe_allow_html=True)
@@ -175,8 +178,8 @@ st.markdown("""<div class="hero"><div class="eyebrow">Reinforcement learning &mi
 <div class="hero-title">ORBIT</div><div class="gold-rule"></div>
 <div class="tag">A learned controller that decides which AI helper to call next, and when to stop.</div>
 <div class="flow">
-<div class="node"><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#C9A24A" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#C9A24A"/></svg></div>
-<div class="node"><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#C9A24A" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#C9A24A"/></svg></div>
+<div class="node"><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#DBDE70" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#DBDE70"/></svg></div>
+<div class="node"><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#DBDE70" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#DBDE70"/></svg></div>
 <div class="node"><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div>
 </div></div>""", unsafe_allow_html=True)
 
@@ -287,4 +290,4 @@ with stage:
                                      "Calls (res/sol/ver/sum)": f"{c['researcher']}/{c['solver']}/{c['verifier']}/{c['summarizer']}"})
                 df = pd.DataFrame(rows)
                 st.dataframe(df, hide_index=True, use_container_width=True)
-                st.bar_chart(df, x="Controller", y="Cost", color="#0B0B52", horizontal=True)
+                st.bar_chart(df, x="Controller", y="Cost", color="#47565A", horizontal=True)
