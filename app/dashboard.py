@@ -20,7 +20,7 @@ st.set_page_config(page_title="ORBIT", layout="wide", initial_sidebar_state="col
 HELPERS = [("Researcher", "#5E6FA8", "looks up facts"), ("Solver", "#47565A", "writes the answer"),
            ("Verifier", "#7C8120", "checks it"), ("Summarizer", "#7A6A8F", "tidies it"), ("STOP", "#7D8A8E", "hands it in")]
 st.markdown("""<style>
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap');
 html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp button, .stApp input, .stApp textarea, .stApp summary {
   font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif !important; }
 .stApp span[data-testid="stIconMaterial"], .stApp .material-symbols-rounded { font-family: 'Material Symbols Rounded' !important; }
@@ -42,13 +42,13 @@ header[data-testid="stHeader"] { background: transparent; } footer, [data-testid
 .hero-title { font-size: 9.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 14px 0 0;
   color: #36444A; background: linear-gradient(135deg, #2B373B 10%, #47565A 55%, #5E6FA8 100%); -webkit-background-clip: text;
   background-clip: text; -webkit-text-fill-color: transparent; }
-.stApp .tag { font-family: 'Cormorant Garamond', Georgia, serif !important; font-style: italic; font-weight: 600; font-size: 2.3rem;
-  color: #36444A; line-height: 1.25; max-width: 860px; margin-top: 6px; }
+.stApp .tag { font-family: 'Instrument Serif', Georgia, serif !important; font-style: italic; font-weight: 400; font-size: 1.85rem;
+  color: #36444A; line-height: 1.2; max-width: 980px; margin-top: 8px; letter-spacing: 0.012em; text-wrap: balance; }
 .flow { display: flex; align-items: stretch; justify-content: center; margin-top: 30px; width: 100%; max-width: 1150px; }
 .node { flex: 1; background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.8); border-radius: 18px; padding: 18px 22px;
   text-align: center; box-shadow: 0 10px 30px rgba(71,86,90,0.14); backdrop-filter: blur(12px); transition: transform .2s, box-shadow .2s; }
 .node:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(71,86,90,0.2); }
-.ico { width: 46px; height: 46px; margin: 0 auto 8px; border-radius: 50%; background: #47565A; display: flex; align-items: center; justify-content: center; }
+.ico { width: 76px; height: 76px; margin: 0 auto 10px; border-radius: 50%; background: rgba(255,255,255,0.65); border: 1px solid rgba(71,86,90,0.22); display: flex; align-items: center; justify-content: center; }
 .node b { display: block; font-size: 1.15rem; color: #2B373B; margin-bottom: 3px; }
 .node span { color: #47565A; font-size: 0.93rem; line-height: 1.35; }
 .arrow { flex: none; width: 70px; display: flex; align-items: center; justify-content: center; }
@@ -156,9 +156,9 @@ st.markdown("""<div class="hero"><svg class="orbit" viewBox="0 0 1000 260" prese
 <div class="hero-title">ORBIT</div>
 <div class="tag">A learned controller that decides which AI helper to call next, and when to stop.</div>
 <div class="flow">
-<div class="node"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2E99C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></div><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="54" height="22" viewBox="0 0 54 22"><line x1="2" y1="11" x2="42" y2="11" stroke="#47565A" stroke-width="2.4" stroke-dasharray="1 5" stroke-linecap="round"/><polygon points="40,4 53,11 40,18" fill="#47565A"/></svg></div>
-<div class="node"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2E99C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 9-9 9-9-9z"/></svg></div><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="54" height="22" viewBox="0 0 54 22"><line x1="2" y1="11" x2="42" y2="11" stroke="#47565A" stroke-width="2.4" stroke-dasharray="1 5" stroke-linecap="round"/><polygon points="40,4 53,11 40,18" fill="#47565A"/></svg></div>
-<div class="node"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2E99C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div>
+<div class="node"><div class="ico"><svg width="54" height="54" viewBox="0 0 64 64" fill="none"><g transform="rotate(-18 32 32)"><path d="M5 32 A27 8.5 0 0 1 59 32" stroke="#2B373B" stroke-width="1.5"/></g><circle cx="32" cy="32" r="13" fill="#DBDE70" stroke="#2B373B" stroke-width="1.5"/><path d="M20.5 27 Q32 23 43.5 27 M19.5 33 Q32 37 44.5 33" stroke="#2B373B" stroke-width="1" opacity="0.7"/><g transform="rotate(-18 32 32)"><path d="M5 32 A27 8.5 0 0 0 59 32" stroke="#2B373B" stroke-width="1.5"/></g><circle cx="55" cy="14" r="1.6" fill="#2B373B"/><circle cx="10" cy="52" r="1.2" fill="#2B373B"/></svg></div><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="54" height="22" viewBox="0 0 54 22"><line x1="2" y1="11" x2="42" y2="11" stroke="#47565A" stroke-width="2.4" stroke-dasharray="1 5" stroke-linecap="round"/><polygon points="40,4 53,11 40,18" fill="#47565A"/></svg></div>
+<div class="node"><div class="ico"><svg width="54" height="54" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="25" stroke="#2B373B" stroke-width="1.5"/><circle cx="32" cy="32" r="21" stroke="#2B373B" stroke-width="0.6" stroke-dasharray="1.5 3"/><path d="M32 4v6M32 54v6M4 32h6M54 32h6" stroke="#2B373B" stroke-width="1.5" stroke-linecap="round"/><g transform="rotate(38 32 32)"><polygon points="32,12 37.5,32 26.5,32" fill="#DBDE70" stroke="#2B373B" stroke-width="1.4" stroke-linejoin="round"/><polygon points="26.5,32 37.5,32 32,52" fill="#5E6FA8" fill-opacity="0.85" stroke="#2B373B" stroke-width="1.4" stroke-linejoin="round"/></g><circle cx="32" cy="32" r="2.4" fill="#2B373B"/></svg></div><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="54" height="22" viewBox="0 0 54 22"><line x1="2" y1="11" x2="42" y2="11" stroke="#47565A" stroke-width="2.4" stroke-dasharray="1 5" stroke-linecap="round"/><polygon points="40,4 53,11 40,18" fill="#47565A"/></svg></div>
+<div class="node"><div class="ico"><svg width="54" height="54" viewBox="0 0 64 64" fill="none"><path d="M9 46 L23 27 L37 39 L54 15" stroke="#2B373B" stroke-width="1.3" stroke-dasharray="2 3" stroke-linecap="round"/><circle cx="9" cy="46" r="3.2" fill="#2B373B"/><circle cx="23" cy="27" r="3.2" fill="#2B373B"/><circle cx="37" cy="39" r="3.2" fill="#5E6FA8" stroke="#2B373B" stroke-width="1.2"/><circle cx="54" cy="15" r="8.5" stroke="#2B373B" stroke-width="1.2"/><circle cx="54" cy="15" r="4.6" fill="#DBDE70" stroke="#2B373B" stroke-width="1.2"/><circle cx="14" cy="14" r="1.2" fill="#2B373B"/><circle cx="46" cy="54" r="1.2" fill="#2B373B"/><circle cx="58" cy="40" r="1" fill="#2B373B"/></svg></div><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div>
 </div></div>""", unsafe_allow_html=True)
 
 rail, stage = st.columns([1, 2.1], gap="large")

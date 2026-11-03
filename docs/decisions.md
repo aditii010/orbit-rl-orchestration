@@ -373,3 +373,8 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   line (newlines become &#10;) in a div with white-space: pre-wrap. Moved card code to app/cards.py with tests/test_cards.py
   (one line, HTML escaped, scores fold-out only for DQN). 72 tests pass.
 - Lesson: Streamlit caches imported modules, so after editing app/cards.py or app/engine.py restart the server (pkill -f "streamlit run").
+
+## 2026-11-03 Dashboard step 10: tagline font and icons
+- Tagline now Instrument Serif italic at 1.85rem on one line (first try at 2.9rem was too big, per user). Flowchart icons redrawn as
+  astronomy-style line art (ringed planet for the task, compass for the decision, constellation path with a highlighted end point for the
+  trace) instead of generic UI icons, because the user said the earlier ones looked AI-generic.
