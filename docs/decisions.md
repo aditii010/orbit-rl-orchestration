@@ -378,3 +378,12 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 - Tagline now Instrument Serif italic at 1.85rem on one line (first try at 2.9rem was too big, per user). Flowchart icons redrawn as
   astronomy-style line art (ringed planet for the task, compass for the decision, constellation path with a highlighted end point for the
   trace) instead of generic UI icons, because the user said the earlier ones looked AI-generic.
+
+## 2026-11-03 Dashboard step 11: layout rearranged, boxes removed (flat editorial style)
+- User feedback on the screenshot: arrange it better; then "the boxes look ai-ish". The rounded frosted-glass cards with shadows read as
+  generic AI-made UI. New design: no card boxes at all. Sections are separated by hairline rules with big Bodoni numerals (01 to 04),
+  elements are flat and square-cornered (2px), metrics are large numerals under a rule, trace entries are flat rows with a coloured edge.
+- Layout: three equal columns under the three flowchart steps (01 task with a preview of the full task text; 02 controller with the
+  description of the selected one; 03 where it runs, budget, RUN and COMPARE ALL buttons), then one full-width "Watch it work" section.
+  The Live/Compare tabs are gone: RUN shows the live trace, COMPARE ALL shows the table, below the controls.
+- Kept: animated orbit behind the title, astronomy icons, gradient background, palette. 72 tests pass.
