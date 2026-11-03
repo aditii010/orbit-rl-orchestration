@@ -23,11 +23,11 @@ AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#4F6FB8"), "INVOKE_SOLVER": ("Solv
 HELPERS = [("Researcher", "#4F6FB8", "looks up facts"), ("Solver", "#0B0B52", "writes the answer"),
            ("Verifier", "#9B7B2E", "checks it"), ("Summarizer", "#5B4B8A", "tidies it"), ("STOP", "#6B6B6B", "hands it in")]
 st.markdown("""<style>
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Inter:wght@400;500;600;700&display=swap');
 html, body, .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp button, .stApp input, .stApp textarea, .stApp summary {
   font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif !important; }
 .stApp span[data-testid="stIconMaterial"], .stApp .material-symbols-rounded { font-family: 'Material Symbols Rounded' !important; }
-.stApp { background: #EEF2FA; color: #0B0B52; font-size: 1rem; }
+.stApp { background: linear-gradient(135deg, #D3DFF5 0%, #E6EDF9 38%, #F3EEE6 72%, #F4E6CB 100%) fixed; color: #0B0B52; font-size: 1rem; }
 .block-container { max-width: none !important; padding: 1.2rem 2.6rem 3rem !important; }
 header[data-testid="stHeader"] { background: transparent; } footer, [data-testid="stToolbar"] { visibility: hidden; }
 [data-testid="stSidebar"] { background: #0B0B52; }
@@ -37,21 +37,21 @@ header[data-testid="stHeader"] { background: transparent; } footer, [data-testid
 [data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 0.98rem !important; font-weight: 600; }
 [data-testid="stCaptionContainer"] p { font-size: 0.9rem !important; color: #44447a; }
 /* hero: full-width navy band, centred heading, flowchart below */
-.hero { display: flex; flex-direction: column; align-items: center; text-align: center; background: #0B0B52; color: #F6E4C4;
+.hero { display: flex; flex-direction: column; align-items: center; text-align: center; background: linear-gradient(135deg, #1C2A82 0%, #2E479C 55%, #3F5FB0 100%); color: #F6E4C4;
   padding: 38px 46px 34px; border-radius: 4px; border-bottom: 4px solid #9B7B2E; margin-bottom: 22px; }
 .eyebrow { letter-spacing: 0.34em; text-transform: uppercase; font-size: 0.9rem; color: #C9A24A; font-weight: 600; }
 .hero-title { font-size: 8.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 8px 0 0; color: #F6E4C4; }
 .gold-rule { width: 220px; height: 2px; background: #9B7B2E; margin: 18px auto 18px; }
-.tag { font-size: 1.5rem; font-weight: 400; color: #DCE4F7; line-height: 1.4; max-width: 760px; }
+.stApp .tag { font-family: 'Cormorant Garamond', Georgia, serif !important; font-style: italic; font-weight: 600; font-size: 2.1rem; color: #F6E4C4; line-height: 1.25; max-width: 820px; letter-spacing: 0.01em; }
 .flow { display: flex; align-items: stretch; justify-content: center; gap: 0; margin-top: 30px; width: 100%; max-width: 1100px; }
-.node { flex: 1; background: rgba(123,147,204,0.16); border: 1px solid #7B93CC; border-top: 4px solid #9B7B2E; border-radius: 3px;
+.node { flex: 1; background: rgba(255,255,255,0.13); border: 1px solid #A9BBE6; border-top: 4px solid #9B7B2E; border-radius: 3px;
   padding: 16px 20px; text-align: center; }
 .node b { display: block; font-size: 1.2rem; color: #F6E4C4; margin-bottom: 4px; }
 .node span { color: #DCE4F7; font-size: 0.95rem; line-height: 1.35; }
 .arrow { flex: none; width: 74px; display: flex; align-items: center; justify-content: center; }
 /* panels: navy header strip + white body */
 div[data-testid="stVerticalBlockBorderWrapper"] { background: #FFFFFF; border: 1px solid #B9C6E4 !important; border-radius: 4px; }
-.panelhead { margin: -1rem -1rem 0.9rem -1rem; background: #0B0B52; color: #F6E4C4; padding: 10px 18px; display: flex; align-items: center;
+.panelhead { margin: -1rem -1rem 0.9rem -1rem; background: linear-gradient(135deg, #1C2A82, #34509F); color: #F6E4C4; padding: 10px 18px; display: flex; align-items: center;
   gap: 14px; border-bottom: 3px solid #9B7B2E; border-radius: 3px 3px 0 0; }
 .num { width: 34px; height: 34px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
   justify-content: center; font-weight: 700; flex: none; }

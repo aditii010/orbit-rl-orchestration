@@ -352,3 +352,8 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 - User feedback: heading centred and big; the three steps below it as a flowchart, not numbered boxes.
 - Hero is now a centred column (ORBIT at 8.5rem, gold rule, tagline) with three boxes joined by gold arrows underneath:
   Pick a task -> Pick who decides -> Watch it work. Checked by screenshot at 1600 px.
+
+## 2026-11-03 Dashboard step 7: gradient background, lighter blues, tagline font
+- Page background is a diagonal gradient in the palette (pale clear blue to soft beige). Hero, panel headers and flow boxes use a lighter
+  blue gradient (navy #1C2A82 to clear blue #3F5FB0) instead of flat dark navy. Interpreted "the blue around text" as these bands; ask if
+  the user meant something else. Tagline under ORBIT is Cormorant Garamond italic (a display-style face, used for heading text only).
