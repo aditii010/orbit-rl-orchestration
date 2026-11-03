@@ -325,3 +325,12 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 - Not built yet: Results tab (charts from the report), demo script, pre-demo checklist.
 - Test: Streamlit AppTest loads the page, runs replay mode, runs compare. 69 tests pass. Groq key is read from .env into the
   environment only, never shown.
+
+## 2026-11-03 Dashboard step 3: look and feel
+- Palette from the user's reference: navy #0B0B52, soft beige #F6E4C4, clear blue (#5673B5 for text-safe contrast), gold #9B7B2E.
+- Fonts: user's picks (Amethyst, Sapphire) are paid fonts, so Bodoni Moda (display) and Cormorant Garamond (text), free lookalikes from Google Fonts.
+  Needs internet for the fonts; offline it falls back to Georgia (still serif, still readable).
+- Layout: framed hero, three "how it works" cards, three numbered sections (Pick a task / Pick who decides / Run it), helper legend,
+  plain-words glossary in the sidebar. Radio options carry their one-line explanations.
+- Checked by screenshot (headless Chrome driven over CDP): home page, a replay run (research and coding), and the Compare tab.
+  Fixed: font override of headings, truncated "Correct" metric, default-blue chart (now navy, horizontal).
