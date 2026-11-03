@@ -36,19 +36,19 @@ header[data-testid="stHeader"] { background: transparent; } footer, [data-testid
 .stApp h4 { color: #0B0B52; }
 [data-testid="stRadio"] label p, [data-testid="stWidgetLabel"] p { font-size: 0.98rem !important; font-weight: 600; }
 [data-testid="stCaptionContainer"] p { font-size: 0.9rem !important; color: #44447a; }
-/* hero: full-width navy band */
-.hero { display: flex; align-items: center; justify-content: space-between; gap: 48px; background: #0B0B52; color: #F6E4C4;
-  padding: 30px 46px; border-radius: 4px; border-bottom: 4px solid #9B7B2E; margin-bottom: 22px; }
-.hero-l { flex: 1.15; } .hero-r { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-.eyebrow { letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.85rem; color: #C9A24A; font-weight: 700; }
-.hero-title { font-size: 5.2rem; font-weight: 700; letter-spacing: 0.2em; line-height: 1.0; margin: 6px 0 2px; color: #F6E4C4; }
-.gold-rule { width: 150px; height: 2px; background: #9B7B2E; margin: 12px 0 14px; }
-.tag { font-size: 1.3rem; font-weight: 400; color: #DCE4F7; line-height: 1.4; max-width: 620px; }
-.stepbox { display: flex; align-items: center; gap: 16px; background: rgba(123,147,204,0.18); border: 1px solid #7B93CC;
-  border-radius: 3px; padding: 10px 18px; }
-.stepn { width: 38px; height: 38px; border-radius: 50%; background: #9B7B2E; color: #fff; display: flex; align-items: center;
-  justify-content: center; font-weight: 700; flex: none; }
-.stepbox b { display: block; font-size: 1.05rem; color: #F6E4C4; } .stepbox span { color: #DCE4F7; font-size: 0.92rem; }
+/* hero: full-width navy band, centred heading, flowchart below */
+.hero { display: flex; flex-direction: column; align-items: center; text-align: center; background: #0B0B52; color: #F6E4C4;
+  padding: 38px 46px 34px; border-radius: 4px; border-bottom: 4px solid #9B7B2E; margin-bottom: 22px; }
+.eyebrow { letter-spacing: 0.34em; text-transform: uppercase; font-size: 0.9rem; color: #C9A24A; font-weight: 600; }
+.hero-title { font-size: 8.5rem; font-weight: 700; letter-spacing: 0.22em; padding-left: 0.22em; line-height: 1.0; margin: 8px 0 0; color: #F6E4C4; }
+.gold-rule { width: 220px; height: 2px; background: #9B7B2E; margin: 18px auto 18px; }
+.tag { font-size: 1.5rem; font-weight: 400; color: #DCE4F7; line-height: 1.4; max-width: 760px; }
+.flow { display: flex; align-items: stretch; justify-content: center; gap: 0; margin-top: 30px; width: 100%; max-width: 1100px; }
+.node { flex: 1; background: rgba(123,147,204,0.16); border: 1px solid #7B93CC; border-top: 4px solid #9B7B2E; border-radius: 3px;
+  padding: 16px 20px; text-align: center; }
+.node b { display: block; font-size: 1.2rem; color: #F6E4C4; margin-bottom: 4px; }
+.node span { color: #DCE4F7; font-size: 0.95rem; line-height: 1.35; }
+.arrow { flex: none; width: 74px; display: flex; align-items: center; justify-content: center; }
 /* panels: navy header strip + white body */
 div[data-testid="stVerticalBlockBorderWrapper"] { background: #FFFFFF; border: 1px solid #B9C6E4 !important; border-radius: 4px; }
 .panelhead { margin: -1rem -1rem 0.9rem -1rem; background: #0B0B52; color: #F6E4C4; padding: 10px 18px; display: flex; align-items: center;
@@ -171,13 +171,13 @@ with st.sidebar:
                 "**DQN**: the reinforcement-learning method. It learns by trial and error, rewarded for correct answers and "
                 "charged for cost.")
 
-st.markdown("""<div class="hero"><div class="hero-l"><div class="eyebrow">Reinforcement learning &middot; Multi-agent LLM orchestration</div>
+st.markdown("""<div class="hero"><div class="eyebrow">Reinforcement learning &middot; Multi-agent LLM orchestration</div>
 <div class="hero-title">ORBIT</div><div class="gold-rule"></div>
-<div class="tag">A learned controller that decides which AI helper to call next, and when to stop.</div></div>
-<div class="hero-r">
-<div class="stepbox"><div class="stepn">1</div><div><b>Pick a task</b><span>A coding, maths or research question.</span></div></div>
-<div class="stepbox"><div class="stepn">2</div><div><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div></div>
-<div class="stepbox"><div class="stepn">3</div><div><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div></div>
+<div class="tag">A learned controller that decides which AI helper to call next, and when to stop.</div>
+<div class="flow">
+<div class="node"><b>Pick a task</b><span>A coding, maths or research question.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#C9A24A" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#C9A24A"/></svg></div>
+<div class="node"><b>Pick who decides</b><span>The learned controller, or a simple baseline.</span></div><div class="arrow"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#C9A24A" stroke-width="2.5"/><polygon points="42,3 55,11 42,19" fill="#C9A24A"/></svg></div>
+<div class="node"><b>Watch it work</b><span>See each helper it calls, what it costs and why.</span></div>
 </div></div>""", unsafe_allow_html=True)
 
 rail, stage = st.columns([1, 2.1], gap="large")

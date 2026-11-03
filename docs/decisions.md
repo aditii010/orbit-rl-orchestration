@@ -347,3 +347,8 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 - User feedback: fancy font only for headings. Now Bodoni Moda only for ORBIT, panel titles and the "Final answer" / "Agent trace"
   headings; everything else (steps, controls, trace cards, tables, metrics) is Inter with a system sans-serif fallback. Sizes reduced
   to normal (they had been enlarged for the old serif body font).
+
+## 2026-11-03 Dashboard step 6: centred hero and flowchart
+- User feedback: heading centred and big; the three steps below it as a flowchart, not numbered boxes.
+- Hero is now a centred column (ORBIT at 8.5rem, gold rule, tagline) with three boxes joined by gold arrows underneath:
+  Pick a task -> Pick who decides -> Watch it work. Checked by screenshot at 1600 px.
