@@ -119,6 +119,7 @@ button[kind="secondary"]:hover { background: #DBDE70; border-color: #2B373B; col
 .wsub { font-size: 0.88rem; color: #47565A; margin-top: 6px; }
 .tally { display: flex; gap: 28px; flex-wrap: wrap; font-size: 1.05rem; padding: 6px 0 10px; } .tally .of { margin-left: auto; color: #47565A; }
 .rchart { width: 100%; max-width: 1080px; height: auto; display: block; margin: 6px auto 12px; }
+.pcap { font-size: 0.8rem; line-height: 1.35; color: #47565A; margin: 4px 2px 0; }
 </style>""", unsafe_allow_html=True)
 
 
@@ -234,15 +235,20 @@ _, TEST_RECS = split_tasks(list(records().values()))        # the 24 tasks the r
 REPLAY_DELAY = 0.0 if os.environ.get("ORBIT_FAST") else 0.7   # replay is instant, so pause a little to make it watchable
 # One-click shortcuts: (button text, task id, left corner, right corner, mode, budget, replay draw, what to start).
 # The four races were checked in advance: the retrained DQN wins each one (see docs/DEMO.md).
-PRESETS = [("Race: a coding task", "code04", "Fixed pipeline", R_NAME, LIVE_Q, 0.8, 0, "race"),
-           ("Race: why we retrain", "res01", "DQN (simulator only)", R_NAME, LIVE_Q, 0.8, 0, "race"),
-           ("Race: failed check, retry", "code02", "Single agent", R_NAME, REPLAY, 0.8, 3, "race"),
-           ("Race: tight budget", "res01", "Fixed pipeline", R_NAME, REPLAY, 0.15, 0, "race"),
-           ("Scoreboard: 24 unseen tasks", "code04", "Fixed pipeline", R_NAME, REPLAY, 0.8, 0, "board")]
+PRESETS = [("Smart vs always-everyone", "code04", "Fixed pipeline", R_NAME, LIVE_Q, 0.8, 0, "race",
+            "Same coding task. The fixed pipeline calls every helper; the DQN calls only the ones it needs."),
+           ("Simulator-only vs retrained", "res01", "DQN (simulator only)", R_NAME, LIVE_Q, 0.8, 0, "race",
+            "A research question. The simulator-only DQN skips the Researcher and fails; the retrained one looks things up first."),
+           ("Catches a wrong answer", "code02", "Single agent", R_NAME, REPLAY, 0.8, 3, "race",
+            "A coding task whose first answer is wrong. The DQN checks, retries and fixes it; the single agent hands in the mistake."),
+           ("Short on money", "res01", "Fixed pipeline", R_NAME, REPLAY, 0.15, 0, "race",
+            "Only 0.15 to spend. The DQN drops the wasteful calls and still gets it right, for less."),
+           ("Scoreboard: 24 new tasks", "code04", "Fixed pipeline", R_NAME, REPLAY, 0.8, 0, "board",
+            "Races the two on 24 tasks the DQN never trained on, with a live tally.")]
 
 
 def apply_preset(i):
-    _, tid, left, right, mode_, bud, drw, act = PRESETS[i]
+    _, tid, left, right, mode_, bud, drw, act, _cap = PRESETS[i]
     st.session_state.update(task=LABEL[tid], left=left, right=right, mode=mode_, budget=bud, draw=drw, autorun=act)
 
 
@@ -269,6 +275,7 @@ st.session_state.setdefault("draw", 0)
 st.markdown('<div class="qd">Quick demo &mdash; one click sets everything and starts it</div>', unsafe_allow_html=True)
 for col, (i, preset) in zip(st.columns(len(PRESETS), gap="small"), enumerate(PRESETS)):
     col.button(preset[0], key=f"preset{i}", on_click=apply_preset, args=(i,), use_container_width=True)
+    col.markdown(f'<div class="pcap">{preset[8]}</div>', unsafe_allow_html=True)
 st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
 c1, c2, c3 = st.columns(3, gap="large")

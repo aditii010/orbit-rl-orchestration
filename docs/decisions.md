@@ -423,3 +423,7 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
   winner marked). After the scoreboard: a dumbbell chart, one row per unseen task, sorted by the right corner's advantage (olive = right better,
   copper = left better), which also exposes the losses (e.g. code03). Both drawn as one-line inline SVG (tests: well-formed XML, one line).
 - Checked by screenshots of the retry race and the scoreboard. 87 tests pass.
+
+## 2026-11-03 Dashboard step 15: plainer shortcut names and captions
+- Renamed the five shortcuts (Smart vs always-everyone, Simulator-only vs retrained, Catches a wrong answer, Short on money, Scoreboard: 24 new tasks)
+  and put a one-sentence caption under each, because the user did not understand "why we retrain" and "failed check, retry". Runbook updated.
