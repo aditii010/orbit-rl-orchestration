@@ -1,0 +1,671 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057
+{\fonttbl{\f0\froman\fcharset0 Times New Roman;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl;\red0\green0\blue0;\red31\green56\blue100;\red217\green226\blue243;\red71\green86\blue90;\red173\green182\blue206;\red165\green96\blue31;\red255\green255\blue0;\red124\green129\blue32;\red234\green240\blue250;\red242\green242\blue242;}
+{\stylesheet{\s0\f0\fs24 Normal;}{\s1\f0\fs32\b\keepn\outlinelevel0 heading 1;}{\s2\f0\fs26\b\keepn\outlinelevel1 heading 2;}{\s3\f0\fs24\b\i\keepn\outlinelevel2 heading 3;}}
+{\*\listtable{\list\listtemplateid1{\listlevel\levelnfc23\leveljc0\levelstartat1\levelfollow0\levelspace0\levelindent0{\leveltext\'01\'95;}{\levelnumbers;}\f0\fi-360\li720}{\listname bullets;}\listid1}{\list\listtemplateid2{\listlevel\levelnfc0\leveljc0\levelstartat1\levelfollow0\levelspace0\levelindent0{\leveltext\'02\'00.;}{\levelnumbers\'01;}\f0\fi-360\li720}{\listname n1;}\listid2}{\list\listtemplateid3{\listlevel\levelnfc0\leveljc0\levelstartat1\levelfollow0\levelspace0\levelindent0{\leveltext\'02\'00.;}{\levelnumbers\'01;}\f0\fi-360\li720}{\listname n2;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\paperw11906\paperh16838\margl1440\margr1440\margt1440\margb1440\widowctrl
+{\footer\pard\plain\qc\fs20 \chpgn\par}
+\sectd
+\pard\plain\qc\sb240\sa40\b\fs32 THAPAR INSTITUTE OF ENGINEERING AND TECHNOLOGY\par
+\pard\plain\qc\sb0\sa40\fs22 (Deemed to be University), Patiala, Punjab 147004\par
+\pard\plain\qc\sb0\sa480\b\fs26 Department of Electronics and Communication Engineering\par
+\pard\plain\qc\sb0\sa240\fs24 A PROJECT REPORT ON\par
+\pard\plain\qc\sb0\sa60\b\cf2\fs64 ORBIT\par
+\pard\plain\qc\sb0\sa120\b\fs36 Learning When to Call Which Agent\par
+\pard\plain\qc\sb0\sa480\i\fs26 Cost-Aware Orchestration of Multi-Agent Language Model Systems with Double Deep Q-Learning\par
+\pard\plain\qc\sb0\sa20\fs22 Submitted in partial fulfilment of the requirements of the laboratory evaluation for\par
+\pard\plain\qc\sb0\sa480\b\fs24 Course UCS760 (Reinforcement Learning and Conversational AI)\par
+\trowd\trgaph120\trleft0\clcbpat3\cellx4513\clcbpat3\cellx9026
+\pard\plain\intbl\qc\b\fs24 Submitted to\cell\pard\plain\intbl\qc\b\fs24 Submitted by\cell\row
+\trowd\trgaph120\trleft0\cellx4513\cellx9026
+\pard\plain\intbl\qc\sa60\fs24 {\highlight7 [Name of faculty member]}\par\pard\plain\intbl\qc\sa60\fs24 {\highlight7 [Designation]}\par\pard\plain\intbl\qc\sa60\fs24 Department of ECE, TIET Patiala\cell\pard\plain\intbl\qc\sa60\b\fs24 Aditi Sikarwar\par\pard\plain\intbl\qc\sa60\fs24 Roll No.: {\highlight7 [Roll number]}\par\pard\plain\intbl\qc\sa60\fs24 Electronics and Communication Engineering, Class of 2027\cell\row
+\pard\plain\qc\sb480\sa20\b\fs24 November 2026\par
+\pard\plain\qc\sb0\sa60\fs22 Patiala, Punjab\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\qc\plain\b\fs32 CERTIFICATE\par
+\pard\plain\sa0\fs24 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 This is to certify that the project report entitled {\b "ORBIT: Learning When to Call Which Agent"}, submitted by {\b Aditi Sikarwar} (Roll No. {\highlight7 [Roll number]}), a student of the Department of Electronics and Communication Engineering, Thapar Institute of Engineering and Technology, Patiala, in partial fulfilment of the requirements of the laboratory evaluation for course UCS760, is a bonafide record of the work carried out by the student under my guidance and supervision during October and November 2026.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The work reported in this document has not been submitted, in part or in full, for the award of any other degree, diploma or certificate.\par
+\pard\plain\sa0\fs72 \par
+\pard\plain\qr\sb0\sa20\b\fs24 {\highlight7 [Name of supervisor]}\par
+\pard\plain\qr\sb0\sa20\fs24 {\highlight7 [Designation]}\par
+\pard\plain\qr\sb0\sa20\fs22 Department of Electronics and Communication Engineering\par
+\pard\plain\qr\sb0\sa240\fs22 Thapar Institute of Engineering and Technology, Patiala\par
+\pard\plain\ql\sb0\sa20\fs24 Date: {\highlight7 [Date]}\par
+\pard\plain\ql\sb0\sa60\fs24 Place: Patiala\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\qc\plain\b\fs32 DECLARATION\par
+\pard\plain\sa0\fs24 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 I hereby declare that the project report entitled {\b "ORBIT: Learning When to Call Which Agent"} is a record of my own project work, carried out for the laboratory evaluation of course UCS760 under the guidance of {\highlight7 [Name of supervisor]}. All sources of information, published work and software libraries that I used are acknowledged in the text and in the list of references.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b Disclosure of AI assistance.} The software, experiments and drafts of this report were developed with the help of an AI coding assistant (Claude Code, Anthropic). The assistant wrote and ran code and drafted text under my direction. I defined the project, chose the research questions and evaluation plan, reviewed the results and the claims made from them, and take responsibility for the contents of this report. Every experiment is recorded in the decision log of the project repository, including the mistakes that were found and corrected.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The results reported here were produced by the code in the accompanying repository and can be reproduced with the commands listed in Appendix B.\par
+\pard\plain\sa0\fs72 \par
+\pard\plain\qr\sb0\sa20\b\fs24 Aditi Sikarwar\par
+\pard\plain\qr\sb0\sa240\fs24 Roll No. {\highlight7 [Roll number]}\par
+\pard\plain\ql\sb0\sa20\fs24 Date: {\highlight7 [Date]}\par
+\pard\plain\ql\sb0\sa60\fs24 Place: Patiala\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\qc\plain\b\fs32 ACKNOWLEDGEMENT\par
+\pard\plain\sa0\fs24 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 I thank my supervisor, {\highlight7 [Name of supervisor]}, for the guidance, feedback and encouragement that shaped this project, and for the freedom to treat a negative result as a result. I am grateful to the Department of Electronics and Communication Engineering and to Thapar Institute of Engineering and Technology for the laboratory facilities and for a course that connects reinforcement learning with conversational systems.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 I acknowledge the open-source tools on which this work stands: PyTorch for the learning code, Ollama for running a language model locally, and the Groq inference service for access to a second, larger model. I also thank the authors of the papers listed in the references, whose work defined the problem and the standards of evidence that this report tries to meet. Finally, I thank my family and friends for their support.\par
+\pard\plain\sa0\fs48 \par
+\pard\plain\qr\sb0\sa60\b\fs24 Aditi Sikarwar\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\qc\plain\b\fs32 ABSTRACT\par
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Systems built from several language-model agents, for example a researcher, a solver, a verifier and a summariser, can answer harder questions than a single model, but every extra call costs tokens and time. Fixed pipelines call every agent on every task and spend much of that budget on tasks that did not need it. This project asks whether a learned controller can decide, step by step, which agent to call next and when to stop, so that answer quality is maximised after a cost penalty.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The orchestration problem is formulated as a Markov decision process with a 16-number observation, six masked actions and a reward equal to answer quality minus a scaled cost. A Double Deep Q-Network (DDQN) controller is trained in a simulator and compared with a single agent, a fixed pipeline and hand-tuned rule routers on 10,000 unseen tasks, using paired comparisons and decision rules written down before the experiments. The DDQN reaches a mean return of +0.189, against +0.173 for the best rule (+9.3%), +0.153 for a single agent and +0.003 for the fixed pipeline. It keeps its advantage in five of six shifted task distributions and beats the best rule by 15.7% when the difficulty and confidence signals are hidden. Training without the cost penalty collapses (return change of -0.31), which makes the penalty the essential ingredient.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 A second study replays recorded outputs of two real models (qwen2.5:3b and gpt-oss-20b) on 50 tasks. A controller trained only in the simulator fails on research questions because it never calls the researcher. Retraining on recorded traces repairs this and ties a tuned rule on the smaller model, but does not beat a rule tuned with task-specific options on the larger one. A live demonstration lets two controllers race on the same task, and a scoreboard over 24 unseen tasks reports wins, ties and losses. The results support learned orchestration as an automatic way to find cost-aware policies, and they show where hand-tuned rules remain competitive.\par
+\pard\plain\qj\sl360\slmult1\sa100\fs24 {\b Keywords:} reinforcement learning; Double DQN; multi-agent language model systems; cost-aware orchestration; sim-to-real transfer; pre-registered evaluation.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa200\qc\plain\b\fs32 TABLE OF CONTENTS\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 CERTIFICATE\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 DECLARATION\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 ACKNOWLEDGEMENT\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 ABSTRACT\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 1. INTRODUCTION\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 1.1 Background and Motivation\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 1.2 Problem Statement\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 1.3 Objectives\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 1.4 Contributions\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 1.5 Scope and Limitations\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 2. LITERATURE REVIEW AND BACKGROUND\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 2.1 Multi-Agent Language Model Systems\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 2.2 Cost-Aware Use of Language Models\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 2.3 Reinforcement Learning Background\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 2.4 Simulation-to-Reality Transfer and Evaluation Practice\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 2.5 Research Gap\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 3. PROBLEM FORMULATION AND SYSTEM DESIGN\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.1 System Overview\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.2 Tasks and Agents\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.3 The Markov Decision Process\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.4 The Simulator\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.5 The Real-Model Environment\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.6 The Double DQN Controller\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 3.7 Baselines and Demonstration System\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 4. EXPERIMENTAL METHODOLOGY\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 4.1 Splits, Seeds and Statistics\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 4.2 Pre-Registration and Fairness Controls\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 4.3 Implementation\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 5. RESULTS AND DISCUSSION\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.1 Validity Checks and Corrections\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.2 Training Stability\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.3 Main Simulator Result\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.4 Robustness Under Distribution Shift\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.5 Which Signals Matter: Ablations and the Blind Controller\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.6 Real Models: What the Recorded Traces Show\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.7 Real Models: Controller Comparison\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.8 The Simulation-to-Reality Gap and Retraining\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.9 The Race and the Scoreboard\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 5.10 Discussion, Limitations and Threats to Validity\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 6. CONCLUSION AND FUTURE SCOPE\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 6.1 Conclusion\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li360\sa40\fs22 6.2 Future Scope\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 REFERENCES\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 APPENDIX A: CODE ORGANISATION\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 APPENDIX B: REPRODUCING THE RESULTS\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\b\fs22 APPENDIX C: PRE-REGISTERED PREDICTIONS AND OUTCOMES\tab 00\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa200\qc\plain\b\fs32 LIST OF TABLES\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 3.1: Observation vector seen by the controller\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 3.2: Action set and legality\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 3.3: Simulator parameters\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 3.4: The 50 real tasks (all automatically graded)\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 3.5: Training settings of the final controller (S2)\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.1: Simulator results on 10,000 test tasks\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.2: Return in shifted worlds (5,000 tasks each; DDQN is the mean of 5 seeds, lowest seed in brackets)\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.3: Change in return relative to the full DDQN (paired, 5 seeds)\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.4: Recorded solver success and verifier agreement by task type and evidence level\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.5: Return, success rate and cost on 24 held-out real tasks\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.6: Paired task-level differences (95% interval over 24 tasks)\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.7: Calls per research episode (researcher, solver, verifier, summariser) and success on held-out tasks\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table 5.8: Scoreboard of the demonstration controller (right) against each opponent (left), 24 tasks\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Table C.1: Predictions written before the runs, and what happened\tab 00\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa200\qc\plain\b\fs32 LIST OF FIGURES\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Figure 3.1: Orchestration loop. The middle three steps repeat until the controller chooses STOP or a limit is reached.\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Figure 5.1: Learning curve: mean development return of 5 seeds against training episodes (thousands).\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Figure 5.2: Mean return on 10,000 test tasks (longer bar is better).\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Figure 5.3: Return in six worlds for the fixed rule and the DDQN, both trained or tuned once.\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Figure 5.4: Loss in return when an ingredient is removed (training world; bar length is the loss).\tab 00\par
+\pard\plain\tqr\tldot\tx9026\li0\sa40\fs21 Figure 5.5: Return on held-out real tasks for each policy and model (DDQN refit is the mean of 5 seeds).\tab 00\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 1. INTRODUCTION\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 1.1 Background and Motivation\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Applications built on large language models (LLMs) increasingly split one task across specialised agents. A researcher retrieves evidence, a solver drafts an answer, a verifier checks it and a summariser formats it [1], [2], [3]. Such pipelines can raise accuracy, but each call consumes tokens, time and money, and the cost grows with every agent that is added.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Two simple designs dominate practice. A single agent is cheap but cannot recover from its own mistakes. A fixed pipeline calls every agent on every task. Our measurements show that the second is not automatically better. In the simulator of this project the fixed pipeline earns a mean return of +0.003, which is no better than doing nothing, against +0.153 for a single agent, because most tasks do not need all four calls. On recorded outputs of two real models it also scored below the single agent.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The right amount of effort depends on the task, on what has already happened (for example whether a check passed) and on the money left. Choosing the next action from the current situation, with a reward that arrives only at the end, is a sequential decision problem. It is the setting that reinforcement learning (RL) was designed for [4].\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 1.2 Problem Statement\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Given a task and a cost budget, choose a sequence of agent calls that ends with STOP, so as to maximise the expected answer quality minus a penalty proportional to the total cost. The controller sees only an observation of the situation (task type, whether an answer exists, the result of the last check, how many calls of each kind were made, and the money and steps left) and not the hidden correctness of the current answer. Chapter 3 gives the formal definition.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 1.3 Objectives\par
+\pard\plain\ls2\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 Formulate multi-agent orchestration as a Markov decision process with an explicit reward that is tested against loopholes.\par
+\pard\plain\ls2\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 Implement a Double DQN controller and fair baselines: a single agent, a fixed pipeline and tuned rule routers.\par
+\pard\plain\ls2\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 Test, with decision rules written before the runs, whether the learned controller beats the best hand-written rule in a simulator, under distribution shift and when informative signals are hidden.\par
+\pard\plain\ls2\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 Repeat the comparison on recorded outputs of real language models and measure the gap between simulation and reality.\par
+\pard\plain\ls2\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 Provide a live demonstration in which two controllers handle the same task side by side.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 1.4 Contributions\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 A loophole-tested MDP formulation of cost-aware orchestration with action masking and a reward that charges for every call.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 A simulator study with a documented correction history: three flaws in our own first comparison were found and fixed before any claim was made.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 A feature study (ablations and a blind variant) showing which observations matter and that the cost penalty is essential.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 A real-model study on two LLMs using a trace-replay environment, a calibrated cost mapping, held-out tasks and task-level paired statistics.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 An open, tested code base (87 automated tests) and a live race dashboard in which controllers compete on the same task.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 1.5 Scope and Limitations\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The tasks are single-turn and automatically graded (code with hidden unit tests, numeric problems and fact questions over a small invented document set). The simulator is a stylised model of agent behaviour, and the real-model study uses 50 tasks and two models, so its confidence intervals are wide. A router that asks an LLM to choose the next agent was not built; it is listed as future work. These limits are repeated, with numbers, in Section 5.10. Chapter 2 reviews related work, Chapter 3 defines the problem and system, Chapter 4 the protocol, Chapter 5 the results, and Chapter 6 concludes.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 2. LITERATURE REVIEW AND BACKGROUND\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 2.1 Multi-Agent Language Model Systems\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 AutoGen [1] lets developers compose applications from conversing agents that can use models, tools and human input. MetaGPT [2] encodes standard operating procedures into prompts and assigns roles to agents in an assembly-line style for software tasks. ReAct [3] interleaves reasoning steps with actions such as search, so that a single model alternates between thinking and acting. Retrieval-augmented generation [5] grounds an answer in retrieved documents, which motivates the researcher agent used here. These systems define what the agents do. The order in which they are called is usually written by hand.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 2.2 Cost-Aware Use of Language Models\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 FrugalGPT [6] reduces the cost of using LLM APIs by learning a cascade: a cheap model answers first, and a learned scorer decides whether to accept the answer or escalate to a more expensive model. RouteLLM [7] trains routers that choose between a strong and a weak model for each query, using preference data. Both choose among models. This project chooses among different roles (retrieve, solve, verify, tidy, retry, stop) one step at a time, with a state that includes the result of the previous check and the budget left. That makes the problem sequential, and it is why we model it as an MDP and not as a single routing decision.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 2.3 Reinforcement Learning Background\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 A Markov decision process (MDP) is defined by states, actions, transition probabilities and a reward; the agent seeks a policy that maximises the expected discounted return [4]. Q-learning [8] learns the value of each action in each state. The Deep Q-Network (DQN) [9] approximates this function with a neural network and stabilises learning with two devices: an experience replay buffer [10], which breaks the correlation between consecutive samples, and a slowly updated target network. Standard DQN tends to overestimate action values because the same network both selects and evaluates the best next action. Double DQN [11] removes most of this bias by letting the online network select the action and the target network evaluate it. We train with the Adam optimiser [12] and a Huber loss, and we apply action masking, which restricts every maximisation to the actions that are legal in the current state.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 2.4 Simulation-to-Reality Transfer and Evaluation Practice\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Policies trained in simulation often degrade when applied to the real system. Domain randomisation [13] widens the simulator so that reality looks like one more variation. We examine the gap directly by running a simulator-trained controller on recorded real traces and then retraining on those traces. Deep RL results are also sensitive to seeds, hyper-parameters and implementation details [14], and point estimates hide uncertainty [15]. We therefore use several seeds, report final checkpoints without picking the best, give confidence intervals, and compare methods on identical seeded tasks.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 2.5 Research Gap\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Prior work either defines multi-agent systems with hand-written control flow or routes between models once per query. We found no study that learns a sequential controller over heterogeneous roles under an explicit cost penalty, evaluates it against fair tuned baselines with decision rules fixed in advance, and reports how the policy transfers to real models. This report addresses that gap at the scale of a laboratory project.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 3. PROBLEM FORMULATION AND SYSTEM DESIGN\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.1 System Overview\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 A {\b controller} observes the situation and chooses the next action; four {\b agents} (researcher, solver, verifier, summariser) carry it out; an {\b environment} keeps the hidden state, charges the cost of every call and, at the end, grades the answer and pays the reward. The same controller runs on a simulator, on a replay of recorded real-model outputs, and on live model calls (Figure 3.1).\par
+\trowd\trgaph70\clcbpat3\cellx1469\cellx1889\clcbpat3\cellx3358\cellx3778\clcbpat3\cellx5247\cellx5667\clcbpat3\cellx7136\cellx7556\clcbpat3\cellx9025
+\pard\plain\intbl\qc\fs20 Task and budget arrive\cell\pard\plain\intbl\qc\fs20 ->\cell\pard\plain\intbl\qc\fs20 Controller observes 16 numbers, picks a legal action\cell\pard\plain\intbl\qc\fs20 ->\cell\pard\plain\intbl\qc\fs20 Agent runs, cost is charged\cell\pard\plain\intbl\qc\fs20 ->\cell\pard\plain\intbl\qc\fs20 State updates (answer, check result, money left)\cell\pard\plain\intbl\qc\fs20 ->\cell\pard\plain\intbl\qc\fs20 STOP: answer graded, reward paid\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\b\fs20 Figure 3.1: Orchestration loop. The middle three steps repeat until the controller chooses STOP or a limit is reached.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.2 Tasks and Agents\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b Coding} tasks ask for a small Python function. {\b Analytical} tasks are word problems with an exact numeric answer. {\b Research} tasks are questions about invented facts in a small document set, which no model can answer from memory. The {\b researcher} retrieves evidence, the {\b solver} drafts an answer, the {\b verifier} returns pass or fail for the current answer (for coding it runs the visible unit tests) and the {\b summariser} formats the final answer.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.3 The Markov Decision Process\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The controller sees 16 numbers (Table 3.1). The true difficulty and the true correctness of the current answer are hidden; the difficulty estimate and the confidence score are noisy signals about them. Table 3.2 lists the six actions. Illegal actions are masked in both action selection and the learning update, so the network is never asked to value an action that cannot be taken.\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 3.1: Observation vector seen by the controller\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx1000\clcbpat3\cellx3700\clcbpat3\cellx9026
+\pard\intbl\qc\fs20 {\b Index}\cell\pard\intbl\fs20 {\b Name}\cell\pard\intbl\fs20 {\b Meaning}\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 0 to 2\cell\pard\intbl\fs20 Task type\cell\pard\intbl\fs20 One-hot: coding, analytical, research\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 3\cell\pard\intbl\fs20 Difficulty estimate\cell\pard\intbl\fs20 True difficulty plus Gaussian noise (sd 0.15), clipped to 0 to 1\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 4\cell\pard\intbl\fs20 Has answer\cell\pard\intbl\fs20 1 once a solver call has produced a candidate answer\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 5 to 7\cell\pard\intbl\fs20 Last check\cell\pard\intbl\fs20 One-hot: none yet, passed, failed (for the current answer)\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 8 to 11\cell\pard\intbl\fs20 Calls so far\cell\pard\intbl\fs20 Researcher, solver, verifier, summariser, each divided by 8\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 12, 13\cell\pard\intbl\fs20 Money, steps left\cell\pard\intbl\fs20 Fractions of the budget and of the 8-step limit still unused\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 14\cell\pard\intbl\fs20 Confidence\cell\pard\intbl\fs20 Noisy score for the current answer (mean 0.70 if correct, 0.50 if wrong, sd 0.15)\cell\row
+\trowd\trgaph70
+\cellx1000\cellx3700\cellx9026
+\pard\intbl\qc\fs20 15\cell\pard\intbl\fs20 Summarised\cell\pard\intbl\fs20 1 if the current answer has been through the summariser\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 3.2: Action set and legality\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx2500\clcbpat3\cellx6400\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Action}\cell\pard\intbl\fs20 {\b Effect}\cell\pard\intbl\fs20 {\b Legal when}\cell\row
+\trowd\trgaph70
+\cellx2500\cellx6400\cellx9026
+\pard\intbl\fs20 INVOKE_RESEARCHER\cell\pard\intbl\fs20 Retrieves new evidence for later solver calls\cell\pard\intbl\fs20 Always\cell\row
+\trowd\trgaph70
+\cellx2500\cellx6400\cellx9026
+\pard\intbl\fs20 INVOKE_SOLVER\cell\pard\intbl\fs20 Produces the first candidate answer\cell\pard\intbl\fs20 No candidate yet\cell\row
+\trowd\trgaph70
+\cellx2500\cellx6400\cellx9026
+\pard\intbl\fs20 INVOKE_VERIFIER\cell\pard\intbl\fs20 Checks the current candidate\cell\pard\intbl\fs20 A candidate exists\cell\row
+\trowd\trgaph70
+\cellx2500\cellx6400\cellx9026
+\pard\intbl\fs20 INVOKE_SUMMARIZER\cell\pard\intbl\fs20 Formats the current candidate\cell\pard\intbl\fs20 Candidate not yet summarised\cell\row
+\trowd\trgaph70
+\cellx2500\cellx6400\cellx9026
+\pard\intbl\fs20 RETRY_SOLVER\cell\pard\intbl\fs20 Produces a new candidate\cell\pard\intbl\fs20 A candidate exists\cell\row
+\trowd\trgaph70
+\cellx2500\cellx6400\cellx9026
+\pard\intbl\fs20 STOP\cell\pard\intbl\fs20 Hands in the current candidate\cell\pard\intbl\fs20 Always\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b Reward.} The reward of an episode is R = q x 1[correct] - lambda x C / C_ref - 0.3 x 1[no answer], where C is the sum of the call costs, lambda = 0.5 and C_ref = 0.4. The quality q is 1, except in the simulator where a correct but never summarised answer earns 0.9. The cost is paid at the step where it occurs and the quality at the end, so nothing rewards producing more text. An episode ends at STOP, when the cost reaches the budget (uniform in 0.5 to 1.2), or after 8 steps. Four automated tests check that the reward cannot be gamed: stopping at once scores below solve-then-stop; a useless repeat scores below stopping; a verified answer beats the same answer with wasted calls; and exhausting the budget with no answer scores worst.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.4 The Simulator\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 One solver call is correct with probability p = skill x (1 - difficulty) x 0.85^n x g(e) x b, where n counts earlier solver calls, g(e) = 0.6 + 0.4e for research and 0.9 + 0.1e for other tasks, e is the evidence level (+0.35 per researcher call, at most 1), and b = 1.10 for a retry after a failed check. The verifier gives the right verdict with the reliability in Table 3.3. Difficulty is Beta(2, 2), the three task types are equally likely, and each cost is multiplied by a random factor in 0.8 to 1.2 (a retry costs 0.8 of a first call).\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 3.3: Simulator parameters\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx3400\clcbpat3\cellx5200\clcbpat3\cellx7000\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Parameter}\cell\pard\intbl\qc\fs20 {\b Coding}\cell\pard\intbl\qc\fs20 {\b Analytical}\cell\pard\intbl\qc\fs20 {\b Research}\cell\row
+\trowd\trgaph70
+\cellx3400\cellx5200\cellx7000\cellx9026
+\pard\intbl\fs20 Solver skill\cell\pard\intbl\qc\fs20 0.95\cell\pard\intbl\qc\fs20 0.85\cell\pard\intbl\qc\fs20 0.70\cell\row
+\trowd\trgaph70
+\cellx3400\cellx5200\cellx7000\cellx9026
+\pard\intbl\fs20 Verifier reliability\cell\pard\intbl\qc\fs20 0.95\cell\pard\intbl\qc\fs20 0.85\cell\pard\intbl\qc\fs20 0.70\cell\row
+\trowd\trgaph70
+\cellx3400\cellx5200\cellx7000\cellx9026
+\pard\intbl\fs20 Base cost: researcher\cell\pard\intbl\qc\fs20 0.08\cell\pard\intbl\qc\fs20 0.08\cell\pard\intbl\qc\fs20 0.10\cell\row
+\trowd\trgaph70
+\cellx3400\cellx5200\cellx7000\cellx9026
+\pard\intbl\fs20 Base cost: solver\cell\pard\intbl\qc\fs20 0.10\cell\pard\intbl\qc\fs20 0.12\cell\pard\intbl\qc\fs20 0.15\cell\row
+\trowd\trgaph70
+\cellx3400\cellx5200\cellx7000\cellx9026
+\pard\intbl\fs20 Base cost: verifier\cell\pard\intbl\qc\fs20 0.03\cell\pard\intbl\qc\fs20 0.05\cell\pard\intbl\qc\fs20 0.08\cell\row
+\trowd\trgaph70
+\cellx3400\cellx5200\cellx7000\cellx9026
+\pard\intbl\fs20 Base cost: summariser\cell\pard\intbl\qc\fs20 0.03\cell\pard\intbl\qc\fs20 0.03\cell\pard\intbl\qc\fs20 0.03\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.5 The Real-Model Environment\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 3.4: The 50 real tasks (all automatically graded)\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx1500\clcbpat3\cellx2400\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Type}\cell\pard\intbl\qc\fs20 {\b Count}\cell\pard\intbl\fs20 {\b Content and grading}\cell\row
+\trowd\trgaph70
+\cellx1500\cellx2400\cellx9026
+\pard\intbl\fs20 Coding\cell\pard\intbl\qc\fs20 20\cell\pard\intbl\fs20 Python functions; 2 visible and 5 to 6 hidden unit tests; the verifier runs only the visible tests\cell\row
+\trowd\trgaph70
+\cellx1500\cellx2400\cellx9026
+\pard\intbl\fs20 Analytical\cell\pard\intbl\qc\fs20 15\cell\pard\intbl\fs20 Word problems with an exact numeric answer; the verifier is an LLM check\cell\row
+\trowd\trgaph70
+\cellx1500\cellx2400\cellx9026
+\pard\intbl\fs20 Research\cell\pard\intbl\qc\fs20 15\cell\pard\intbl\fs20 Questions over 16 invented documents, keyword retrieval; 6 need one document, 9 need two or three\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b Models.} The main model is qwen2.5:3b, run locally through Ollama, which is weak enough to fail often. A stronger check uses openai/gpt-oss-20b through Groq. Research retrieval is a plain keyword search with no model call: an early version let the model summarise the passages, and on irrelevant ones it wrote "none of these help", which the solver copied, so research accuracy fell to 0 of 9 until the researcher was made pure retrieval.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b Trace cache and replay.} Agent outputs were recorded once: for each task and evidence level, several solver samples and the verifier verdict for each. Every policy replays the same recordings, so differences come from the policy and not from model luck. A retry replays the next unused sample; the effect of telling the solver why it failed is not recorded (a stated limitation).\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b Cost mapping.} Real calls are priced as (tokens in + tokens out) / 2500 + 0.02, so that an average solver call costs about 0.12 as in the simulator; the 0.02 covers retrieval, tests and orchestration. This choice fixes what lambda means for real calls.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b What the controller sees.} In a pilot, qwen reported confidence 0.98 when right and 1.00 when wrong (36 samples), and no non-oracle difficulty estimate existed. In every real-model experiment the difficulty and confidence entries are therefore set to zero. Section 5.5 first measures what this blindness costs.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.6 The Double DQN Controller\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The controller is a network with two hidden layers of 128 units (16 inputs, 6 outputs). Episodes are played with an epsilon-greedy policy over legal actions, and each transition (with the next-state mask) goes into a replay buffer. A mini-batch gives the target y = r + gamma x Q_target(s', argmax over legal a' of Q_online(s', a')), with no future term at the end of an episode. The Huber loss is minimised with Adam (gradient norm clipped at 10), and the target network is refreshed every 1,000 steps. Table 3.5 gives the settings. The blind variant zeroes the difficulty and confidence inputs; the refit variant is trained from scratch on the replay environment built from the development tasks only.\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 3.5: Training settings of the final controller (S2)\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx4200\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Setting}\cell\pard\intbl\fs20 {\b Value}\cell\row
+\trowd\trgaph70
+\cellx4200\cellx9026
+\pard\intbl\fs20 Episodes (simulator / real-trace refit)\cell\pard\intbl\fs20 60,000 / 20,000\cell\row
+\trowd\trgaph70
+\cellx4200\cellx9026
+\pard\intbl\fs20 Discount; learning rate (Adam)\cell\pard\intbl\fs20 0.99; 0.0003\cell\row
+\trowd\trgaph70
+\cellx4200\cellx9026
+\pard\intbl\fs20 Replay buffer; batch; warm-up\cell\pard\intbl\fs20 50,000; 64; 1,000 steps\cell\row
+\trowd\trgaph70
+\cellx4200\cellx9026
+\pard\intbl\fs20 Exploration\cell\pard\intbl\fs20 Epsilon 1.0 to 0.05, linear over the first 60% of episodes\cell\row
+\trowd\trgaph70
+\cellx4200\cellx9026
+\pard\intbl\fs20 Seeds; checkpoint\cell\pard\intbl\fs20 5 seeds; final checkpoint (no picking)\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 3.7 Baselines and Demonstration System\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The baselines are a {\b single agent} (one solver call, then stop), a {\b fixed pipeline} (researcher, solver, verifier, summariser, stop, always), a {\b rule router} (best of 960 hand-built rules over research, verification, retries, a confidence threshold and a give-up difficulty, tuned on 5,000 development tasks), a {\b blind rule} (best of 256 rules that cannot use difficulty or confidence) and, for real traces, a {\b typed rule} (best of 768 rules with per-task-type options). A router in which an LLM picks the next agent was not built. A web application runs any two controllers on the same task, live or from recorded runs, reports a winner using the training reward (computed, never fixed in advance), draws the money spent step by step for both, and offers a scoreboard over the 24 held-out tasks (Section 5.9).\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 4. EXPERIMENTAL METHODOLOGY\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 4.1 Splits, Seeds and Statistics\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 In the simulator, rules are tuned on 5,000 development tasks (seeds 0 to 4,999) and everything is reported on 10,000 test tasks (seeds 100,000 to 109,999); training seeds start at 1,000,000 and never overlap. The shift study uses 5,000 tasks per world. For real models the 50 tasks are split by type, even positions to development (26 tasks: rule tuning and refit) and odd positions to test (24 tasks, 100 seeded episodes each).\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Methods are compared on identical seeded tasks, so differences are paired. In the simulator the 95% interval is 1.96 standard errors of the paired difference. For real models the unit is the task: returns are averaged over a task's 100 episodes and the interval is 2.07 times the standard deviation of the 24 paired differences divided by the square root of 24, because episodes of one task are not independent. A method is said to beat another only if the interval excludes zero, and for DDQN results at least four of five seeds must also lie above the comparison.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 4.2 Pre-Registration and Fairness Controls\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Before each experiment the question, settings, predictions and decision rule were written into the decision log and committed to version control; afterwards the log records the result and scores each prediction, including the wrong ones (Appendix C). The initial rule was that learning is pursued only if the optimum beats the best hand rule by at least 10%. Four controls support fairness:\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b Tuning data.} Rules are tuned on development tasks only. Tuning 300 rules on 1,000 tasks once gave a lucky winner (+0.177 development, +0.137 test), so the set was enlarged to 5,000.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b Strong baselines.} The rule family was extended until it could use every signal the controller uses; a type-specific family was added for real traces.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b No picking.} Final checkpoints of all five seeds are reported; the demonstration model is seed 0, fixed before any test result was seen.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b Like for like.} The blind controller is compared with a blind rule.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 4.3 Implementation\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The code is Python with PyTorch: about 3,300 lines in six packages with 87 automated tests. Models run on a personal laptop (qwen2.5:3b through Ollama at about 14 tokens per second; gpt-oss-20b through Groq, capped at 650 requests), and training one simulator controller takes a few minutes. The repository holds the decision log, the logs of every reported run and the recorded traces.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 5. RESULTS AND DISCUSSION\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Returns are the reward of Section 3.3, averaged over tasks (higher is better). Simulator numbers use 10,000 unseen test tasks unless stated; real-model numbers use the 24 held-out tasks.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.1 Validity Checks and Corrections\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Feasibility tests in simple worlds found the best hand rule within 0 to 1.3% of the optimum, a no-go, so a richer world was designed before it was tested. The first DDQN comparison looked promising (+0.173 on average, 12.7% above the best simple baseline), but three flaws in our own comparison were found before any claim was made: the rule search could not skip the summariser; 300 rules tuned on 1,000 tasks produced a lucky winner (+0.177 development, +0.137 test); and the rules never read the difficulty estimate that the DDQN reads. With difficulty-aware rules (960 rules, 5,000 tuning tasks) the best rule reached +0.173 and the DDQN advantage fell to 0%. The original 12.7% came from a weak baseline.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 One mechanism was tested directly. When confidence is below 0.5 the answer is wrong 92% of the time (6,214 cases), which suggested that skipping the check there would help. Replacing the check by an immediate stop changed the return by only +0.0075 (interval 0.0063) and by an immediate retry by -0.0004. The hypothesis was not supported: the check is cheap and the return is flat in that region.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.2 Training Stability\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 With the original setting (20,000 episodes) the five seeds scored +0.185, +0.183, +0.181, +0.181 and +0.136, so one seed was clearly below the rule. Three longer settings declared in advance were compared on 5,000 development tasks: S1 (60,000 episodes, learning rate 0.001, target update 500) scored +0.181, S2 (learning rate 0.0003, target update 1,000) scored +0.203 and S3 (S2 with exploration over 80% of training) scored +0.198. S2 was chosen on development return alone, and it removed the unstable seed: all five test scores (+0.183 to +0.195) are above the best rule. Figure 5.1 shows its learning curve (mean of five seeds on 1,000 development tasks): the return rises quickly during the first 20,000 episodes and then flattens near +0.205.\par
+\trowd\trgaph0\trrh-250\cellx700\cellx1250\cellx1800\cellx2350\cellx2900\cellx3450\cellx4000\cellx4550\cellx5100\cellx5650\cellx6200\cellx6750\cellx7300\cellx7850\cellx8400\cellx8950
+\pard\intbl\qr\fs16 0.25\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\cellx1250\cellx1800\cellx2350\cellx2900\cellx3450\cellx4000\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\cellx6200\clcbpat2\cellx6750\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 \cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\cellx1250\cellx1800\clcbpat2\cellx2350\clcbpat2\cellx2900\clcbpat2\cellx3450\clcbpat2\cellx4000\clcbpat2\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\clcbpat2\cellx6200\clcbpat2\cellx6750\clcbpat2\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 0.19\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\clcbpat2\cellx1250\cellx1800\clcbpat2\cellx2350\clcbpat2\cellx2900\clcbpat2\cellx3450\clcbpat2\cellx4000\clcbpat2\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\clcbpat2\cellx6200\clcbpat2\cellx6750\clcbpat2\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 \cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\clcbpat2\cellx1250\clcbpat2\cellx1800\clcbpat2\cellx2350\clcbpat2\cellx2900\clcbpat2\cellx3450\clcbpat2\cellx4000\clcbpat2\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\clcbpat2\cellx6200\clcbpat2\cellx6750\clcbpat2\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 0.12\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\clcbpat2\cellx1250\clcbpat2\cellx1800\clcbpat2\cellx2350\clcbpat2\cellx2900\clcbpat2\cellx3450\clcbpat2\cellx4000\clcbpat2\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\clcbpat2\cellx6200\clcbpat2\cellx6750\clcbpat2\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 \cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\clcbpat2\cellx1250\clcbpat2\cellx1800\clcbpat2\cellx2350\clcbpat2\cellx2900\clcbpat2\cellx3450\clcbpat2\cellx4000\clcbpat2\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\clcbpat2\cellx6200\clcbpat2\cellx6750\clcbpat2\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 0.06\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\trrh-250\cellx700\clcbpat2\cellx1250\clcbpat2\cellx1800\clcbpat2\cellx2350\clcbpat2\cellx2900\clcbpat2\cellx3450\clcbpat2\cellx4000\clcbpat2\cellx4550\clcbpat2\cellx5100\clcbpat2\cellx5650\clcbpat2\cellx6200\clcbpat2\cellx6750\clcbpat2\cellx7300\clcbpat2\cellx7850\clcbpat2\cellx8400\clcbpat2\cellx8950
+\pard\intbl\qr\fs16 \cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\pard\intbl\fs4\cell\row
+\trowd\trgaph0\cellx700\cellx1250\cellx1800\cellx2350\cellx2900\cellx3450\cellx4000\cellx4550\cellx5100\cellx5650\cellx6200\cellx6750\cellx7300\cellx7850\cellx8400\cellx8950
+\pard\intbl\fs16 \cell\pard\intbl\qc\fs16 4k\cell\pard\intbl\qc\fs16 8k\cell\pard\intbl\qc\fs16 12k\cell\pard\intbl\qc\fs16 16k\cell\pard\intbl\qc\fs16 20k\cell\pard\intbl\qc\fs16 24k\cell\pard\intbl\qc\fs16 28k\cell\pard\intbl\qc\fs16 32k\cell\pard\intbl\qc\fs16 36k\cell\pard\intbl\qc\fs16 40k\cell\pard\intbl\qc\fs16 44k\cell\pard\intbl\qc\fs16 48k\cell\pard\intbl\qc\fs16 52k\cell\pard\intbl\qc\fs16 56k\cell\pard\intbl\qc\fs16 60k\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\b\fs20 Figure 5.1: Learning curve: mean development return of 5 seeds against training episodes (thousands).\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.3 Main Simulator Result\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.1: Simulator results on 10,000 test tasks\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx3300\clcbpat3\cellx4950\clcbpat3\cellx6400\clcbpat3\cellx7650\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Method}\cell\pard\intbl\qc\fs20 {\b Return}\cell\pard\intbl\qc\fs20 {\b Success}\cell\pard\intbl\qc\fs20 {\b Cost}\cell\pard\intbl\qc\fs20 {\b Steps}\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4950\cellx6400\cellx7650\cellx9026
+\pard\intbl\fs20 Fixed pipeline\cell\pard\intbl\qc\fs20 +0.003\cell\pard\intbl\qc\fs20 0.37\cell\pard\intbl\qc\fs20 0.293\cell\pard\intbl\qc\fs20 5.0\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4950\cellx6400\cellx7650\cellx9026
+\pard\intbl\fs20 Single agent\cell\pard\intbl\qc\fs20 +0.153\cell\pard\intbl\qc\fs20 0.34\cell\pard\intbl\qc\fs20 0.123\cell\pard\intbl\qc\fs20 2.0\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4950\cellx6400\cellx7650\cellx9026
+\pard\intbl\fs20 Best rule (uses difficulty and confidence)\cell\pard\intbl\qc\fs20 +0.173\cell\pard\intbl\qc\fs20 0.46\cell\pard\intbl\qc\fs20 0.233\cell\pard\intbl\qc\fs20 4.0\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4950\cellx6400\cellx7650\cellx9026
+\pard\intbl\fs20 {\b Double DQN (5 seeds)}\cell\pard\intbl\qc\fs20 {\b +0.189}\cell\pard\intbl\qc\fs20 {\b 0.47}\cell\pard\intbl\qc\fs20 {\b 0.215}\cell\pard\intbl\qc\fs20 {\b 3.7}\cell\row
+\pard\plain\sa0\fs12 \par
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat5\cellx3079\cellx7700\cellx9000
+\pard\intbl\fs20 Fixed pipeline\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 +0.003\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat5\cellx6590\cellx7700\cellx9000
+\pard\intbl\fs20 Single agent\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 +0.153\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat5\cellx7070\cellx7700\cellx9000
+\pard\intbl\fs20 Best rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 +0.173\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat2\cellx7441\cellx7700\cellx9000
+\pard\intbl\fs20 Double DQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 +0.189\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\b\fs20 Figure 5.2: Mean return on 10,000 test tasks (longer bar is better).\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The DDQN earns +0.189, 9.3% above the best rule and 24% above the single agent, with a higher success rate than the single agent (0.47 against 0.34) at a cost of 0.215 against 0.123, which the reward judges worth paying. The fixed pipeline pays 0.293 for almost no gain. The 9.3% is just under the 10% bar set at the start, and both numbers are reported. Paired with the rule on identical tasks, every seed is ahead by +0.009 to +0.022, each beyond its 95% interval (about 0.007). The advantage is small in absolute terms (about 0.016 per task). The policy always solves first, stops or tidies after a passed check, retries after a failed one and gives up early on hard tasks, a structure it found without being told.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.4 Robustness Under Distribution Shift\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Controllers and rule were trained or tuned once and tested in six other worlds (Table 5.2). A rule retuned by a human who knew the shift is a reference. In the research-heavy world, research tasks are 70% of the mix.\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.2: Return in shifted worlds (5,000 tasks each; DDQN is the mean of 5 seeds, lowest seed in brackets)\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx2300\clcbpat3\cellx3400\clcbpat3\cellx4850\clcbpat3\cellx6300\clcbpat3\cellx7800\clcbpat3\cellx9026
+\pard\intbl\fs19 {\b World}\cell\pard\intbl\qc\fs19 {\b Single}\cell\pard\intbl\qc\fs19 {\b Rule (fixed)}\cell\pard\intbl\qc\fs19 {\b Rule (retuned)}\cell\pard\intbl\qc\fs19 {\b DDQN}\cell\pard\intbl\qc\fs19 {\b DDQN minus rule}\cell\row
+\trowd\trgaph70
+\cellx2300\cellx3400\cellx4850\cellx6300\cellx7800\cellx9026
+\pard\intbl\fs19 Training world\cell\pard\intbl\qc\fs19 +0.153\cell\pard\intbl\qc\fs19 +0.166\cell\pard\intbl\qc\fs19 +0.167\cell\pard\intbl\qc\fs19 +0.187 (+0.181)\cell\pard\intbl\qc\fs19 +0.020\cell\row
+\trowd\trgaph70
+\cellx2300\cellx3400\cellx4850\cellx6300\cellx7800\cellx9026
+\pard\intbl\fs19 Tight budget\cell\pard\intbl\qc\fs19 +0.153\cell\pard\intbl\qc\fs19 +0.172\cell\pard\intbl\qc\fs19 +0.172\cell\pard\intbl\qc\fs19 +0.167 (+0.161)\cell\pard\intbl\qc\fs19 -0.005\cell\row
+\trowd\trgaph70
+\cellx2300\cellx3400\cellx4850\cellx6300\cellx7800\cellx9026
+\pard\intbl\fs19 Loose budget\cell\pard\intbl\qc\fs19 +0.153\cell\pard\intbl\qc\fs19 +0.166\cell\pard\intbl\qc\fs19 +0.167\cell\pard\intbl\qc\fs19 +0.181 (+0.170)\cell\pard\intbl\qc\fs19 +0.016\cell\row
+\trowd\trgaph70
+\cellx2300\cellx3400\cellx4850\cellx6300\cellx7800\cellx9026
+\pard\intbl\fs19 Research-heavy\cell\pard\intbl\qc\fs19 +0.067\cell\pard\intbl\qc\fs19 +0.029\cell\pard\intbl\qc\fs19 +0.072\cell\pard\intbl\qc\fs19 +0.077 (+0.072)\cell\pard\intbl\qc\fs19 +0.048\cell\row
+\trowd\trgaph70
+\cellx2300\cellx3400\cellx4850\cellx6300\cellx7800\cellx9026
+\pard\intbl\fs19 Harder tasks\cell\pard\intbl\qc\fs19 +0.088\cell\pard\intbl\qc\fs19 +0.085\cell\pard\intbl\qc\fs19 +0.093\cell\pard\intbl\qc\fs19 +0.103 (+0.090)\cell\pard\intbl\qc\fs19 +0.018\cell\row
+\trowd\trgaph70
+\cellx2300\cellx3400\cellx4850\cellx6300\cellx7800\cellx9026
+\pard\intbl\fs19 Easier tasks\cell\pard\intbl\qc\fs19 +0.213\cell\pard\intbl\qc\fs19 +0.246\cell\pard\intbl\qc\fs19 +0.241\cell\pard\intbl\qc\fs19 +0.263 (+0.257)\cell\pard\intbl\qc\fs19 +0.016\cell\row
+\pard\plain\sa0\fs12 \par
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx5967\cellx7800\cellx9026
+\pard\intbl\fs18 Training world: fixed rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.166\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx6305\cellx7800\cellx9026
+\pard\intbl\fs18 Training world: DDQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.187\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx6064\cellx7800\cellx9026
+\pard\intbl\fs18 Tight budget: fixed rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.172\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx5983\cellx7800\cellx9026
+\pard\intbl\fs18 Tight budget: DDQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.167\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx5967\cellx7800\cellx9026
+\pard\intbl\fs18 Loose budget: fixed rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.166\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx6208\cellx7800\cellx9026
+\pard\intbl\fs18 Loose budget: DDQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.181\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx3766\cellx7800\cellx9026
+\pard\intbl\fs18 Research-heavy: fixed rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.029\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx4537\cellx7800\cellx9026
+\pard\intbl\fs18 Research-heavy: DDQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.077\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx4666\cellx7800\cellx9026
+\pard\intbl\fs18 Harder tasks: fixed rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.085\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx4955\cellx7800\cellx9026
+\pard\intbl\fs18 Harder tasks: DDQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.103\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx7253\cellx7800\cellx9026
+\pard\intbl\fs18 Easier tasks: fixed rule\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.246\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx7526\cellx7800\cellx9026
+\pard\intbl\fs18 Easier tasks: DDQN\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.263\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\b\fs20 Figure 5.3: Return in six worlds for the fixed rule and the DDQN, both trained or tuned once.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The fixed rule breaks in the research-heavy world (+0.029, below the single agent at +0.067). The DDQN keeps +0.077, level with the retuned rule at +0.072, without retuning. It is at or above the retuned rule in five of six worlds and loses only under tight budgets (+0.167 against +0.172, within noise); that range partly overlaps training, and the retuned rule used only 2,000 tuning tasks. The value of the DDQN is robustness more than peak return.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.5 Which Signals Matter: Ablations and the Blind Controller\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Each variant was retrained for five seeds with the final setting and tested on the same 10,000 tasks as the full controller, using the true reward (Table 5.3).\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.3: Change in return relative to the full DDQN (paired, 5 seeds)\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx3600\clcbpat3\cellx5300\clcbpat3\cellx7000\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Variant}\cell\pard\intbl\qc\fs20 {\b Training world}\cell\pard\intbl\qc\fs20 {\b Research-heavy}\cell\pard\intbl\fs20 {\b Remark}\cell\row
+\trowd\trgaph70
+\cellx3600\cellx5300\cellx7000\cellx9026
+\pard\intbl\fs20 A: no cost penalty in training\cell\pard\intbl\qc\fs20 -0.312\cell\pard\intbl\qc\fs20 -0.406\cell\pard\intbl\fs20 7.2 calls, cost 0.54\cell\row
+\trowd\trgaph70
+\cellx3600\cellx5300\cellx7000\cellx9026
+\pard\intbl\fs20 B: no memory of the episode\cell\pard\intbl\qc\fs20 -0.021\cell\pard\intbl\qc\fs20 -0.004\cell\pard\intbl\fs20 stops verifying\cell\row
+\trowd\trgaph70
+\cellx3600\cellx5300\cellx7000\cellx9026
+\pard\intbl\fs20 C1: no difficulty estimate\cell\pard\intbl\qc\fs20 -0.010\cell\pard\intbl\qc\fs20 -0.008\cell\pard\intbl\fs20 \cell\row
+\trowd\trgaph70
+\cellx3600\cellx5300\cellx7000\cellx9026
+\pard\intbl\fs20 C2: no confidence score\cell\pard\intbl\qc\fs20 -0.008\cell\pard\intbl\qc\fs20 -0.007\cell\pard\intbl\fs20 \cell\row
+\trowd\trgaph70
+\cellx3600\cellx5300\cellx7000\cellx9026
+\pard\intbl\fs20 C3: neither signal (blind)\cell\pard\intbl\qc\fs20 -0.012\cell\pard\intbl\qc\fs20 not run\cell\pard\intbl\fs20 return +0.177\cell\row
+\pard\plain\sa0\fs12 \par
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat6\cellx7317\cellx7700\cellx9000
+\pard\intbl\fs20 A: no cost penalty\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 -0.312\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat6\cellx3283\cellx7700\cellx9000
+\pard\intbl\fs20 B: no memory\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 -0.021\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat6\cellx3143\cellx7700\cellx9000
+\pard\intbl\fs20 C1: no difficulty\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 -0.010\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat6\cellx3103\cellx7700\cellx9000
+\pard\intbl\fs20 C2: no confidence\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 -0.008\cell\row
+\trowd\trgaph50\trrh-270\cellx3000\clcbpat6\cellx3168\cellx7700\cellx9000
+\pard\intbl\fs20 C3: neither signal\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs20 -0.012\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\b\fs20 Figure 5.4: Loss in return when an ingredient is removed (training world; bar length is the loss).\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The cost penalty is by far the most important ingredient: without it the controller learns that calls are free, makes 7.2 calls per task at cost 0.54, and its true return falls to -0.123. Of the signals, the memory of the episode matters most in the training world, because without the last check result the controller stops verifying and behaves like a single agent. The difficulty estimate and the confidence score each cost 0.01 or less because they overlap: both say that the answer is probably wrong. Our predictions were only partly right: the cost-penalty prediction held, the difficulty estimate hurts most among the signals only in the research-heavy world, and the memory of the episode hurt more than expected in the training world.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The blind test removes difficulty and confidence together, because real models give neither (Section 3.5). The best blind rule is the single agent in disguise (+0.153). The blind DDQN reaches +0.177, 15.7% above it, with all five seeds ahead by +0.017 to +0.033, each beyond its interval; the pre-registered bar (at least 3% and at least four of five seeds) was passed. The prediction that the DDQN would lose half of its edge was wrong: it lost 0.012, while the best rule lost 0.020, so blindness hurts the rules more than the learner. The blind rule family is small, which may inflate the gap.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.6 Real Models: What the Recorded Traces Show\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Table 5.4 shows how much room orchestration has. It gives the fraction of final answers that are correct and how often the verifier agrees with the truth, for qwen2.5:3b (4 samples per setting) and gpt-oss-20b (2 to 3).\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.4: Recorded solver success and verifier agreement by task type and evidence level\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx3000\clcbpat3\cellx4500\clcbpat3\cellx6000\clcbpat3\cellx7513\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Setting}\cell\pard\intbl\qc\fs20 {\b qwen success}\cell\pard\intbl\qc\fs20 {\b gpt-oss success}\cell\pard\intbl\qc\fs20 {\b qwen verifier}\cell\pard\intbl\qc\fs20 {\b gpt-oss verifier}\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Coding, no plan\cell\pard\intbl\qc\fs20 0.68\cell\pard\intbl\qc\fs20 1.00\cell\pard\intbl\qc\fs20 0.91\cell\pard\intbl\qc\fs20 1.00\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Coding, with plan\cell\pard\intbl\qc\fs20 0.79\cell\pard\intbl\qc\fs20 0.97\cell\pard\intbl\qc\fs20 0.86\cell\pard\intbl\qc\fs20 1.00\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Analytical, no plan\cell\pard\intbl\qc\fs20 0.95\cell\pard\intbl\qc\fs20 1.00\cell\pard\intbl\qc\fs20 0.92\cell\pard\intbl\qc\fs20 1.00\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Analytical, with plan\cell\pard\intbl\qc\fs20 0.93\cell\pard\intbl\qc\fs20 0.87\cell\pard\intbl\qc\fs20 0.88\cell\pard\intbl\qc\fs20 0.90\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Research, 0 researcher calls\cell\pard\intbl\qc\fs20 0.00\cell\pard\intbl\qc\fs20 0.00\cell\pard\intbl\qc\fs20 1.00\cell\pard\intbl\qc\fs20 0.93\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Research, 1 call\cell\pard\intbl\qc\fs20 0.40\cell\pard\intbl\qc\fs20 0.53\cell\pard\intbl\qc\fs20 0.80\cell\pard\intbl\qc\fs20 0.67\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Research, 2 calls\cell\pard\intbl\qc\fs20 0.43\cell\pard\intbl\qc\fs20 0.93\cell\pard\intbl\qc\fs20 0.70\cell\pard\intbl\qc\fs20 0.93\cell\row
+\trowd\trgaph70
+\cellx3000\cellx4500\cellx6000\cellx7513\cellx9026
+\pard\intbl\fs20 Research, 3 calls\cell\pard\intbl\qc\fs20 0.43\cell\pard\intbl\qc\fs20 0.93\cell\pard\intbl\qc\fs20 0.70\cell\pard\intbl\qc\fs20 0.93\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Research questions cannot be answered without the researcher: success is 0% with no call and, for the stronger model, 93% after two. The smaller model cannot chain facts across documents, so it stops near 43% however much evidence it receives. Both models already solve most coding and analytical tasks, so orchestration has little to gain there. Confidence is useless for qwen (Section 3.5), so the controller must act on the task type and on what has happened so far.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.7 Real Models: Controller Comparison\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The rules and the refit DDQN were fitted on the 26 development tasks and every policy was replayed on the 24 held-out tasks (Table 5.5). The first tuned rule is: call the researcher once on research tasks, solve once, stop. The typed rule found, for qwen, one researcher call on research tasks, visible-test verification for coding and two retries; for gpt-oss, two researcher calls on research tasks and nothing else.\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.5: Return, success rate and cost on 24 held-out real tasks\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx2900\clcbpat3\cellx3950\clcbpat3\cellx4950\clcbpat3\cellx5950\clcbpat3\cellx7000\clcbpat3\cellx8000\clcbpat3\cellx9026
+\pard\intbl\fs19 {\b Policy}\cell\pard\intbl\qc\fs19 {\b qwen return}\cell\pard\intbl\qc\fs19 {\b success}\cell\pard\intbl\qc\fs19 {\b cost}\cell\pard\intbl\qc\fs19 {\b gpt-oss return}\cell\pard\intbl\qc\fs19 {\b success}\cell\pard\intbl\qc\fs19 {\b cost}\cell\row
+\trowd\trgaph70
+\cellx2900\cellx3950\cellx4950\cellx5950\cellx7000\cellx8000\cellx9026
+\pard\intbl\fs19 Single agent\cell\pard\intbl\qc\fs19 +0.462\cell\pard\intbl\qc\fs19 0.59\cell\pard\intbl\qc\fs19 0.106\cell\pard\intbl\qc\fs19 +0.563\cell\pard\intbl\qc\fs19 0.71\cell\pard\intbl\qc\fs19 0.116\cell\row
+\trowd\trgaph70
+\cellx2900\cellx3950\cellx4950\cellx5950\cellx7000\cellx8000\cellx9026
+\pard\intbl\fs19 Fixed pipeline\cell\pard\intbl\qc\fs19 +0.336\cell\pard\intbl\qc\fs19 0.75\cell\pard\intbl\qc\fs19 0.334\cell\pard\intbl\qc\fs19 +0.282\cell\pard\intbl\qc\fs19 0.75\cell\pard\intbl\qc\fs19 0.374\cell\row
+\trowd\trgaph70
+\cellx2900\cellx3950\cellx4950\cellx5950\cellx7000\cellx8000\cellx9026
+\pard\intbl\fs19 Tuned rule (researcher once)\cell\pard\intbl\qc\fs19 +0.569\cell\pard\intbl\qc\fs19 0.72\cell\pard\intbl\qc\fs19 0.120\cell\pard\intbl\qc\fs19 +0.670\cell\pard\intbl\qc\fs19 0.83\cell\pard\intbl\qc\fs19 0.131\cell\row
+\trowd\trgaph70
+\cellx2900\cellx3950\cellx4950\cellx5950\cellx7000\cellx8000\cellx9026
+\pard\intbl\fs19 Typed rule\cell\pard\intbl\qc\fs19 +0.576\cell\pard\intbl\qc\fs19 0.76\cell\pard\intbl\qc\fs19 0.146\cell\pard\intbl\qc\fs19 +0.819\cell\pard\intbl\qc\fs19 1.00\cell\pard\intbl\qc\fs19 0.145\cell\row
+\trowd\trgaph70
+\cellx2900\cellx3950\cellx4950\cellx5950\cellx7000\cellx8000\cellx9026
+\pard\intbl\fs19 DDQN, zero-shot (simulator only)\cell\pard\intbl\qc\fs19 +0.438\cell\pard\intbl\qc\fs19 0.64\cell\pard\intbl\qc\fs19 0.162\cell\pard\intbl\qc\fs19 +0.530\cell\pard\intbl\qc\fs19 0.71\cell\pard\intbl\qc\fs19 0.143\cell\row
+\trowd\trgaph70
+\cellx2900\cellx3950\cellx4950\cellx5950\cellx7000\cellx8000\cellx9026
+\pard\intbl\fs19 DDQN, refit on traces\cell\pard\intbl\qc\fs19 +0.580\cell\pard\intbl\qc\fs19 0.77\cell\pard\intbl\qc\fs19 0.154\cell\pard\intbl\qc\fs19 +0.770\cell\pard\intbl\qc\fs19 0.96\cell\pard\intbl\qc\fs19 0.153\cell\row
+\pard\plain\sa0\fs12 \par
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx5610\cellx7800\cellx9026
+\pard\intbl\fs18 Single agent: qwen\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.462\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat4\cellx6114\cellx7800\cellx9026
+\pard\intbl\fs18 Single agent: gpt-oss\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.563\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx4980\cellx7800\cellx9026
+\pard\intbl\fs18 Fixed pipeline: qwen\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.336\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat4\cellx4709\cellx7800\cellx9026
+\pard\intbl\fs18 Fixed pipeline: gpt-oss\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.282\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx6180\cellx7800\cellx9026
+\pard\intbl\fs18 Typed rule: qwen\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.576\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat4\cellx7395\cellx7800\cellx9026
+\pard\intbl\fs18 Typed rule: gpt-oss\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.819\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat5\cellx5490\cellx7800\cellx9026
+\pard\intbl\fs18 DDQN zero-shot: qwen\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.438\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat4\cellx5950\cellx7800\cellx9026
+\pard\intbl\fs18 DDQN zero-shot: gpt-oss\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.530\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx6200\cellx7800\cellx9026
+\pard\intbl\fs18 DDQN refit: qwen\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.580\cell\row
+\trowd\trgaph50\trrh-270\cellx3300\clcbpat2\cellx7150\cellx7800\cellx9026
+\pard\intbl\fs18 DDQN refit: gpt-oss\cell\pard\intbl\fs8 \cell\pard\intbl\fs8 \cell\pard\intbl\qr\fs18 +0.770\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qc\sb120\sa80\b\fs20 Figure 5.5: Return on held-out real tasks for each policy and model (DDQN refit is the mean of 5 seeds).\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.6: Paired task-level differences (95% interval over 24 tasks)\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx4200\clcbpat3\cellx6613\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Comparison}\cell\pard\intbl\qc\fs20 {\b qwen}\cell\pard\intbl\qc\fs20 {\b gpt-oss}\cell\row
+\trowd\trgaph70
+\cellx4200\cellx6613\cellx9026
+\pard\intbl\fs20 Tuned rule minus fixed pipeline\cell\pard\intbl\qc\fs20 +0.233 (0.134)\cell\pard\intbl\qc\fs20 +0.388 (0.140)\cell\row
+\trowd\trgaph70
+\cellx4200\cellx6613\cellx9026
+\pard\intbl\fs20 Fixed pipeline minus single agent\cell\pard\intbl\qc\fs20 -0.126 (0.202)\cell\pard\intbl\qc\fs20 -0.281 (0.217)\cell\row
+\trowd\trgaph70
+\cellx4200\cellx6613\cellx9026
+\pard\intbl\fs20 Zero-shot DDQN minus single agent\cell\pard\intbl\qc\fs20 -0.024 (0.055)\cell\pard\intbl\qc\fs20 -0.033 (0.009)\cell\row
+\trowd\trgaph70
+\cellx4200\cellx6613\cellx9026
+\pard\intbl\fs20 Refit DDQN minus single agent\cell\pard\intbl\qc\fs20 +0.118 (0.137)\cell\pard\intbl\qc\fs20 +0.207 (0.142)\cell\row
+\trowd\trgaph70
+\cellx4200\cellx6613\cellx9026
+\pard\intbl\fs20 Refit DDQN minus tuned rule\cell\pard\intbl\qc\fs20 +0.011 (0.044)\cell\pard\intbl\qc\fs20 +0.100 (0.111)\cell\row
+\trowd\trgaph70
+\cellx4200\cellx6613\cellx9026
+\pard\intbl\fs20 Refit DDQN minus typed rule\cell\pard\intbl\qc\fs20 +0.005 (0.018)\cell\pard\intbl\qc\fs20 -0.048 (0.041)\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 A well-chosen rule beats the fixed pipeline on both models (+0.233 and +0.388), because the pipeline pays about three times the cost of a single agent for steps most tasks do not need. On gpt-oss the refit DDQN beats the single agent (+0.207), and the zero-shot controller is slightly but clearly worse than the single agent (-0.033). The refit DDQN equals the first tuned rule, which could call the researcher only once. When the rule family may be task-specific, the refit DDQN ties the typed rule on qwen (+0.005) and is slightly but clearly behind it on gpt-oss (-0.048): it calls the researcher about 3.3 times on gpt-oss research tasks where two suffice, and one of five seeds scores noticeably lower (+0.656 against +0.79 to +0.81). With 26 training tasks this is unsurprising. On these traces a hand-tuned rule is as good as the learned policy or slightly better, and the learned policy finds a comparable rule without being told which options exist.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.8 The Simulation-to-Reality Gap and Retraining\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The simulator-trained blind DDQN, run unchanged on real traces, never calls the researcher on research tasks, so its success there is 0.00 on both models (Table 5.7). In the simulator the researcher only raised the success of later solver calls and was rarely worth its cost; with real models it is indispensable. Retraining on the traces repairs the gap: the refit controller calls the researcher 1.40 (qwen) and 3.33 (gpt-oss) times per research task, and research success becomes 0.46 and 0.87.\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.7: Calls per research episode (researcher, solver, verifier, summariser) and success on held-out tasks\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx2800\clcbpat3\cellx6400\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Model and policy}\cell\pard\intbl\qc\fs20 {\b Calls (res / sol / ver / sum)}\cell\pard\intbl\qc\fs20 {\b Success}\cell\row
+\trowd\trgaph70
+\cellx2800\cellx6400\cellx9026
+\pard\intbl\fs20 qwen, zero-shot\cell\pard\intbl\qc\fs20 0.00 / 1.00 / 0.00 / 0.13\cell\pard\intbl\qc\fs20 0.00\cell\row
+\trowd\trgaph70
+\cellx2800\cellx6400\cellx9026
+\pard\intbl\fs20 qwen, refit\cell\pard\intbl\qc\fs20 1.40 / 1.07 / 0.00 / 0.00\cell\pard\intbl\qc\fs20 0.46\cell\row
+\trowd\trgaph70
+\cellx2800\cellx6400\cellx9026
+\pard\intbl\fs20 gpt-oss, zero-shot\cell\pard\intbl\qc\fs20 0.00 / 1.00 / 0.00 / 0.05\cell\pard\intbl\qc\fs20 0.00\cell\row
+\trowd\trgaph70
+\cellx2800\cellx6400\cellx9026
+\pard\intbl\fs20 gpt-oss, refit\cell\pard\intbl\qc\fs20 3.33 / 1.01 / 0.00 / 0.04\cell\pard\intbl\qc\fs20 0.87\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Coding shows the opposite lesson. The zero-shot controller verifies and summarises coding answers (1.4 verifier calls on qwen), which helps there (success 0.86 against 0.74 for the first tuned rule) but wastes money on gpt-oss, where the first answer is already right. The refit controller verifies only where it pays.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.9 The Race and the Scoreboard\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The demonstration runs the saved refit controller (training seed 0, fixed in advance) against any other policy, and each race is decided by the training reward. In the four prepared races the DDQN wins every time; for example, on a coding task whose first answer fails the visible tests, it verifies, sees the failure, retries and ends correct at cost 0.29 (score +0.64), while the single agent hands in the wrong answer at cost 0.13 (score -0.16). One task is a small sample, so the scoreboard races two policies on all 24 held-out tasks, each averaged over 10 recorded draws (Table 5.8).\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table 5.8: Scoreboard of the demonstration controller (right) against each opponent (left), 24 tasks\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx3300\clcbpat3\cellx4600\clcbpat3\cellx5600\clcbpat3\cellx6900\clcbpat3\cellx9026
+\pard\intbl\fs20 {\b Opponent}\cell\pard\intbl\qc\fs20 {\b Right wins}\cell\pard\intbl\qc\fs20 {\b Ties}\cell\pard\intbl\qc\fs20 {\b Left wins}\cell\pard\intbl\qc\fs20 {\b Mean advantage}\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4600\cellx5600\cellx6900\cellx9026
+\pard\intbl\fs20 Fixed pipeline\cell\pard\intbl\qc\fs20 16\cell\pard\intbl\qc\fs20 0\cell\pard\intbl\qc\fs20 8\cell\pard\intbl\qc\fs20 +0.196\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4600\cellx5600\cellx6900\cellx9026
+\pard\intbl\fs20 Single agent\cell\pard\intbl\qc\fs20 6\cell\pard\intbl\qc\fs20 7\cell\pard\intbl\qc\fs20 11\cell\pard\intbl\qc\fs20 +0.068\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4600\cellx5600\cellx6900\cellx9026
+\pard\intbl\fs20 Typed rule\cell\pard\intbl\qc\fs20 1\cell\pard\intbl\qc\fs20 15\cell\pard\intbl\qc\fs20 8\cell\pard\intbl\qc\fs20 -0.056\cell\row
+\trowd\trgaph70
+\cellx3300\cellx4600\cellx5600\cellx6900\cellx9026
+\pard\intbl\fs20 DDQN, simulator only\cell\pard\intbl\qc\fs20 12\cell\pard\intbl\qc\fs20 7\cell\pard\intbl\qc\fs20 5\cell\pard\intbl\qc\fs20 +0.064\cell\row
+\pard\plain\sa0\fs12 \par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The DDQN wins clearly against the fixed pipeline and the simulator-only controller, is ahead on average against the single agent but wins fewer tasks than it loses (6 against 11), and is behind the typed rule. The demonstration model scores +0.536 on these tasks, below the five-seed average of +0.580 in Table 5.5, because it is a single training run; the page reports the scoreboard as computed.\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 5.10 Discussion, Limitations and Threats to Validity\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b What the evidence supports.} In a simulator whose parameters were fixed before training, a Double DQN finds a cost-aware policy that beats the best hand-written rule by 9.3%, stays ahead under most shifts and beats a blind rule by 15.7%; the cost penalty is the essential ingredient. On real models the choice of agents matters (research needs the researcher; a fixed pipeline wastes money) and the policy retrained on real traces finds a rule as good as a human-tuned one in about one case out of two.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 {\b What it does not support.} The learned controller does not clearly beat a well-tuned task-specific rule on real traces, and it does not transfer from the simulator without retraining. Limitations and threats to validity:\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 The real-model study has 24 test tasks, two models and a few recorded samples per setting, so intervals are wide and results show direction, not proof.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 A retry replays the next recorded sample, so the effect of feedback on the solver is not captured; verifier verdicts are fixed per sample.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 The token-to-cost conversion (divisor 2,500, overhead 0.02) is a design choice; another choice would change the best policy.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 The rule families are finite. The typed family was declared after the real results suggested it, and was therefore tuned on development tasks only.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 The simulator is stylised and its parameters were chosen by the author, not fitted to data; the blind rule family is small.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 The demonstration model is one training run, and the scoreboard tasks are also the test tasks of the real-model study.\par
+\pard\plain\ls1\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 Tasks are few and partly invented; retrieval is keyword-based over 16 documents, so research results say nothing about open-domain retrieval.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 6. CONCLUSION AND FUTURE SCOPE\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 6.1 Conclusion\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 This project formulated the orchestration of a small team of language-model agents as a Markov decision process and trained a Double DQN controller to choose the next agent or to stop. In a simulator, the controller beat every baseline: +0.189 against +0.173 for the best hand-written rule (+9.3%), +0.153 for a single agent and +0.003 for a fixed pipeline. It kept its edge in five of six shifted worlds, and with the difficulty and confidence signals removed it beat the best blind rule by 15.7%. The cost penalty is the essential ingredient of the design: without it the return falls by 0.31.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 On recorded outputs of two real models the picture is more modest and more informative. The choice of agents matters, because research questions cannot be answered without the researcher and a fixed pipeline wastes money. A controller trained only in the simulator does not transfer, since it never calls the researcher. Retraining on recorded traces removes that failure, and the retrained controller ties a tuned hand rule on the smaller model, but a rule tuned with task-specific options is slightly better on the larger one. The value of learning is that it discovers a policy of comparable quality automatically and handles the cost trade-off without hand-written rules.\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 Against the objectives of Section 1.3: the MDP and its loophole tests were built and passed (objective 1); the controller and fair baselines were implemented (objective 2); the simulator hypotheses were tested with decision rules written in advance, including the cases where the predictions were wrong (objective 3); the real-model comparison and the simulation-to-reality gap were measured (objective 4); and the live race with a scoreboard was delivered (objective 5).\par
+\pard\s2\outlinelevel1\keepn\sb200\sa120\ql\plain\b\fs26 6.2 Future Scope\par
+\pard\plain\ls3\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b More tasks and models.} Enlarge the real task set and add models to narrow the intervals and test whether the typed-rule advantage on the larger model is real.\par
+\pard\plain\ls3\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b Learning from live calls.} Train online on real model calls, and capture the effect of feedback on retries, which the replay environment omits.\par
+\pard\plain\ls3\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b A more realistic simulator.} Randomise skills, costs and verifier reliability, in the spirit of domain randomisation [13], so that a simulator-trained controller transfers without retraining.\par
+\pard\plain\ls3\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b A learned difficulty estimate.} Train a cheap predictor of task difficulty so that the controller can use the signal that helped most in the simulator.\par
+\pard\plain\ls3\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b An LLM router baseline.} Add a baseline in which a language model chooses the next agent, with its own routing calls counted in the cost.\par
+\pard\plain\ls3\ilvl0\fi-360\li720\qj\sl360\slmult1\sa60\fs24 {\b Richer reporting.} Use performance profiles and interval estimates across many seeds and tasks, as recommended in [14] and [15].\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 REFERENCES\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [1] Q. Wu et al., "AutoGen: Enabling next-gen LLM applications via multi-agent conversation," arXiv:2308.08155, 2023.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [2] S. Hong et al., "MetaGPT: Meta programming for a multi-agent collaborative framework," arXiv:2308.00352, 2023.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [3] S. Yao et al., "ReAct: Synergizing reasoning and acting in language models," arXiv:2210.03629, 2022.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [4] R. S. Sutton and A. G. Barto, {\i Reinforcement Learning: An Introduction}, 2nd ed. Cambridge, MA, USA: MIT Press, 2018.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [5] P. Lewis et al., "Retrieval-augmented generation for knowledge-intensive NLP tasks," in {\i Advances in Neural Information Processing Systems (NeurIPS)}, 2020.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [6] L. Chen, M. Zaharia and J. Zou, "FrugalGPT: How to use large language models while reducing cost and improving performance," arXiv:2305.05176, 2023.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [7] I. Ong et al., "RouteLLM: Learning to route LLMs with preference data," arXiv:2406.18665, 2024.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [8] C. J. C. H. Watkins and P. Dayan, "Q-learning," {\i Machine Learning}, vol. 8, no. 3-4, pp. 279-292, 1992.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [9] V. Mnih et al., "Human-level control through deep reinforcement learning," {\i Nature}, vol. 518, no. 7540, pp. 529-533, 2015.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [10] L.-J. Lin, "Self-improving reactive agents based on reinforcement learning, planning and teaching," {\i Machine Learning}, vol. 8, no. 3-4, pp. 293-321, 1992.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [11] H. van Hasselt, A. Guez and D. Silver, "Deep reinforcement learning with Double Q-learning," in {\i Proc. AAAI Conf. Artificial Intelligence}, vol. 30, no. 1, pp. 2094-2100, 2016.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [12] D. P. Kingma and J. Ba, "Adam: A method for stochastic optimization," in {\i Proc. International Conference on Learning Representations (ICLR)}, 2015.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [13] J. Tobin et al., "Domain randomization for transferring deep neural networks from simulation to the real world," in {\i Proc. IEEE/RSJ Int. Conf. Intelligent Robots and Systems (IROS)}, 2017.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [14] P. Henderson et al., "Deep reinforcement learning that matters," in {\i Proc. AAAI Conf. Artificial Intelligence}, vol. 32, no. 1, 2018.\par
+\pard\plain\qj\sl300\slmult1\sa80\li720\fi-720\fs22 [15] R. Agarwal et al., "Deep reinforcement learning at the edge of the statistical precipice," in {\i Advances in Neural Information Processing Systems (NeurIPS)}, 2021.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 APPENDIX A: CODE ORGANISATION\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 The repository has six code packages: {\b env} (simulator and Gym-style environment with action masks), {\b baselines} (single agent, fixed pipeline, rule routers), {\b rl} (Double DQN, replay buffer, training loop), {\b eval} (evaluation runner and the tuning, shift, ablation, blind and real-trace studies), {\b llm} (model client, the four agents, the 50 tasks with graders, the trace-cache builder and replay environment) and {\b app} (race engine, charts and the Streamlit dashboard). The folder {\b docs} holds the decision log, the specification, the demonstration runbook and the logs of every reported run; {\b tests} holds 87 automated tests covering reward loopholes, graders, replay, the race engine and the dashboard.\par
+\pard\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 APPENDIX B: REPRODUCING THE RESULTS\par
+\pard\plain\qj\sl360\slmult1\sa100\fi720\fs24 From the repository root, with Python 3 and PyTorch installed: run the tests with {\b PYTHONPATH=. python3 -m pytest -q tests}. Run the main comparison and tuning with {\b python3 -m eval.tune_dqn}, the shift study with {\b python3 -m eval.shift}, the ablations with {\b python3 -m eval.ablate} and {\b python3 -m eval.ablate_blind}, and the real-trace studies with {\b python3 -m eval.real_eval runs/cache_qwen3b.jsonl} and the same command for {\b runs/cache_gptoss20b.jsonl}, followed by {\b python3 -m eval.real_eval_typed} with the cache path. The dashboard starts with {\b ./run_demo.sh}. Logs of every run reported here are in {\b docs/logs}.\par
+\pard\pagebb\s1\outlinelevel0\keepn\sb240\sa120\ql\plain\b\fs32 APPENDIX C: PRE-REGISTERED PREDICTIONS AND OUTCOMES\par
+\pard\plain\qc\sb120\sa80\keepn\b\fs20 Table C.1: Predictions written before the runs, and what happened\par
+\trowd\trgaph70\trhdr
+\clcbpat3\cellx2300\clcbpat3\cellx5300\clcbpat3\cellx9026
+\pard\intbl\fs19 {\b Experiment}\cell\pard\intbl\fs19 {\b Prediction or rule}\cell\pard\intbl\fs19 {\b Outcome}\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Feasibility, simple worlds\cell\pard\intbl\fs19 Go if the optimum beats the best rule by 10%\cell\pard\intbl\fs19 No-go: best rule within 0 to 1.3% of optimal; a richer world was designed first\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 First DDQN vs rules\cell\pard\intbl\fs19 10% over the best rule\cell\pard\intbl\fs19 +12.7% over a weak rule; flaws found; fair rule gave 0%\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Skip the check at low confidence\cell\pard\intbl\fs19 Skipping helps\cell\pard\intbl\fs19 Not supported (+0.0075, not significant)\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Plan A: stabilise training\cell\pard\intbl\fs19 Beat the rule beyond noise, no seed below it\cell\pard\intbl\fs19 Met on all five seeds; +9.3%, just under the 10% bar\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Shift study\cell\pard\intbl\fs19 Edge survives shifts\cell\pard\intbl\fs19 Mostly supported: at or above the retuned rule in 5 of 6 worlds\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Ablations\cell\pard\intbl\fs19 Difficulty hurts most; cost penalty large\cell\pard\intbl\fs19 Cost penalty as predicted; memory of the episode hurt more than difficulty in the training world\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Blind test\cell\pard\intbl\fs19 DDQN loses about half its edge but keeps +3% over the blind rule\cell\pard\intbl\fs19 Passed (+15.7%); the loss was smaller than predicted (0.012)\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Real qwen: fixed pipeline\cell\pard\intbl\fs19 Beats the single agent\cell\pard\intbl\fs19 Wrong: -0.126 (interval includes 0)\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Real qwen: zero-shot, rule, refit\cell\pard\intbl\fs19 Zero-shot near single agent; rule uses researcher; refit ties rule\cell\pard\intbl\fs19 All right; zero-shot research success 0.00\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Real gpt-oss\cell\pard\intbl\fs19 Single agent strong on coding and analysis; researcher decisive; refit ties rule\cell\pard\intbl\fs19 Right; refit minus rule +0.100 (interval includes 0)\cell\row
+\trowd\trgaph70
+\cellx2300\cellx5300\cellx9026
+\pard\intbl\fs19 Typed rule vs refit\cell\pard\intbl\fs19 Tie on both models\cell\pard\intbl\fs19 Tie on qwen (+0.005); typed rule better on gpt-oss (-0.048)\cell\row
+\pard\plain\sa0\fs12 \par
+}

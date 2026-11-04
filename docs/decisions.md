@@ -431,3 +431,19 @@ Not done: LLM-router baseline (counted-cost) - optional, only if time remains.
 ## 2026-11-03 Dashboard step 16: technical names for the shortcuts
 - User found the plain-language names unprofessional. Now: DQN vs Fixed Pipeline; Zero-Shot vs Refit DQN; Verify-and-Retry vs Single Agent;
   Low-Budget Regime; Held-Out Evaluation (24 tasks). Captions rewritten in technical wording. Behaviour unchanged. Runbook updated.
+
+## 2026-11-04 Technical report (report/)
+- Goal: a 15-18 page research-style report with title page, certificate, declaration, acknowledgement, abstract, contents, lists of tables and figures,
+  six chapters, references and appendices, plus the user's five dashboard screenshots placed next to the matching text.
+- Tried and dropped (kept in report/old_rtf): building the Google Doc through the Drive connector. Findings: Google's HTML import ignores every page-break
+  form; RTF import gives real page breaks, A4, headings and lists but only one merged footer and always draws table borders; and the connector can only send text,
+  so images cannot be placed. A first full RTF was 93-136 KB, too large for a single call, and I could not copy binary image data accurately.
+- Final route: one content file (report/content.py) feeds two emitters: build_docx.py (editable Word file with real headings, a Table-of-Contents control,
+  page-number footer, embedded charts and screenshots) and build_html.py (PDF through headless Chrome). report/measure.py reads the PDF and writes the real page
+  number of every heading, table and figure into the contents pages. Charts come from report/make_figs.py with the project palette; all numbers are copied from docs/logs.
+  New data for the report: a 5-seed learning curve (report/learning_curve.py), final DDQN success and cost (+0.189, success 0.474, cost 0.215, 3.72 steps)
+  and baseline step counts (5.0, 2.0, 4.0).
+- Result: 17 pages in the PDF, 6,000 words, 9 figures (4 charts, 5 screenshots), 7 tables plus the cover table. Word's own pagination may differ by about a page.
+- Honesty points kept in the text: the three flaws of the first comparison, the 9.3% (not 10%), predictions that were wrong, and the real-model results where a typed
+  rule matches or beats the DDQN (placed in 5.5 and 5.8 with numbers, as agreed). The declaration states that an AI assistant helped build the work.
+- Unverified details: MetaGPT and ReAct are cited as arXiv preprints because their conference venues were not confirmed in this session.
