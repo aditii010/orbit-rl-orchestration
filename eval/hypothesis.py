@@ -1,10 +1,3 @@
-"""Hypothesis: at LOW confidence, checking the candidate wastes money (it is almost surely wrong
-anyway), so retrying directly beats verify-then-retry.
-
-Part A: DQN behaviour at low confidence, split by difficulty and money.
-Part B: same hand rule, only the low-confidence action changes. Paired on identical tasks.
-Part C: how often is a low-confidence unchecked candidate really wrong?
-"""
 from collections import Counter, defaultdict
 
 import numpy as np
@@ -20,7 +13,7 @@ TEST = range(100_000, 110_000)
 
 
 def low_conf_unchecked(o):
-    return o[4] > 0.5 and o[5] > 0.5 and o[14] < 0.5      # has candidate, never checked, conf < 0.5
+    return o[4] > 0.5 and o[5] > 0.5 and o[14] < 0.5
 
 
 def part_a(seed):
@@ -43,7 +36,6 @@ def part_a(seed):
 
 
 def with_low_conf_action(base, action_name):
-    """Same rule, except: unchecked + low confidence -> retry (if allowed) or stop."""
     def pol(o, mask):
         if low_conf_unchecked(o) and action_name != "verify":
             n_solve = round(o[9] * MAX_STEPS)

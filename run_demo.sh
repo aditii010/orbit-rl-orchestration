@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# One command to start the ORBIT demo:  ./run_demo.sh
-# Checks Ollama, makes sure the model is there, warms it up, restarts the dashboard and opens the browser.
-# Set NO_OPEN=1 to skip opening the browser.
 cd "$(dirname "$0")" || exit 1
 MODEL="qwen2.5:3b"
 PORT=8501

@@ -1,9 +1,5 @@
-"""Single source of truth for the report text. Two emitters read this: build_docx.py (editable Word file) and build_html.py (PDF preview).
-Block types: h1, h2, p, bullets, table(caption, header, rows, widths_in_inches, aligns), fig(file, caption, width_in), pagebreak.
-Inline markup: <b>, <i>. Every number is copied from a log in docs/logs (Appendix B lists the experiments)."""
-
-TITLE = "ORBIT: Learning When to Call Which Agent"
-SUBTITLE = "Cost-Aware Orchestration of Multi-Agent Language Model Systems with Double Deep Q-Learning"
+TITLE = "ORBIT: Reinforcement Learning for Cost-Aware Orchestration of Multi-Agent LLM Systems"
+SUBTITLE = "A Double Deep Q-Network Controller Evaluated in Simulation and on Recorded Real-Model Traces"
 
 ABSTRACT = [
     "Systems built from several language-model agents (a researcher, a solver, a verifier and a summariser) can answer harder questions than one model, but every extra call "
@@ -41,7 +37,6 @@ REFS = [
 B = []
 a = B.append
 
-# ------------------------------------------------------------------ 1
 a(("h1", "1. INTRODUCTION", True))
 a(("h2", "1.1 Background and Motivation"))
 a(("p", "Applications built on large language models (LLMs) increasingly split one task across specialised agents: a researcher retrieves evidence, a solver drafts an answer, a "
@@ -49,8 +44,7 @@ a(("p", "Applications built on large language models (LLMs) increasingly split o
         "but cannot recover from its own mistakes; a fixed pipeline calls every agent on every task. Our measurements show the second is not automatically better: in the "
         "simulator of this project the fixed pipeline earns a mean return of +0.003, no better than doing nothing, against +0.153 for a single agent, and on recorded outputs of "
         "two real models it also scored below the single agent."))
-a(("p", "The right amount of effort depends on the task, on what has already happened (for example whether a check passed) and on the money left. Choosing the next action from "
-        "the current situation, with a reward that arrives only at the end, is a sequential decision problem, the setting reinforcement learning (RL) was designed for [4]."))
+a(("p", "The right amount of effort depends on the task and on what has already happened (for example whether a check passed). Choosing the next action from the current situation, with a reward that arrives only at the end, is a sequential decision problem, the setting reinforcement learning (RL) was designed for [4]."))
 a(("h2", "1.2 Problem Statement and Objectives"))
 a(("p", "Given a task and a cost budget, choose a sequence of agent calls ending in STOP that maximises expected answer quality minus a penalty proportional to total cost. The "
         "controller sees an observation (task type, whether an answer exists, the last check result, call counts, money and steps left) but not the hidden correctness of the "
@@ -66,7 +60,6 @@ a(("bullets", [
 ]))
 a(("p", "The tasks are single-turn and automatically graded."))
 
-# ------------------------------------------------------------------ 2
 a(("h1", "2. LITERATURE REVIEW AND BACKGROUND", False))
 a(("h2", "2.1 Multi-Agent Systems and Cost-Aware Routing"))
 a(("p", "AutoGen [1] composes applications from conversing agents that can use models, tools and human input; MetaGPT [2] encodes standard operating procedures and roles in an "
@@ -85,7 +78,6 @@ a(("p", "Policies trained in simulation often degrade on the real system; domain
         "details [13] and point estimates hide uncertainty [14], so we use five seeds, final checkpoints, confidence intervals and paired comparisons. We found no study that learns "
         "a sequential controller over heterogeneous roles under an explicit cost, against fair tuned baselines with decision rules fixed in advance, and reports transfer to real models."))
 
-# ------------------------------------------------------------------ 3
 a(("h1", "3. PROBLEM FORMULATION AND SYSTEM DESIGN", False))
 a(("h2", "3.1 System Overview"))
 a(("p", "A <b>controller</b> observes the situation and chooses the next action; four <b>agents</b> carry it out; an <b>environment</b> keeps the hidden state, charges every call and, at the "
@@ -111,22 +103,9 @@ a(("p", "<b>Reward.</b> R = q x 1[correct] - lambda x C / C_ref - 0.3 x 1[no ans
         "STOP, when cost reaches the budget (uniform in 0.5 to 1.2) or after 8 steps. Four automated tests check the reward cannot be gamed: stopping at once scores below "
         "solve-then-stop; a useless repeat scores below stopping; a verified answer beats the same answer with wasted calls; exhausting the budget with no answer scores worst."))
 a(("h2", "3.3 The Simulator"))
-a(("p", "One solver call is correct with probability p = skill x (1 - difficulty) x 0.85^n x g(e) x b, where n counts earlier solver calls, g(e) = 0.6 + 0.4e for research and 0.9 + 0.1e "
-        "otherwise (e is evidence, +0.35 per researcher call up to 1) and b = 1.10 for a retry after a failed check. Difficulty is Beta(2, 2); each cost is multiplied by a random factor "
-        "in 0.8 to 1.2 and a retry costs 0.8 of a first call. Table 3.2 lists the rest."))
-a(("table", "Table 3.2: Simulator parameters", ["Parameter", "Coding", "Analytical", "Research"], [
-    ["Solver skill", "0.95", "0.85", "0.70"], ["Verifier reliability", "0.95", "0.85", "0.70"],
-    ["Base cost: researcher / solver", "0.08 / 0.10", "0.08 / 0.12", "0.10 / 0.15"],
-    ["Base cost: verifier / summariser", "0.03 / 0.03", "0.05 / 0.03", "0.08 / 0.03"],
-], [2.4, 1.29, 1.29, 1.29], ["l", "c", "c", "c"]))
+a(("p", "One solver call is correct with probability p = skill x (1 - difficulty) x 0.85^n x g(e) x b, where n counts earlier solver calls, g(e) = 0.6 + 0.4e for research and 0.9 + 0.1e otherwise (e is evidence, +0.35 per researcher call up to 1) and b = 1.10 for a retry after a failed check. Solver skill and verifier reliability are 0.95, 0.85 and 0.70 for coding, analytical and research tasks. Base costs are 0.08, 0.08, 0.10 (researcher), 0.10, 0.12, 0.15 (solver), 0.03, 0.05, 0.08 (verifier) and 0.03 (summariser), each multiplied by a random factor in 0.8 to 1.2; a retry costs 0.8 of a first call. Difficulty is Beta(2, 2)."))
 a(("h2", "3.4 The Real-Model Environment"))
-a(("p", "Fifty tasks are used: 20 coding (hidden unit tests decide success; the verifier runs only the visible ones), 15 analytical and 15 research (6 need one document, 9 need two or three). "
-        "The main model is qwen2.5:3b run locally through Ollama; a stronger check uses gpt-oss-20b through Groq. Research retrieval is plain keyword search: an early version let the "
-        "model summarise passages and, on irrelevant ones, it wrote \"none of these help\", which the solver copied, so research accuracy fell to 0 of 9 until retrieval was made "
-        "model-free. Agent outputs were recorded once (several solver samples per task and evidence level, with the verifier's verdict), and every policy replays the same "
-        "recordings, so differences come from the policy and not from model luck; a retry replays the next unused sample. Real calls are priced as (tokens in + tokens out) / 2500 "
-        "+ 0.02, so an average solver call costs about 0.12 as in the simulator. In a pilot qwen reported confidence 0.98 when right and 1.00 when wrong, and no non-oracle difficulty "
-        "estimate existed, so in every real-model experiment the difficulty and confidence entries are set to zero (Section 5.4 measures what this costs)."))
+a(("p", "Fifty tasks are used: 20 coding (hidden unit tests decide success; the verifier runs only the visible ones), 15 analytical and 15 research (6 need one document, 9 need two or three). The main model is qwen2.5:3b run locally through Ollama; a stronger check uses gpt-oss-20b through Groq. Research retrieval is plain keyword search; an early version let the model summarise passages and it copied \"none of these help\" into answers, so research accuracy fell to 0 of 9 until retrieval was made model-free. Agent outputs were recorded once (several solver samples per task and evidence level, with the verifier verdict), and every policy replays the same recordings, so differences come from the policy and not from model luck; a retry replays the next unused sample. Real calls are priced as (tokens in + tokens out) / 2500 + 0.02, so an average solver call costs about 0.12 as in the simulator. In a pilot qwen reported confidence 0.98 when right and 1.00 when wrong, and no non-oracle difficulty estimate existed, so difficulty and confidence are set to zero in every real-model experiment (Section 5.4 measures the cost of this)."))
 a(("h2", "3.5 The Double DQN Controller and Baselines"))
 a(("p", "The controller is a network with two hidden layers of 128 units. Episodes use an epsilon-greedy policy over legal actions; transitions (with next-state masks) fill a 50,000-entry "
         "replay buffer. The target is y = r + 0.99 x Q_target(s', argmax over legal a' of Q_online(s', a')); the Huber loss is minimised with Adam (learning rate 0.0003, gradient norm clipped "
@@ -142,7 +121,6 @@ a(("p", "A web dashboard runs any two controllers on the same task, live or from
 a(("fig", "shot_full.jpg", "Figure 3.2: The dashboard: title, flow, quick-demo shortcuts, and the task, corner and rule panels.", 5.0))
 a(("fig", "shot_task.jpg", "Figure 3.3: Task selection: the 50 tasks, with the chosen task previewed and the two corners selectable.", 3.6))
 
-# ------------------------------------------------------------------ 4
 a(("h1", "4. EXPERIMENTAL METHODOLOGY", False))
 a(("p", "<b>Splits and statistics.</b> In the simulator, rules are tuned on 5,000 development tasks (seeds 0 to 4,999) and everything is reported on 10,000 test tasks (seeds 100,000 to "
         "109,999); training seeds start at 1,000,000 and never overlap. For real models the 50 tasks are split by type, even positions to development (26 tasks: rule tuning and refit) "
@@ -154,18 +132,12 @@ a(("p", "<b>Pre-registration and fairness.</b> Before each experiment the questi
         "control; afterwards the log records the result and scores each prediction, including the wrong ones (Appendix B). Rules are tuned on development tasks only (tuning 300 rules on "
         "1,000 tasks once gave a lucky winner, +0.177 on development and +0.137 on test, so the set was enlarged), the rule family was extended until it could use every signal the "
         "controller uses, final checkpoints of all seeds are reported without picking, and the blind controller is compared with a blind rule."))
-a(("p", "<b>Implementation.</b> About 3,300 lines of Python with PyTorch in six packages and 87 automated tests. Models run on a personal laptop (qwen2.5:3b at about 14 tokens per second; "
-        "gpt-oss-20b through Groq, capped at 650 requests); training one simulator controller takes a few minutes. The repository holds the decision log, all run logs and the recorded traces."))
+a(("p", "<b>Implementation.</b> About 3,300 lines of Python with PyTorch and 87 automated tests. Models run on a personal laptop (qwen2.5:3b through Ollama; gpt-oss-20b through Groq, capped at 650 requests); training one simulator controller takes a few minutes. The repository holds the decision log, all run logs and the recorded traces."))
 
-# ------------------------------------------------------------------ 5
 a(("h1", "5. RESULTS AND DISCUSSION", False))
 a(("p", "Returns are the reward of Section 3.2, averaged over tasks (higher is better). Simulator numbers use 10,000 unseen test tasks unless stated; real-model numbers use the 24 held-out tasks."))
 a(("h2", "5.1 Validity Checks and Corrections"))
-a(("p", "Feasibility tests in simple worlds found the best hand rule within 0 to 1.3% of the optimum (no-go), so a richer world was designed before it was tested. The first DDQN comparison "
-        "looked promising (+0.173, 12.7% above the best simple baseline), but three flaws in our own comparison were found before any claim was made: the rule search could not skip the "
-        "summariser; a lucky tuning winner; and the rules never read the difficulty estimate the DDQN reads. With difficulty-aware rules (960 rules) the best rule reached +0.173 and the "
-        "DDQN advantage fell to 0%; the 12.7% came from a weak baseline. A tested mechanism also failed: when confidence is below 0.5 the answer is wrong 92% of the time, yet replacing the "
-        "check there by an immediate stop changed the return by only +0.0075 (interval 0.0063), so the hypothesis was not supported."))
+a(("p", "Feasibility tests in simple worlds found the best hand rule within 0 to 1.3% of the optimum (no-go), so a richer world was designed before it was tested. The first DDQN comparison looked promising (+0.173, 12.7% above the best simple baseline), but three flaws in our own comparison were found before any claim was made: the rule search could not skip the summariser; a lucky tuning winner; and the rules never read the difficulty estimate the DDQN reads. With difficulty-aware rules (960 rules) the best rule reached +0.173 and the DDQN advantage fell to 0%; the 12.7% came from a weak baseline. A tested mechanism also failed: skipping the check when confidence is below 0.5 changed the return by only +0.0075 (interval 0.0063), so that hypothesis was not supported."))
 a(("h2", "5.2 Training Stability and the Main Simulator Result"))
 a(("p", "With the original 20,000-episode setting one seed (+0.136) was clearly below the rule. Three longer settings declared in advance were compared on development tasks: S1 (learning rate "
         "0.001) +0.181, S2 (learning rate 0.0003, target update 1,000) +0.203 and S3 (S2 with longer exploration) +0.198. S2 was chosen on development return alone and removed the "
@@ -198,7 +170,7 @@ a(("p", "Each variant was retrained for five seeds and tested on the same 10,000
         "research-heavy world, and the memory of the episode hurt more than expected in the training world."))
 a(("p", "Real models give neither difficulty nor confidence, so both were removed together. The best blind rule is the single agent in disguise (+0.153); the blind DDQN reaches +0.177, "
         "15.7% above it, with all five seeds ahead by +0.017 to +0.033 beyond their intervals, passing the pre-registered bar. The prediction that the DDQN would lose half its edge was "
-        "wrong: it lost 0.012 while the best rule lost 0.020. The blind rule family is small, which may inflate the gap."))
+        "wrong: it lost 0.012 while the best rule lost 0.020."))
 a(("p", "Research questions cannot be answered without the researcher: success is 0% with no call; with one call it is 40% (qwen) and 53% (gpt-oss), and with two it is 43% and 93%. The "
         "smaller model cannot chain facts across documents, so it plateaus near 43%. Coding success without help is 0.68 (qwen) and 1.00 (gpt-oss); analytical success is 0.95 and 1.00. "
         "Both models already solve most coding and analytical tasks, so orchestration has little to gain there."))
@@ -248,7 +220,6 @@ a(("bullets", [
     "The demonstration model is one training run; retrieval is keyword-based over 16 invented documents, so research results say nothing about open-domain retrieval.",
 ]))
 
-# ------------------------------------------------------------------ 6
 a(("h1", "6. CONCLUSION AND FUTURE SCOPE", False))
 a(("p", "This project formulated the orchestration of a small team of language-model agents as a Markov decision process and trained a Double DQN controller to choose the next agent or to "
         "stop. In a simulator it beat every baseline (+0.189 against +0.173 for the best rule, +0.153 for a single agent and +0.003 for a fixed pipeline), kept its edge in five of six "
@@ -257,11 +228,8 @@ a(("p", "On recorded outputs of two real models the picture is more modest and m
         "researcher and a fixed pipeline wastes money. A simulator-trained controller does not transfer, since it never calls the researcher; retraining on traces removes that failure and ties a "
         "tuned rule on the smaller model, while a rule with task-specific options is slightly better on the larger one. The value of learning is that it discovers a policy of comparable "
         "quality automatically and handles the cost trade-off without hand-written rules."))
-a(("p", "<b>Future scope.</b> (1) More tasks and models, to narrow the intervals. (2) Online learning from live calls, capturing the effect of feedback on retries. (3) A randomised simulator "
-        "in the spirit of [12], so a simulator-trained controller transfers without retraining. (4) A learned difficulty estimate, so the controller can use the signal that helped most in "
-        "simulation. (5) An LLM-as-router baseline with its routing calls counted in the cost. (6) Performance profiles and interval estimates across many seeds, as recommended in [13] and [14]."))
+a(("p", "<b>Future scope.</b> (1) More tasks and models, to narrow the intervals. (2) Online learning from live calls, capturing the effect of feedback on retries. (3) A randomised simulator in the spirit of [12], so a simulator-trained controller transfers without retraining. (4) A learned difficulty estimate. (5) An LLM-as-router baseline with its routing calls counted in the cost. (6) Performance profiles and interval estimates across many seeds [13], [14]."))
 
-# ------------------------------------------------------------------ appendices
 APPENDIX_A = ("The repository has six code packages: <b>env</b> (simulator and Gym-style environment), <b>baselines</b> (single agent, fixed pipeline, rules), <b>rl</b> (Double DQN, replay "
               "buffer, training), <b>eval</b> (evaluation runner and the tuning, shift, ablation, blind and real-trace studies), <b>llm</b> (model client, agents, 50 tasks with graders, trace "
               "cache and replay environment) and <b>app</b> (race engine, charts, Streamlit dashboard). Run <b>PYTHONPATH=. python3 -m pytest -q tests</b> for the tests, "

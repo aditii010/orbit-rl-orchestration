@@ -1,4 +1,3 @@
-"""Front matter blocks: cover, certificate, declaration, acknowledgement, abstract (shared by the Word and HTML builders)."""
 from content import ABSTRACT, KEYWORDS, SUBTITLE, TITLE
 
 PH = lambda s: "<hl>[%s]</hl>" % s
@@ -12,7 +11,7 @@ def front_blocks():
     a(("center", "Department of Electronics and Communication Engineering", 13, True, False, 36))
     a(("center", "A PROJECT REPORT ON", 12, False, False, 18))
     a(("center", "ORBIT", 40, True, False, 4, "1F3864"))
-    a(("center", "Learning When to Call Which Agent", 20, True, False, 8))
+    a(("center", "Reinforcement Learning for Cost-Aware Orchestration of Multi-Agent LLM Systems", 18, True, False, 8))
     a(("center", SUBTITLE, 13, False, True, 34))
     a(("center", "Submitted in partial fulfilment of the requirements of the laboratory evaluation for", 11, False, False, 2))
     a(("center", "Course UCS760 (Reinforcement Learning and Conversational AI)", 12, True, False, 30))
@@ -22,7 +21,6 @@ def front_blocks():
         ["Department of ECE, TIET Patiala", "Electronics and Communication Engineering, Class of 2027"]]))
     a(("center", "November 2026", 12, True, False, 2, None, 30))
     a(("center", "Patiala, Punjab", 11, False, False, 0))
-    # certificate
     a(("h1c", "CERTIFICATE", True))
     a(("p", "This is to certify that the project report entitled <b>\"" + TITLE + "\"</b>, submitted by <b>Aditi Sikarwar</b> (Roll No. " + PH("Roll number") + "), a student of the "
            "Department of Electronics and Communication Engineering, Thapar Institute of Engineering and Technology, Patiala, in partial fulfilment of the requirements of the laboratory "
@@ -34,7 +32,6 @@ def front_blocks():
     a(("right", "Thapar Institute of Engineering and Technology, Patiala", False))
     a(("spacer", 10))
     a(("left", "Date: " + PH("Date") + "          Place: Patiala"))
-    # declaration + acknowledgement share a page
     a(("h1c", "DECLARATION", False))
     a(("p", "I hereby declare that the project report entitled <b>\"" + TITLE + "\"</b> is a record of my own project work, carried out for the laboratory evaluation of course UCS760 under the "
            "guidance of " + PH("Name of supervisor") + ". All sources of information, published work and software libraries that I used are acknowledged in the text and in the references."))
@@ -46,7 +43,6 @@ def front_blocks():
     a(("p", "I thank my supervisor, " + PH("Name of supervisor") + ", for the guidance and feedback that shaped this project, and for the freedom to treat a negative result as a result. I am grateful to the "
            "Department of Electronics and Communication Engineering and to Thapar Institute of Engineering and Technology for the laboratory facilities. I acknowledge the open-source tools on "
            "which this work stands (PyTorch, Ollama and the Groq inference service) and the authors of the papers in the references. Finally, I thank my family and friends for their support."))
-    # abstract
     a(("h1c", "ABSTRACT", False))
     for t in ABSTRACT:
         a(("p", t))

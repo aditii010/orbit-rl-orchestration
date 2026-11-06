@@ -1,8 +1,3 @@
-"""Runs ONE episode of the orchestrator and yields an event after every step, so a UI can draw it live.
-Two modes with the same event format:
-  run_live   : real agents (llm/agents.py) on a real LLM
-  run_replay : recorded outputs from a trace cache (instant, offline)
-Observation, action mask, cost rule and stopping rules are the same as in llm/trace_env.py (what the DQN was trained on)."""
 import re
 
 import numpy as np
@@ -18,12 +13,10 @@ from rl.dqn import DoubleDQN
 
 MAX_STEPS = DEFAULT_CONFIG["max_steps"]
 HIDE = (3, 14)
-# Typed rule tuned on qwen dev tasks (docs/logs/typed_qwen3b.log).
 QWEN_RULE = dict(res_calls=(0, 0, 1), verify=(True, False, False), max_retries=2, summarize=False)
 
 
 class Controller:
-    """A named policy (obs, mask) -> action. DQN controllers can also report their Q-values."""
     def __init__(self, name, policy, agent=None, blurb=""):
         self.name, self.policy, self.agent, self.blurb = name, policy, agent, blurb
 
@@ -32,7 +25,7 @@ class Controller:
             return None
         with torch.no_grad():
             q = self.agent.q(torch.as_tensor(obs * self.agent.keep).unsqueeze(0))[0].numpy()
-        return np.where(mask, q, np.nan)          # NaN = illegal action (masked out)
+        return np.where(mask, q, np.nan)
 
 
 def build_controllers(refit_path="checkpoints/refit_qwen_seed0.pt", sim_path="checkpoints/blind_seed0.pt"):
@@ -53,7 +46,6 @@ def build_controllers(refit_path="checkpoints/refit_qwen_seed0.pt", sim_path="ch
 
 
 def classify(text):
-    """Tiny keyword router for free-text tasks (the DQN needs a task type). A real system would use a classifier."""
     t = text.lower()
     if any(k in t for k in ("write a function", "write a python", "def ", "implement a function", "code")):
         return "coding"
@@ -108,7 +100,6 @@ def _final(task, st, answer, wall):
 
 
 def run_live(task, ctrl, llm, budget=0.8, max_steps=MAX_STEPS):
-    """Real agents. Yields one 'step' event per action and a 'final' event at the end."""
     import time
     t0 = time.time()
     st = dict(cand=None, last_verify=0, summarized=False, calls={k: 0 for k in
@@ -165,10 +156,9 @@ def run_live(task, ctrl, llm, budget=0.8, max_steps=MAX_STEPS):
 
 
 def run_replay(record, task, ctrl, budget=0.8, seed=0, max_steps=MAX_STEPS):
-    """Same events from recorded outputs (llm/trace_env.py). Instant and offline. 'task' is the llm.tasks dict."""
     env = TraceEnv([record], {"max_steps": max_steps})
     env.reset(seed)
-    env.budget = budget                                     # let the UI set the budget
+    env.budget = budget
     tokens, seconds, done = 0, 0.0, False
     st = {"steps": 0, "spent": 0.0, "budget": budget}
     while not done:
@@ -204,10 +194,7 @@ def run_replay(record, task, ctrl, budget=0.8, seed=0, max_steps=MAX_STEPS):
     yield fin
 
 
-# ---------------------------------------------------------------- racing two controllers
 def score(final):
-    """The reward the DQN was trained on (llm/trace_env.py): 1 for a correct answer, 0 for a wrong one, minus lambda*cost/reference,
-    and a flat penalty when no answer was produced. None when the task has no answer key (a custom task)."""
     c = DEFAULT_CONFIG
     cost_term = c["lambda_cost"] * final["cost"] / c["reference_cost"]
     if final["answer"] is None:
@@ -218,7 +205,6 @@ def score(final):
 
 
 def lockstep(gen_a, gen_b):
-    """Alternate between two episode generators so a page can show both live. Yields ('A' or 'B', event) until both are exhausted."""
     gens = {"A": gen_a, "B": gen_b}
     while gens:
         for side in list(gens):
@@ -229,14 +215,12 @@ def lockstep(gen_a, gen_b):
 
 
 def verdict(score_a, score_b, tol=0.005):
-    """'A', 'B' or 'tie' (None if a score is missing)."""
     if score_a is None or score_b is None:
         return None
     return "tie" if abs(score_a - score_b) <= tol else ("A" if score_a > score_b else "B")
 
 
 def replay_score(record, ctrl, budget, draw):
-    """Fast score of one recorded episode using the training environment's own reward (no grading subprocess). Returns (reward, cost)."""
     env = TraceEnv([record])
     env.reset(draw)
     env.budget = budget
@@ -248,8 +232,6 @@ def replay_score(record, ctrl, budget, draw):
 
 
 def board_scores(records, controllers, budget=0.8, draws=range(10)):
-    """Mean score and cost of every controller on every record, averaged over several recorded draws.
-    Returns {name: (scores array, costs array)}, arrays in the order of `records`."""
     out = {}
     for name, ctrl in controllers.items():
         sc, co = [], []

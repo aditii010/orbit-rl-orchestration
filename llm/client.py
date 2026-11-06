@@ -1,5 +1,3 @@
-"""One client for a local Ollama model and Groq. Logs tokens, latency and request count for every call.
-Keys come from the environment only (GROQ_API_KEY); they are never logged or printed."""
 import json
 import os
 import time
@@ -17,7 +15,7 @@ class LLM:
         self.backend, self.model = backend, model
         self.max_requests, self.n_requests = max_requests, 0
         self.log_path = log_path
-        self.min_tokens, self.reasoning_effort = min_tokens, reasoning_effort   # reasoning models spend hidden tokens
+        self.min_tokens, self.reasoning_effort = min_tokens, reasoning_effort
         if backend == "groq" and not os.environ.get("GROQ_API_KEY"):
             raise RuntimeError("GROQ_API_KEY is not set (put it in .env and load it)")
 
@@ -45,7 +43,7 @@ class LLM:
         if self.log_path:
             with open(self.log_path, "a") as f:
                 f.write(json.dumps({"model": self.model, "tin": tin, "tout": tout,
-                                    "seconds": round(rec["seconds"], 2)}) + "\n")     # metadata only, no text
+                                    "seconds": round(rec["seconds"], 2)}) + "\n")
         return rec
 
     def _post(self, url, body, extra_headers, retries=5):
@@ -56,7 +54,7 @@ class LLM:
             try:
                 return json.load(urllib.request.urlopen(req, timeout=600))
             except urllib.error.HTTPError as e:
-                if e.code == 429 and attempt < retries - 1:       # rate limited: wait and retry
+                if e.code == 429 and attempt < retries - 1:
                     time.sleep(float(e.headers.get("retry-after", 5 * (attempt + 1))))
                     continue
                 raise

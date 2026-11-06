@@ -1,9 +1,3 @@
-"""Non-learning baselines. A policy is a function (obs, mask) -> action index.
-
-Observation layout (see env/orbit_env.py): 0-2 task type, 3 est. difficulty, 4 has candidate,
-5-7 last verify (none/pass/fail), 8-11 call counts / max_steps (researcher, solver, verifier,
-summarizer), 12 money left, 13 steps left, 14 confidence, 15 summarized.
-"""
 from env.orbit_env import A
 
 SOLVE, RETRY, VERIFY = A["INVOKE_SOLVER"], A["RETRY_SOLVER"], A["INVOKE_VERIFIER"]
@@ -12,12 +6,10 @@ MAX_STEPS = 8
 
 
 def single_agent(obs, mask):
-    """One solver call, then stop. No specialists."""
     return SOLVE if not obs[4] else STOP
 
 
 def fixed_pipeline(obs, mask):
-    """Every task: researcher -> solver -> verifier -> summarizer -> stop."""
     n_res, n_ver, n_sum = (round(obs[8] * MAX_STEPS), round(obs[10] * MAX_STEPS),
                            round(obs[11] * MAX_STEPS))
     if n_res == 0:
@@ -34,11 +26,6 @@ def fixed_pipeline(obs, mask):
 def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_conf=None,
                      min_money_for_retry=0.15, summarize=True, giveup_diff=None,
                      lowconf_retry=False):
-    """Hand-designed router.
-    research_on: task-type indices (0 coding, 1 analytical, 2 research) that get a researcher call first.
-    verify: check the candidate. skip_verify_conf: if confidence >= this, trust it and skip checking.
-    Retry only after a failed check, up to max_retries, and only while enough money is left.
-    """
     def rule(obs, mask):
         ttype = int(obs[:3].argmax())
         n_res = round(obs[8] * MAX_STEPS)
@@ -49,13 +36,12 @@ def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_con
             if ttype in research_on and n_res == 0:
                 return RESEARCH
             return SOLVE
-        # difficulty-aware: on hard tasks do not spend on checks or retries, just finish
         hard = giveup_diff is not None and obs[3] >= giveup_diff
         retries_left = (not hard) and (n_solve - 1) < max_retries and obs[12] > min_money_for_retry
         trusted = skip_verify_conf is not None and obs[14] >= skip_verify_conf
         unchecked = not passed and not failed
         if lowconf_retry and unchecked and obs[14] < 0.5 and retries_left and mask[RETRY]:
-            return RETRY                      # probably wrong already: retry without paying for a check
+            return RETRY
         if verify and not hard and unchecked and not trusted:
             return VERIFY
         if failed and retries_left and mask[RETRY]:
@@ -67,7 +53,6 @@ def make_rule_router(research_on=(), verify=True, max_retries=2, skip_verify_con
 
 
 def make_typed_rule(res_calls, verify, max_retries, summarize):
-    """res_calls, verify: tuples indexed by task type (coding, analytical, research)."""
     def rule(obs, mask):
         t = int(obs[:3].argmax())
         n_res, n_solve = round(obs[8] * MAX_STEPS), round(obs[9] * MAX_STEPS)

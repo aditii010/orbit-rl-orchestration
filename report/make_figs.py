@@ -1,4 +1,3 @@
-"""Charts for the report (matplotlib, report palette). Numbers are copied from docs/logs (see Appendix C of the report)."""
 import json
 import os
 import matplotlib
@@ -18,7 +17,6 @@ def save(fig, name):
     plt.close(fig)
 
 
-# ---- Fig 3.1 orchestration loop
 fig, ax = plt.subplots(figsize=(6.4, 1.75))
 ax.set_xlim(0, 100); ax.set_ylim(0, 25); ax.axis("off")
 boxes = ["Task and\nbudget\narrive", "Controller\nobserves 16 numbers,\npicks a legal\naction", "Agent runs,\ncost is\ncharged", "State updates:\nanswer, check,\nmoney left", "STOP: answer\ngraded, reward\npaid"]
@@ -32,7 +30,6 @@ ax.annotate("", xy=(30, 4.6), xytext=(70, 4.6), arrowprops=dict(arrowstyle="-|>"
 ax.text(50, 1.6, "repeat until the controller chooses STOP, or the budget or step limit is reached", ha="center", fontsize=8, style="italic", color=OLIVE)
 save(fig, "fig_loop")
 
-# ---- Fig 5.1 learning curve
 lc = json.load(open("report/lc_summary.json"))
 fig, ax = plt.subplots(figsize=(6.2, 2.2))
 x = [e / 1000 for e in lc["eps"]]
@@ -43,7 +40,6 @@ ax.set_xlabel("training episodes (thousands)"); ax.set_ylabel("development retur
 ax.legend(frameon=False, loc="lower right", fontsize=8); ax.grid(axis="y", color="#E3E6EB", lw=0.6)
 save(fig, "fig_curve")
 
-# ---- Fig 5.2 simulator main result + ablation (two panels)
 fig, (a, b) = plt.subplots(1, 2, figsize=(6.5, 2.25), gridspec_kw={"width_ratios": [1, 1.05]})
 names = ["Fixed\npipeline", "Single\nagent", "Best\nrule", "Double\nDQN"]; vals = [0.0034, 0.1528, 0.1732, 0.189]
 bars = a.bar(names, vals, color=[GREY, GREY, GREY, SLATE], width=0.62)
@@ -57,7 +53,6 @@ b.axvline(0, color=SLATE, lw=0.8); b.set_yticks(y); b.set_yticklabels(lab, fonts
 b.spines["left"].set_visible(False); b.spines["right"].set_visible(True); b.set_xlabel("change in return"); b.set_title("(b) Ablations (training world)", fontsize=9.5, loc="left")
 fig.tight_layout(); save(fig, "fig_sim")
 
-# ---- Fig 5.3 real-model comparison
 pol = ["Single\nagent", "Fixed\npipeline", "Tuned\nrule", "Typed\nrule", "DDQN\nzero-shot", "DDQN\nrefit"]
 q = [0.462, 0.336, 0.569, 0.576, 0.438, 0.580]; g = [0.563, 0.282, 0.670, 0.819, 0.530, 0.770]
 fig, ax = plt.subplots(figsize=(6.4, 2.3))
@@ -68,7 +63,6 @@ ax.set_xticks(list(xs)); ax.set_xticklabels(pol, fontsize=8); ax.set_ylabel("ret
 ax.legend(frameon=False, ncol=2, loc="upper left", fontsize=8.5)
 save(fig, "fig_real")
 
-# ---- screenshots: shrink to a sensible size and compress (JPEG)
 for n in ("full", "task", "running", "result", "detail"):
     im = Image.open("report/img/shot_%s.png" % n).convert("RGB")
     if n == "detail":

@@ -1,4 +1,3 @@
-"""HTML emitter -> PDF via headless Chrome. Usage: python3 report/build_html.py  (reads report/pages.json if present)."""
 import json
 import os
 import re
@@ -20,7 +19,7 @@ def toc_items():
     for b in B:
         if b[0] == "h1":
             items.append((1, b[1]))
-        elif b[0] == "h2":
+        elif b[0] == "h2" and b[1].startswith("5."):
             items.append((2, b[1]))
     items += [(1, "REFERENCES"), (1, "APPENDIX A: CODE ORGANISATION AND REPRODUCTION"), (1, "APPENDIX B: PRE-REGISTERED PREDICTIONS AND OUTCOMES")]
     return items
@@ -72,7 +71,6 @@ def html():
             o.append('<p style="margin:0 0 2pt">%s</p>' % inl(b[1]))
         elif k == "spacer":
             o.append('<div style="height:%dpt"></div>' % b[1])
-    # contents
     o.append('<h1 class="pb" style="text-align:center">TABLE OF CONTENTS</h1>')
     for lv, t in [(1, "CERTIFICATE"), (1, "DECLARATION"), (1, "ACKNOWLEDGEMENT"), (1, "ABSTRACT")] + toc_items():
         o.append('<div class="toc l%d"><span>%s</span><span class="d"></span><span>%s</span></div>' % (lv, t, pg("H:" + t)))
@@ -83,7 +81,6 @@ def html():
     o.append('<h1 style="text-align:center;margin-top:10pt">LIST OF FIGURES</h1>')
     for t in fl:
         o.append('<div class="toc" style="font-size:9pt"><span>%s</span><span class="d"></span><span>%s</span></div>' % (t, pg("C:" + t.split(":")[0])))
-    # body
     for b in B:
         k = b[0]
         if k == "h1":

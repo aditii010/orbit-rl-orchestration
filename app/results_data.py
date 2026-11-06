@@ -1,22 +1,15 @@
-"""Numbers shown in the dashboard's results section. Every value is copied from a log in docs/logs;
-SOURCES lists (log file, text that must appear in it) so tests/test_results_data.py can catch typos."""
-
-# Simulator, 10,000 unseen test tasks. Return = quality minus cost penalty (higher is better).
 SIM = [("Fixed pipeline (always use every helper)", 0.0034, False),
        ("Single agent", 0.1528, False),
        ("Best hand-written rule (sees difficulty and confidence)", 0.1732, False),
        ("DQN (sees difficulty and confidence)", 0.189, True)]
 SIM_BLIND = [("Best hand-written rule (blind)", 0.1528, False), ("DQN (blind)", 0.1768, True)]
 
-# docs/logs/shift.log: (condition, single agent, best rule, DQN mean)
 SHIFT = [("Training world", 0.153, 0.166, 0.187), ("Tight budget", 0.153, 0.172, 0.167), ("Loose budget", 0.153, 0.166, 0.181),
          ("Research-heavy tasks", 0.067, 0.029, 0.077), ("Harder tasks", 0.088, 0.085, 0.103), ("Easier tasks", 0.213, 0.246, 0.263)]
 
-# docs/logs/ablate.log and ablate_blind.log: change in return vs the full DQN (training world)
 ABLATE = [("No cost penalty during training", -0.3123), ("No memory of what happened so far", -0.0205),
           ("No difficulty estimate", -0.0104), ("No confidence score", -0.0075), ("No difficulty and no confidence", -0.0122)]
 
-# docs/logs/real_eval_*.log, 24 held-out real tasks: single, fixed pipeline, hand-tuned rule, DQN refit on real runs
 REAL = {"qwen2.5:3b (local)": (0.462, 0.336, 0.569, 0.580), "gpt-oss-20b (Groq)": (0.563, 0.282, 0.670, 0.770)}
 
 SOURCES = [("docs/logs/sim_baselines_test.log", s) for s in ("+0.0034", "+0.1528", "+0.1732")] + [

@@ -1,12 +1,10 @@
-"""Held-out test: policies trained/tuned on the DEFAULT world are tested in shifted worlds.
-Also a 'retuned rule' per world (an optimistic reference: a human who knew the shift in advance)."""
 import itertools
 import os
 
 import numpy as np
 
 from baselines.policies import make_rule_router, single_agent
-from eval.compare2 import DEV as _  # noqa: F401  (keeps seed ranges documented in one place)
+from eval.compare2 import DEV as _
 from eval.runner import evaluate
 from eval.tune_dqn import NEW_RULE
 from rl.train import train
@@ -39,11 +37,11 @@ def retune(config):
 if __name__ == "__main__":
     os.makedirs("checkpoints", exist_ok=True)
     agents = []
-    for seed in range(5):                                   # trained ONCE, on the default world
+    for seed in range(5):
         agent, _h = train(seed=seed, eval_every=10**9, save=f"checkpoints/s2_seed{seed}.pt")
         agents.append(agent)
         print(f"trained seed {seed}", flush=True)
-    rule = make_rule_router(**NEW_RULE)                     # tuned ONCE, on the default world
+    rule = make_rule_router(**NEW_RULE)
     print(f"\n{'condition':16s} {'single':>8s} {'rule(fixed)':>12s} {'rule(retuned)':>14s} "
           f"{'DQN mean':>9s} {'DQN min':>8s} {'DQN-rule':>16s}", flush=True)
     for name, cfg in CONDITIONS.items():
@@ -52,7 +50,7 @@ if __name__ == "__main__":
         retuned = evaluate(make_rule_router(**retune(cfg)), TEST, cfg)["return"]
         d = [evaluate(a.policy(), TEST, cfg) for a in agents]
         means = np.array([x["return"] for x in d])
-        diff = np.mean([x["returns_raw"] for x in d], axis=0) - r["returns_raw"]   # seed-avg DQN vs rule
+        diff = np.mean([x["returns_raw"] for x in d], axis=0) - r["returns_raw"]
         print(f"{name:16s} {single:+8.3f} {r['return']:+12.3f} {retuned:+14.3f} {means.mean():+9.3f} "
               f"{means.min():+8.3f} {diff.mean():+8.4f}±{1.96*diff.std(ddof=1)/np.sqrt(len(diff)):.4f}",
               flush=True)

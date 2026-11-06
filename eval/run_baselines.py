@@ -1,10 +1,9 @@
-"""Tune the rule router on DEV seeds, then report all baselines on separate TEST seeds."""
 import itertools
 
 from baselines.policies import fixed_pipeline, make_rule_router, single_agent
 from eval.runner import evaluate, table
 
-DEV = range(0, 5000)   # bigger dev set: ~300 rule settings are searched, so 1000 tasks is too noisy
+DEV = range(0, 5000)
 TEST = range(100_000, 102_000)
 
 if __name__ == "__main__":

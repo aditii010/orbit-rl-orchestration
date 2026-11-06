@@ -1,4 +1,3 @@
-"""Find the page of every heading and caption in report/ORBIT_Report.pdf -> report/pages.json (keys H:<heading>, C:<Table x.y>/<Figure x.y>)."""
 import json
 import os
 import re
@@ -17,7 +16,7 @@ for pg in html.split("<page ")[1:]:
         lines.append(" ".join(re.findall(r">([^<]+)</word>", m.group(1))).replace("&amp;", "&"))
     pages.append(lines)
 out = {}
-body_start = next(i for i, lines in enumerate(pages, 1) if lines and lines[0].strip() == "1. INTRODUCTION")   # first page of the body
+body_start = next(i for i, lines in enumerate(pages, 1) if lines and lines[0].strip() == "1. INTRODUCTION")
 front = ("CERTIFICATE", "DECLARATION", "ACKNOWLEDGEMENT", "ABSTRACT")
 for key, text in L.heading_keys():
     rng = range(1, body_start) if text in front else range(body_start, len(pages) + 1)

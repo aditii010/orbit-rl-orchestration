@@ -1,4 +1,3 @@
-"""HTML for the trace cards. Kept separate so it can be unit-tested without starting Streamlit."""
 import html
 
 AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#5E6FA8"), "INVOKE_SOLVER": ("Solver", "#47565A"),
@@ -7,13 +6,10 @@ AGENT = {"INVOKE_RESEARCHER": ("Researcher", "#5E6FA8"), "INVOKE_SOLVER": ("Solv
 
 
 def _one_line(text):
-    """Escape text and turn newlines into &#10; so the card stays ONE line. Markdown ends an HTML block at a blank line,
-    which would cut a card in half whenever the model's code contains one."""
     return html.escape(text).replace("\r", "").replace("\n", "&#10;")
 
 
 def q_bars(ev):
-    """Small HTML bar chart: the controller's score (Q-value) for each action; illegal actions greyed out."""
     legal = [q for q, ok in zip(ev["q"], ev["legal"]) if ok]
     lo, hi = min(legal), max(legal)
     rows = []
@@ -31,7 +27,6 @@ def q_bars(ev):
 
 
 def step_card(ev, has_q):
-    """One trace card as HTML: coloured left edge, badge, cost line, output, and a fold-out with the DQN's scores."""
     name, color = AGENT[ev["action"]]
     cls = "out code" if ("```" in ev["detail"] or "def " in ev["detail"]) else "out"
     why = (f'<details><summary>Why this action? (the DQN\'s scores)</summary>{q_bars(ev)}</details>'
@@ -50,7 +45,6 @@ _PLAIN = {"INVOKE_RESEARCHER": "Asked the <b>Researcher</b> to look things up.",
 
 
 def narrate(steps, final=None):
-    """The run in plain words: one numbered line per step, plus a closing sentence once the run is over."""
     lines = []
     for ev in steps:
         if ev["action"] == "INVOKE_VERIFIER":
@@ -70,7 +64,6 @@ def narrate(steps, final=None):
     return out
 
 
-# ---------------------------------------------------------------- charts drawn as inline SVG (one line, so markdown cannot cut them)
 LEFT_COLOR, RIGHT_COLOR = "#6C7DB0", "#2B373B"
 _SHORT = {"INVOKE_RESEARCHER": "Research", "INVOKE_SOLVER": "Solve", "RETRY_SOLVER": "Retry", "INVOKE_VERIFIER": "Verify",
           "INVOKE_SUMMARIZER": "Tidy", "STOP": "Stop"}
@@ -85,8 +78,6 @@ def _flag(final):
 
 
 def race_chart(names, steps, finals, scores, winner, budget):
-    """Money spent so far, step by step, for both corners on one picture. Each dot is one helper call (helper colour);
-    the flag at the end of each line says whether the answer was right and what the run scored."""
     W, H, L, R, T, B = 1000, 400, 70, 170, 64, 58
     pw, ph = W - L - R, H - T - B
     nmax = max(3, max(len(x) for x in steps))
@@ -122,7 +113,7 @@ def race_chart(names, steps, finals, scores, winner, budget):
                         f'<text x="{x:.1f}" y="{y + (-13 if k == 0 else 24):.1f}" text-anchor="middle" font-size="11" fill="{colors[k]}" {f}>{_SHORT[ev["action"]]}</text>'))
         ends[k] = pts[-1]
     fy = [ends[0][1], ends[1][1]]
-    if abs(fy[0] - fy[1]) < 44:                       # two flags would collide: spread them above and below the middle
+    if abs(fy[0] - fy[1]) < 44:
         mid = (fy[0] + fy[1]) / 2
         fy = [mid - 22, mid + 22] if fy[0] <= fy[1] else [mid + 22, mid - 22]
     for k in (0, 1):
@@ -143,8 +134,6 @@ def race_chart(names, steps, finals, scores, winner, budget):
 
 
 def board_chart(rows, names):
-    """One row per task: where the left corner scored (blue dot) and where the right corner scored (dark dot), joined by a line.
-    Olive line = right corner better, copper = left corner better, grey = a tie. rows = (task id, type, left score, right score)."""
     rows = sorted(rows, key=lambda r: r[3] - r[2], reverse=True)
     W, L, R, T, rh = 1000, 96, 40, 62, 22
     H = T + rh * len(rows) + 44

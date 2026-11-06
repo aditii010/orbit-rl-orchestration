@@ -1,7 +1,7 @@
 import itertools, feasibility as f
 f.V_PASS_IF_OK, f.V_PASS_IF_BAD = 0.95, 0.10
 f.P_SOLVE = [0.90, 0.55, 0.20]
-BUDGETS = [3, 7]   # max actions; each episode gets one, and the agent sees it
+BUDGETS = [3, 7]
 def avg(cs, cv, pol_for):
     t = 0
     for H in BUDGETS:

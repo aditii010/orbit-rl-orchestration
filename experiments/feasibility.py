@@ -1,22 +1,17 @@
-"""Feasibility test: is there room for a learned policy over hand-made rules?
-Toy world, solved exactly (expectimax over observable histories, Bayesian belief on hidden state).
-Pre-registered rule: GO if optimal reward >= 1.10 * best hand rule reward."""
 import itertools, sys
 from functools import lru_cache
 
-PRIOR = [0.4, 0.4, 0.2]            # easy, medium, hard
-P_SOLVE = [0.90, 0.60, 0.25]       # chance a fresh solve is correct, per difficulty
-DECAY = 0.85                       # each extra attempt is a bit less likely to be right
-HINT = [0.70, 0.40, 0.15]          # P(hint says "looks easy" | difficulty)
-V_PASS_IF_OK, V_PASS_IF_BAD = 0.90, 0.20   # noisy verifier
-H = 6                              # max actions
+PRIOR = [0.4, 0.4, 0.2]
+P_SOLVE = [0.90, 0.60, 0.25]
+DECAY = 0.85
+HINT = [0.70, 0.40, 0.15]
+V_PASS_IF_OK, V_PASS_IF_BAD = 0.90, 0.20
+H = 6
 
 def run(c_solve, c_verify, policy):
-    """Exact expected reward of `policy` (policy=None -> optimal). Returns (value, policy_table)."""
     def p_ok(d, k): return P_SOLVE[d] * DECAY ** k
 
     def rec(belief, k, has, last, steps, hint, hist):
-        # belief[d][c]; k = solves so far; last in {None,'pass','fail'}
         acts = ['stop'] + (['solve'] if steps > 0 else []) + (['verify'] if has and steps > 0 else [])
         def q(a):
             if a == 'stop':
@@ -27,7 +22,6 @@ def run(c_solve, c_verify, policy):
                     m = belief[d][0] + belief[d][1]
                     nb[d][1] = m * p_ok(d, k); nb[d][0] = m * (1 - p_ok(d, k))
                 return -c_solve + rec(nb, k + 1, True, None, steps - 1, hint, hist + ('solve',))
-            # verify
             tot = -c_verify
             for obs in ('pass', 'fail'):
                 nb = [[0, 0] for _ in range(3)]
@@ -46,10 +40,9 @@ def run(c_solve, c_verify, policy):
         return q(a if a in acts else 'stop')
 
     total = 0.0
-    for hint in (1, 0):  # 1 = "looks easy"
+    for hint in (1, 0):
         ph = sum(PRIOR[d] * (HINT[d] if hint else 1 - HINT[d]) for d in range(3))
         belief = [[PRIOR[d] * (HINT[d] if hint else 1 - HINT[d]) / ph, 0.0] for d in range(3)]
-        # no candidate yet: put mass in c=0 slot (has=False so it is never read)
         total += ph * rec(belief, 0, False, None, H, hint, ())
     return total
 

@@ -1,4 +1,3 @@
-"""Plan A: three pre-declared DQN settings x 5 seeds. Select by DEV mean only, then report TEST."""
 import numpy as np
 
 from baselines.policies import make_rule_router
@@ -7,7 +6,6 @@ from rl.train import train
 
 DEV = range(0, 5000)
 TEST = range(100_000, 110_000)
-# best difficulty-aware rule from eval/compare2.py
 NEW_RULE = dict(research_on=(), verify=True, max_retries=3, skip_verify_conf=0.6,
                 min_money_for_retry=0.1, summarize=True, giveup_diff=0.7, lowconf_retry=False)
 
@@ -31,7 +29,7 @@ if __name__ == "__main__":
             print(f"  {name} seed {seed}: dev {dev[-1]:+.3f} test {test[-1]['return']:+.3f}", flush=True)
         results[name] = (dev, test)
         print(f"{name}: dev mean {np.mean(dev):+.3f} (min {min(dev):+.3f})", flush=True)
-    chosen = max(results, key=lambda n: np.mean(results[n][0]))      # selection uses DEV only
+    chosen = max(results, key=lambda n: np.mean(results[n][0]))
     print(f"\nCHOSEN BY DEV: {chosen}")
     dev, test = results[chosen]
     raws = np.array([t["returns_raw"] for t in test])

@@ -1,4 +1,3 @@
-"""Grader tests: references pass, obviously wrong answers fail, retrieval can reach the gold documents."""
 import pytest
 
 from llm.tasks import DOCS, all_tasks, grade, retrieve
@@ -28,7 +27,6 @@ def test_infinite_loop_is_cut_off():
 
 
 def test_hidden_tests_are_stricter_than_visible():
-    """A function that always returns None must fail the combined visible+hidden tests on every task."""
     from llm.tasks import run_asserts
     caught = 0
     for t in TASKS:
@@ -55,7 +53,6 @@ def test_research_grading_and_forbid():
 
 
 def test_every_answer_is_in_the_documents():
-    """Each research answer must be derivable from its gold docs (otherwise the task is unfair)."""
     for t in TASKS:
         if t["type"] != "research":
             continue
@@ -70,8 +67,6 @@ def test_first_retrieval_finds_gold_for_single_hop_questions():
 
 
 def test_extra_research_calls_reach_more_gold_docs():
-    """Hop questions: one researcher call rarely gets all gold docs; a second call (excluding seen docs, query
-    extended with what was found) should help on average."""
     one, two = 0, 0
     multi = [t for t in TASKS if t["type"] == "research" and len(t["gold"]) > 1]
     for t in multi:

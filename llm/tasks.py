@@ -1,5 +1,3 @@
-"""50 auto-graded tasks: 20 coding (hidden unit tests), 15 analytical (exact number), 15 research
-(invented facts, keyword retrieval). Every coding task ships a reference solution so graders can be tested."""
 import math
 import os
 import re
@@ -8,8 +6,6 @@ import sys
 import tempfile
 from functools import reduce
 
-# ---------------------------------------------------------------- coding
-# (fn, spec, reference, visible asserts, hidden asserts)
 _C = []
 
 
@@ -122,7 +118,6 @@ _code("valid_ipv4", "Return True if string s is a valid IPv4 address: exactly fo
 
 
 def run_asserts(code, asserts, timeout=10):
-    """Run model-written code + asserts in a separate Python process. Returns (n_passed, n_total)."""
     body = code + "\n\n_ok = 0\n" + "".join(
         f"try:\n    assert {a}\n    _ok += 1\nexcept BaseException:\n    pass\n" for a in asserts) + "print('PASSED', _ok)\n"
     with tempfile.TemporaryDirectory() as d:
@@ -142,7 +137,6 @@ def extract_code(text):
     return (m.group(1) if m else text).strip()
 
 
-# ---------------------------------------------------------------- analytical
 _A = [
     ("A shop sells pens at 12 rupees each. Ravi buys 7 pens and pays with a 100 rupee note. How much change does he get?", 100 - 7 * 12),
     ("A jacket costs 2400 rupees. It is sold at 25% discount, then a 5% tax is added on the discounted price. What is the final price?", 2400 * 0.75 * 1.05),
@@ -167,7 +161,6 @@ def grade_number(text, answer, tol=0.011):
     return bool(nums) and any(abs(float(n) - answer) <= tol for n in nums[-2:])
 
 
-# ---------------------------------------------------------------- research (invented facts)
 DOCS = [
     "Veltrix Corp was founded in 1987 by Marta Oyelaran in the city of Quillhaven. Its flagship product is the Brannock drill.",
     "Marta Oyelaran studied metallurgy at Dunmore Institute before founding her company. She retired in 2009 and moved to Port Selby.",
@@ -186,7 +179,6 @@ DOCS = [
     "Kestrel Dynamics, founded in 1995 by Omar Teague in Fenwick, makes the Ardent drill, which weighs 5.1 kilograms.",
     "Omar Teague left Kestrel Dynamics in 2011 and now teaches at Dunmore Institute.",
 ]
-# (question, accepted answers (normalised substrings), forbidden substrings, gold doc ids)
 _R = [
     ("Who founded Veltrix Corp?", ["oyelaran"], [], [0]),
     ("In which year was the Brannock drill first released?", ["1991"], [], [2]),
@@ -211,7 +203,6 @@ def _toks(s):
 
 
 def retrieve(query, exclude=(), k=2):
-    """Keyword overlap with a mild length-free idf. Returns doc ids not in `exclude`."""
     df = {}
     for d in DOCS:
         for t in set(_toks(d)):
@@ -227,7 +218,6 @@ def grade_text(text, accept, forbid):
     return all(a in t for a in accept) and not any(f in t for f in forbid)
 
 
-# ---------------------------------------------------------------- the task list
 def all_tasks():
     tasks = []
     for i, c in enumerate(_C):
@@ -240,7 +230,6 @@ def all_tasks():
 
 
 def grade(task, output):
-    """True if the final output is correct. Coding uses HIDDEN tests."""
     if task["type"] == "coding":
         ok, n = run_asserts(extract_code(output), task["visible"] + task["hidden"])
         return ok == n

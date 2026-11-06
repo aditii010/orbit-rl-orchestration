@@ -1,4 +1,3 @@
-"""The four specialist agents on top of a real LLM. Each returns a dict with the output and the call's usage."""
 import re
 
 from llm.tasks import DOCS, extract_code, retrieve, run_asserts
@@ -20,7 +19,6 @@ def strip_confidence(text):
 
 
 def final_answer(task, raw):
-    """Summarizer: deterministic formatter. Coding -> code only; analytical -> last number; research -> text."""
     raw = strip_confidence(raw)
     if task["type"] == "coding":
         return "```python\n" + extract_code(raw) + "\n```"
@@ -31,11 +29,7 @@ def final_answer(task, raw):
 
 
 def researcher(llm, task, seen_docs=()):
-    """Research tasks: retrieve new passages (query grows with what was found), no LLM call.
-    Others: ask for a short plan and edge cases. Returns (evidence_text, doc_ids, usage)."""
     if task["type"] == "research":
-        # Pure retrieval, no LLM call: the evidence is the passages themselves. (An earlier version let the model
-        # summarise them; on irrelevant passages it wrote "none of these help", which poisoned the solver.)
         query = task["question"] + " " + " ".join(DOCS[i] for i in seen_docs)
         new = retrieve(query, exclude=seen_docs)
         return "\n".join(f"[{i}] {DOCS[i]}" for i in new), list(new), {"tin": 0, "tout": 0, "seconds": 0.0}
@@ -67,7 +61,6 @@ def solver(llm, task, evidence="", feedback="", temperature=0.7):
 
 
 def verifier(llm, task, candidate_text, evidence=""):
-    """Coding: run the VISIBLE tests (deterministic). Others: an LLM check. Returns (passed, feedback, usage)."""
     cand = strip_confidence(candidate_text)
     if task["type"] == "coding":
         ok, n = run_asserts(extract_code(cand), task["visible"])

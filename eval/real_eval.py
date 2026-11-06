@@ -1,6 +1,3 @@
-"""Real-LLM comparison on the replayed trace cache. Pre-declared in docs/decisions.md.
-Dev tasks (26) are used to tune the rule and to refit the DQN; test tasks (24) are only used to report.
-Unit of analysis = task: per-task mean return over 100 seeded episodes, paired across methods."""
 import itertools
 import sys
 
@@ -19,7 +16,7 @@ EPS_PER_TASK = 100
 
 def per_task(policy, recs, per=EPS_PER_TASK):
     r = evaluate(policy, range(len(recs) * per), env_fn=lambda: TraceEnv(recs))
-    return r["returns_raw"].reshape(per, len(recs)).mean(0), r      # seed % n = task, so column j = task j
+    return r["returns_raw"].reshape(per, len(recs)).mean(0), r
 
 
 def diff_ci(a, b):

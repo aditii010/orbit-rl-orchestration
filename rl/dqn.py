@@ -1,4 +1,3 @@
-"""Double DQN with experience replay, a target network and action masking."""
 import copy
 
 import numpy as np
@@ -12,7 +11,6 @@ NEG = -1e9
 
 
 class QNet(nn.Module):
-    """obs (16 numbers) -> one Q-value per action."""
     def __init__(self, obs_dim=OBS_DIM, n_actions=N_ACTIONS, hidden=128):
         super().__init__()
         self.net = nn.Sequential(
@@ -25,7 +23,6 @@ class QNet(nn.Module):
 
 
 class ReplayBuffer:
-    """Fixed-size memory of (s, a, r, s', done, mask of s')."""
     def __init__(self, capacity, obs_dim=OBS_DIM, n_actions=N_ACTIONS):
         self.cap, self.i, self.size = capacity, 0, 0
         self.s = np.zeros((capacity, obs_dim), np.float32)
@@ -51,17 +48,15 @@ class ReplayBuffer:
 class DoubleDQN:
     def __init__(self, gamma=0.99, lr=1e-3, hidden=128, seed=0, hide=()):
         torch.manual_seed(seed)
-        # observation indices the agent is NOT allowed to see (zeroed). Used for ablations.
         self.keep = np.ones(OBS_DIM, np.float32)
         self.keep[list(hide)] = 0.0
         self.rng = np.random.default_rng(seed)
         self.q = QNet(hidden=hidden)
-        self.target = copy.deepcopy(self.q)          # frozen copy
+        self.target = copy.deepcopy(self.q)
         self.opt = torch.optim.Adam(self.q.parameters(), lr=lr)
         self.gamma = gamma
 
     def act(self, obs, mask, eps=0.0):
-        """Epsilon-greedy over LEGAL actions only."""
         obs = obs * self.keep
         legal = np.flatnonzero(mask)
         if self.rng.random() < eps:
@@ -75,12 +70,11 @@ class DoubleDQN:
         s, a, r, s2, d, m2 = batch
         q_sa = self.q(s).gather(1, a.unsqueeze(1)).squeeze(1)
         with torch.no_grad():
-            # Double DQN: live net CHOOSES the next action, frozen net SCORES it.
             q_next_live = self.q(s2).masked_fill(~m2, NEG)
             best = q_next_live.argmax(1, keepdim=True)
             q_next = self.target(s2).gather(1, best).squeeze(1)
-            y = r + self.gamma * (1.0 - d) * q_next      # no future after a terminal step
-        loss = nn.functional.smooth_l1_loss(q_sa, y)     # Huber: robust to occasional big errors
+            y = r + self.gamma * (1.0 - d) * q_next
+        loss = nn.functional.smooth_l1_loss(q_sa, y)
         self.opt.zero_grad()
         loss.backward()
         nn.utils.clip_grad_norm_(self.q.parameters(), 10.0)
@@ -96,5 +90,4 @@ class DoubleDQN:
         self.target.load_state_dict(self.q.state_dict())
 
     def policy(self):
-        """Greedy policy in the same (obs, mask) -> action form as the baselines."""
         return lambda obs, mask: self.act(obs, mask, eps=0.0)

@@ -1,4 +1,3 @@
-"""Replay environment: same outcome for same seed, correct reward arithmetic, no leak of difficulty/confidence."""
 import numpy as np
 import pytest
 
@@ -39,9 +38,9 @@ def test_reward_matches_hand_computation():
     env = TraceEnv(REC)
     env.reset(0)
     _, r1, d1, _ = env.step(A["INVOKE_SOLVER"])
-    assert not d1 and r1 < 0                                  # a call only costs
+    assert not d1 and r1 < 0
     _, r2, d2, info = env.step(A["STOP"])
-    assert d2 and r2 == float(info["success"])                # stop is free; reward = correctness
+    assert d2 and r2 == float(info["success"])
 
 
 def test_stop_without_candidate_is_penalised():
@@ -52,7 +51,6 @@ def test_stop_without_candidate_is_penalised():
 
 
 def test_research_tasks_need_the_researcher():
-    """In the cache, no sample is correct on research tasks with zero researcher calls."""
     for rec in REC:
         if rec["type"] == "research":
             assert not any(s["ok_final"] for s in rec["levels"]["0"])

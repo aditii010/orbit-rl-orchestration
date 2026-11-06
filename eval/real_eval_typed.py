@@ -1,4 +1,3 @@
-"""Typed rule family vs refit DQN on a trace cache. Pre-declared in docs/decisions.md."""
 import itertools
 import sys
 

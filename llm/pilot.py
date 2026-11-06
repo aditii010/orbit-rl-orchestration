@@ -1,5 +1,3 @@
-"""Pilot: how good is the model, how long do calls take, is its confidence informative, is the verifier right?
-12 tasks x 3 solver samples (+1 verifier call each). Prints a summary; raw numbers go to runs/pilot.jsonl."""
 import json
 import os
 import sys
@@ -24,7 +22,7 @@ if __name__ == "__main__":
     for tid in PICK:
         t = tasks[tid]
         evidence, seen = "", []
-        if t["type"] == "research":                         # give research tasks their evidence (2 researcher calls)
+        if t["type"] == "research":
             for _ in range(2):
                 ev, new, u = researcher(llm, t, seen)
                 evidence, seen = evidence + "\n" + ev, seen + new

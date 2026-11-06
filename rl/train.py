@@ -1,4 +1,3 @@
-"""Train Double DQN in the simulator. Training seeds never overlap DEV (0-999) or TEST (100000+)."""
 import argparse
 import os
 

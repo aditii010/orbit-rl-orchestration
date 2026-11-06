@@ -1,4 +1,3 @@
-"""Engine tests with a fake LLM (no network): events, cost accounting, budget stop, replay agrees with TraceEnv."""
 from app.engine import Controller, build_controllers, classify, custom_task, run_live, run_replay
 from baselines.policies import fixed_pipeline, single_agent
 from llm.tasks import all_tasks
@@ -55,7 +54,7 @@ def test_controllers_build_and_dqn_reports_masked_q():
 def test_score_matches_training_reward():
     from app.engine import score
     fin = {"answer": "x", "correct": True, "cost": 0.4}
-    assert abs(score(fin) - (1.0 - 0.5 * 0.4 / 0.4)) < 1e-9          # 1 - lambda*cost/reference
+    assert abs(score(fin) - (1.0 - 0.5 * 0.4 / 0.4)) < 1e-9
     assert abs(score({**fin, "correct": False}) - (-0.5)) < 1e-9
     assert abs(score({"answer": None, "correct": False, "cost": 0.0}) + 0.3) < 1e-9
     assert score({**fin, "correct": None}) is None

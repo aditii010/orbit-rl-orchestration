@@ -1,4 +1,3 @@
-"""Word emitter -> report/ORBIT_Report.docx (A4, Times New Roman, real headings, a Table-of-Contents control, page-number footer, embedded charts and screenshots)."""
 import html as _html
 import json
 import os
@@ -14,7 +13,7 @@ from docx.oxml.ns import nsdecls, qn
 from docx.shared import Cm, Inches, Pt, RGBColor
 
 import build_html_lists as L
-from content import APPENDIX_A, APPENDIX_B, B, REFS
+from content import TITLE, APPENDIX_A, APPENDIX_B, B, REFS
 from front import front_blocks
 
 PAGES = json.load(open("report/pages.json"))
@@ -59,7 +58,6 @@ st["List Bullet"].paragraph_format.space_after = Pt(2)
 
 
 def runs(par, text, size=None, bold=None, italic=None, color=None):
-    """Add text with <b>, <i>, <hl> markup to a paragraph."""
     text = _html.unescape(text)
     state = {"b": bool(bold), "i": bool(italic), "hl": False}
     for tok in re.split(r"(</?(?:b|i|hl)>)", text):
@@ -165,7 +163,6 @@ def instr(par, text, pos):
 
 
 def toc_control(entries):
-    """entries = [(level, text, page)]. Cached entries inside a Table-of-Contents content control with a TOC field."""
     paras = [tab_line(t, pg, size=10, bold=(lv == 1), indent=0.0 if lv == 1 else 0.25) for lv, t, pg in entries]
     sdt = parse_xml('<w:sdt %s><w:sdtPr><w:docPartObj><w:docPartGallery w:val="Table of Contents"/><w:docPartUnique/></w:docPartObj></w:sdtPr><w:sdtContent/></w:sdt>' % nsdecls("w"))
     paras[0]._p.addprevious(sdt)
@@ -182,7 +179,6 @@ def toc_control(entries):
     paras[-1]._p.append(r4)
 
 
-# ------------------------------------------------------------------ footer page numbers
 fp = sec.footer.paragraphs[0]
 fp.alignment = C
 for kind, txt in (("begin", None), (None, " PAGE "), ("end", None)):
@@ -193,7 +189,6 @@ for kind, txt in (("begin", None), (None, " PAGE "), ("end", None)):
         it = OxmlElement("w:instrText"); it.set(qn("xml:space"), "preserve"); it.text = txt; r._r.append(it)
     r.font.size = Pt(10)
 
-# ------------------------------------------------------------------ front matter
 for b in front_blocks():
     k = b[0]
     if k == "center":
@@ -220,7 +215,6 @@ for b in front_blocks():
     elif k == "spacer":
         para("", sa=0, sb=b[1] / 2)
 
-# ------------------------------------------------------------------ contents
 heading("TABLE OF CONTENTS", 1, newpage=True, centered=True).style = st["Normal"]
 h = doc.paragraphs[-1]; h.alignment = C
 for r in h.runs:
@@ -237,7 +231,6 @@ for title, kind in (("LIST OF TABLES", "table"), ("LIST OF FIGURES", "fig")):
     for lab, text in [(b[1].split(":")[0], b[1]) if b[0] == "table" else (b[2].split(":")[0], b[2]) for b in B if b[0] == kind] + ([("Table B.1", "Table B.1: Predictions written before the runs, and what happened")] if kind == "table" else []):
         tab_line(text, PAGES["C:" + lab], size=9.5)
 
-# ------------------------------------------------------------------ body
 for b in B:
     k = b[0]
     if k == "h1":
@@ -274,6 +267,6 @@ c = para("", C, 10, sb=4, sa=3, keep=True); runs(c, "<b>Table B.1:</b> Predictio
 make_table(["Experiment", "Prediction or rule", "Outcome"], APPENDIX_B, [1.7, 2.0, 2.57], ["l", "l", "l"])
 
 cp = doc.core_properties
-cp.title = "ORBIT: Learning When to Call Which Agent"; cp.author = "Aditi Sikarwar"; cp.subject = "UCS760 project report"; cp.keywords = "reinforcement learning, Double DQN, multi-agent LLM"
+cp.title = TITLE; cp.author = "Aditi Sikarwar"; cp.subject = "UCS760 project report"; cp.keywords = "reinforcement learning, Double DQN, multi-agent LLM"
 doc.save("report/ORBIT_Report.docx")
 print("saved", os.path.getsize("report/ORBIT_Report.docx") // 1024, "KB")

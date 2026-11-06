@@ -1,4 +1,3 @@
-"""Train DQN on several seeds, test each (final checkpoint) against baselines on the same TEST tasks."""
 import numpy as np
 
 from baselines.policies import fixed_pipeline, make_rule_router, single_agent
@@ -6,7 +5,6 @@ from eval.runner import evaluate, table
 from rl.train import train
 
 TEST = range(100_000, 110_000)
-# best rule found on DEV by eval/run_baselines.py
 RULE = dict(research_on=(), verify=True, max_retries=3, skip_verify_conf=0.6, min_money_for_retry=0.1)
 
 if __name__ == "__main__":
@@ -25,7 +23,7 @@ if __name__ == "__main__":
     print(f"\nDQN mean over seeds: {means.mean():+.3f}  (seed spread {means.min():+.3f} to {means.max():+.3f})")
     print(f"Rule router:         {rule_raw.mean():+.3f}")
     for i, d in enumerate(raws):
-        diff = d - rule_raw                      # paired: same task, same seed
+        diff = d - rule_raw
         print(f"seed {i}: DQN - rule = {diff.mean():+.3f} ± {1.96*diff.std(ddof=1)/np.sqrt(len(diff)):.3f}")
     print(f"relative gain of DQN mean over rule: {100*(means.mean()/rule_raw.mean()-1):+.1f}%  (GO needs >= +10%)")
     print("\nPaired vs single agent (same tasks):")

@@ -1,5 +1,3 @@
-"""C3: DQN blind to difficulty (3) and confidence (14) vs a rule that is also blind. Pre-declared in docs/decisions.md.
-The rule grid is chosen on DEV only; everything is reported on TEST (paired, same tasks)."""
 import itertools
 
 import numpy as np

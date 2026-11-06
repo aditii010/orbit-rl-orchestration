@@ -1,4 +1,3 @@
-"""Benchmark runner: evaluate any policy on the same seeded tasks."""
 import numpy as np
 
 from env.orbit_env import OrbitEnv

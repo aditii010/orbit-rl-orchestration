@@ -1,10 +1,3 @@
-"""Replay environment built from the real-LLM trace cache (runs/cache_*.jsonl).
-Same interface and 16-number observation as env/orbit_env.py, so the same policies and DQN run on it.
-Differences from the simulator (all declared in docs/decisions.md):
-  * outcomes (correct / verifier verdict) come from RECORDED model outputs, not from probabilities;
-  * difficulty (3) and confidence (14) are always 0 (blind: neither is usable with real LLMs);
-  * cost = (tokens in + tokens out) / TOKENS_PER_COST + CALL_OVERHEAD for every call;
-  * a correct answer is worth 1.0 whether or not it was summarized (we grade the real text, summarized or raw)."""
 import json
 
 import numpy as np
@@ -12,8 +5,8 @@ import numpy as np
 from env.orbit_env import A, ACTIONS, DEFAULT_CONFIG, OBS_DIM
 from env.agents_sim import TASK_TYPES
 
-TOKENS_PER_COST = 2500.0    # calibrated so a mean solver call (~300 tokens) costs about 0.12, like the simulator
-CALL_OVERHEAD = 0.02        # retrieval / running tests / formatting / orchestration, even when no LLM tokens are used
+TOKENS_PER_COST = 2500.0
+CALL_OVERHEAD = 0.02
 
 
 def load_cache(path):
@@ -21,7 +14,6 @@ def load_cache(path):
 
 
 def split_tasks(records):
-    """Stratified half/half: within each task type, even positions -> dev, odd -> test."""
     dev, test, seen = [], [], {}
     for r in records:
         k = seen.get(r["type"], 0)
@@ -42,10 +34,9 @@ class TraceEnv:
     def reset(self, seed=None):
         rng = np.random.default_rng(seed)
         c = self.cfg
-        self.task = self.records[int(seed) % len(self.records)]     # balanced: every task equally often
+        self.task = self.records[int(seed) % len(self.records)]
         self.task_type = self.task["type"]
         self.budget = float(rng.uniform(*c["budget_range"]))
-        # sample order fixed up front per evidence level, so paired policies see identical draws
         self.order = {lv: list(rng.permutation(len(rows))) for lv, rows in self.task["levels"].items()}
         self.n_res = 0
         self.has_candidate = False
@@ -82,7 +73,7 @@ class TraceEnv:
             self.n_res += 1
         elif name in ("INVOKE_SOLVER", "RETRY_SOLVER"):
             lv = self._level()
-            i = self.order[lv][self.used[lv] % len(self.order[lv])]      # next unused recorded sample (wraps)
+            i = self.order[lv][self.used[lv] % len(self.order[lv])]
             self.used[lv] += 1
             self.cand = self.task["levels"][lv][i]
             cost = _cost(self.cand["tin"], self.cand["tout"])

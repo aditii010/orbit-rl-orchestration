@@ -1,5 +1,3 @@
-"""ORBIT dashboard. Run from the project root:  streamlit run app/dashboard.py
-Desktop layout: frosted-glass cards on a gradient, a left rail with the controls, a right stage with the live run and the comparison."""
 import os
 import sys
 import time
@@ -19,8 +17,6 @@ from llm.tasks import all_tasks
 from llm.trace_env import load_cache, split_tasks
 
 st.set_page_config(page_title="ORBIT", layout="wide", initial_sidebar_state="collapsed")
-# Palette (user's 'Rich Beige Complementary'): Moist Gold #DBDE70, Cuddle #BECAE9, Orchid Hue #E2E99C, Asagi Koi #47565A, Old World #ADB6CE.
-# Fonts: Bodoni Moda for headings only (free lookalike of the user's Amethyst); Inter for all other text.
 HELPERS = [("Researcher", "#5E6FA8", "looks up facts"), ("Solver", "#47565A", "writes the answer"),
            ("Verifier", "#7C8120", "checks it"), ("Summarizer", "#7A6A8F", "tidies it"), ("STOP", "#7D8A8E", "hands it in")]
 st.markdown("""<style>
@@ -144,7 +140,6 @@ def tasks():
 
 
 def load_groq_key():
-    """Read GROQ_API_KEY from .env into the environment. The value is never displayed or logged."""
     if os.environ.get("GROQ_API_KEY") or not os.path.exists(".env"):
         return bool(os.environ.get("GROQ_API_KEY"))
     for line in open(".env"):
@@ -159,7 +154,6 @@ def short(t):
 
 
 def run_episode(task, ctrl, mode, budget, draw):
-    """Returns a generator of events for the chosen mode."""
     if mode == "Replay (recorded, offline)":
         return run_replay(records()[task["id"]], task, ctrl, budget=budget, seed=draw)
     if mode.startswith("Live - Groq"):
@@ -170,10 +164,9 @@ def run_episode(task, ctrl, mode, budget, draw):
 
 
 def safe_events(task, ctrl, mode, budget, draw):
-    """run_episode with a friendly message instead of a traceback when a model is unreachable."""
     try:
         yield from run_episode(task, ctrl, mode, budget, draw)
-    except Exception as e:                                        # noqa: BLE001 (show any failure to the user)
+    except Exception as e:
         if type(e).__name__ in ("StopException", "RerunException"):
             raise
         if isinstance(e, urllib.error.URLError):
@@ -187,8 +180,6 @@ def safe_events(task, ctrl, mode, budget, draw):
 
 
 def bars(rows, fmt="{:+.3f}"):
-    """Horizontal bars as HTML. rows = (label, value, highlight). The learned controller is dark slate, the rest soft grey-blue.
-    Bar length is proportional to |value|; the printed value keeps its sign."""
     mx = max(abs(v) for _, v, _ in rows) or 1.0
     out = []
     for name, v, hl in rows:
@@ -199,7 +190,6 @@ def bars(rows, fmt="{:+.3f}"):
     return '<div class="bars">' + "".join(out) + "</div>"
 
 
-# ---------------------------------------------------------------- page
 CS = controllers()
 T = tasks()
 has_groq = load_groq_key()
@@ -231,10 +221,8 @@ def get_task():
 LIVE_Q, REPLAY = "Live - Ollama qwen2.5:3b (local)", "Replay (recorded, offline)"
 R_NAME = "DQN (refit on real runs)"
 LABEL = {t["id"]: short(t) for t in T.values()}
-_, TEST_RECS = split_tasks(list(records().values()))        # the 24 tasks the retrained DQN never saw
-REPLAY_DELAY = 0.0 if os.environ.get("ORBIT_FAST") else 0.7   # replay is instant, so pause a little to make it watchable
-# One-click shortcuts: (button text, task id, left corner, right corner, mode, budget, replay draw, what to start).
-# The four races were checked in advance: the retrained DQN wins each one (see docs/DEMO.md).
+_, TEST_RECS = split_tasks(list(records().values()))
+REPLAY_DELAY = 0.0 if os.environ.get("ORBIT_FAST") else 0.7
 PRESETS = [("DQN vs Fixed Pipeline", "code04", "Fixed pipeline", R_NAME, LIVE_Q, 0.8, 0, "race",
             "Coding task. Fixed pipeline (researcher, solver, verifier, summarizer) against the DQN's selective policy under the cost penalty."),
            ("Zero-Shot vs Refit DQN", "res01", "DQN (simulator only)", R_NAME, LIVE_Q, 0.8, 0, "race",
@@ -253,7 +241,6 @@ def apply_preset(i):
 
 
 def preview_html():
-    """What the chosen task actually says, so the user sees it before running."""
     if pick == "(write your own)":
         return f'<div class="preview"><span class="tchip">your own</span><div>{typed}</div></div>'
     t = T[pick.split("] ")[1].split(":")[0]]
@@ -328,7 +315,6 @@ def result_word(final):
 
 
 def do_race(task):
-    """Two controllers, same task, live and side by side. Steps alternate, so both columns fill in together."""
     names = {"A": left_name, "B": right_name}
     ctrls = {"A": CS[left_name], "B": CS[right_name]}
     ui = {}
@@ -396,7 +382,6 @@ def board(bud):
 
 
 def do_board():
-    """Race the two corners on every unseen task (recorded runs, 10 draws each) and keep a running tally."""
     sc = board(budget)
     a_sc, a_co = sc[left_name]
     b_sc, b_co = sc[right_name]
@@ -443,7 +428,6 @@ def do_board():
 
 
 def do_one(task):
-    """One controller alone: its steps in plain words, the details of each call, and the result."""
     ctrl = CS[right_name]
     cols = st.columns(4)
     ph = [c.empty() for c in cols]

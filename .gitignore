@@ -3,6 +3,10 @@
 __pycache__/
 *.pyc
 .venv/
-runs/
-checkpoints/
 .DS_Store
+.pytest_cache/
+docs/logs/streamlit.log
+docs/DEMO.md
+docs/decisions.md
+checkpoints/dqn_seed*.pt
+runs/pilot.jsonl

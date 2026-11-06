@@ -1,4 +1,3 @@
-"""Fair re-test: rule family now includes difficulty-aware rules. Tune on DEV, test on TEST vs DQN."""
 import itertools
 
 import numpy as np

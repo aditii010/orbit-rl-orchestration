@@ -1,4 +1,3 @@
-"""Trace cards must be a single line of HTML (no blank lines), or Streamlit's markdown cuts them in half."""
 from app.cards import step_card
 
 
@@ -31,7 +30,7 @@ def test_plain_words_describe_each_step_and_the_outcome():
     final = {"kind": "final", "answer": "x", "correct": True, "cost": 0.11, "steps": 3, "forced_end": False}
     out = narrate(steps, final)
     assert "Solver</b> to write an answer" in out and "it <b>passed</b>" in out and "<b>correct</b>" in out and "0.110" in out
-    assert "\n" not in out                      # single line, so markdown cannot cut it
+    assert "\n" not in out
 
 
 def _steps(actions_costs):
@@ -51,7 +50,7 @@ def test_race_chart_is_one_line_valid_svg_with_both_flags():
     fb = {"answer": "y", "correct": True, "cost": 0.14}
     svg = race_chart(("Single agent", "DQN (refit)"), (a, b), (fa, fb), (-0.125, 0.825), "B", 0.8)
     assert "\n" not in svg
-    ET.fromstring(svg.replace("&#10003;", "ok").replace("&#10007;", "x").replace("&#9733;", "*"))    # well-formed XML
+    ET.fromstring(svg.replace("&#10003;", "ok").replace("&#10007;", "x").replace("&#9733;", "*"))
     assert "correct" in svg and "wrong" in svg and "WINNER" in svg and "Single agent" in svg
 
 
@@ -62,4 +61,4 @@ def test_board_chart_is_one_line_valid_svg_and_sorted_best_first():
     svg = board_chart(rows, ("Fixed pipeline", "DQN"))
     assert "\n" not in svg
     ET.fromstring(svg)
-    assert svg.index("t2") < svg.index("t3") < svg.index("t1")          # biggest right-corner advantage first
+    assert svg.index("t2") < svg.index("t3") < svg.index("t1")

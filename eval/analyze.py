@@ -1,4 +1,3 @@
-"""What does each policy do in each situation? Action frequencies by context."""
 from collections import Counter, defaultdict
 
 from baselines.policies import make_rule_router
