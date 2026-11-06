@@ -1,0 +1,142 @@
+id,type,split,question,answer,visible_tests,hidden_tests,reference_solution,evidence_docs
+code00,coding,dev,"Return the second largest DISTINCT value in the list nums, or None if there is none. (function: second_largest)",,"[""second_largest([3,1,2]) == 2"", ""second_largest([5,5]) is None""]","[""second_largest([1,2]) == 1"", ""second_largest([10,9,9,8]) == 9"", ""second_largest([]) is None"", ""second_largest([-1,-5,-3]) == -3"", ""second_largest([7]) is None"", ""second_largest([2,2,3,3]) == 2""]","def second_largest(nums):
+    s = sorted(set(nums), reverse=True)
+    return s[1] if len(s) > 1 else None",
+code01,coding,test,"Return True if string s reads the same forwards and backwards, ignoring case and every non-alphanumeric character. (function: is_palindrome)",,"[""is_palindrome('A man, a plan, a canal: Panama') is True"", ""is_palindrome('hello') is False""]","[""is_palindrome('') is True"", ""is_palindrome('No lemon, no melon') is True"", ""is_palindrome('ab') is False"", ""is_palindrome('12321') is True"", ""is_palindrome('0P') is False"", ""is_palindrome('Was it a car or a cat I saw?') is True""]","def is_palindrome(s):
+    t = [c.lower() for c in s if c.isalnum()]
+    return t == t[::-1]",
+code02,coding,dev,"Return a list of strings for the numbers 1..n: 'Fizz' for multiples of 3, 'Buzz' for multiples of 5, 'FizzBuzz' for both, otherwise the number as a string. (function: fizzbuzz)",,"[""fizzbuzz(3) == ['1','2','Fizz']"", ""fizzbuzz(5) == ['1','2','Fizz','4','Buzz']""]","[""fizzbuzz(15)[-1] == 'FizzBuzz'"", ""fizzbuzz(0) == []"", ""fizzbuzz(1) == ['1']"", ""fizzbuzz(10)[8] == 'Fizz'"", ""len(fizzbuzz(30)) == 30"", ""fizzbuzz(6)[5] == 'Fizz'""]","def fizzbuzz(n):
+    return ['FizzBuzz' if i % 15 == 0 else 'Fizz' if i % 3 == 0 else 'Buzz' if i % 5 == 0 else str(i) for i in range(1, n + 1)]",
+code03,coding,test,"Return how many vowels (a, e, i, o, u, case-insensitive) the string s contains. 'y' is not a vowel. (function: count_vowels)",,"[""count_vowels('Hello') == 2"", ""count_vowels('xyz') == 0""]","[""count_vowels('AEIOU') == 5"", ""count_vowels('') == 0"", ""count_vowels('rhythm') == 0"", ""count_vowels('Programming Language') == 7"", ""count_vowels('y') == 0""]","def count_vowels(s):
+    return sum(c in 'aeiou' for c in s.lower())",
+code04,coding,dev,"Flatten an arbitrarily nested list of lists into one flat list, keeping left-to-right order. (function: flatten)",,"[""flatten([1,[2,3]]) == [1,2,3]"", ""flatten([]) == []""]","[""flatten([[1,[2]],[[3]],4]) == [1,2,3,4]"", ""flatten([[],[[]]]) == []"", ""flatten([1,[2,[3,[4,[5]]]]]) == [1,2,3,4,5]"", ""flatten(['a',['b']]) == ['a','b']"", ""flatten([[1],[2],[3]]) == [1,2,3]""]","def flatten(lst):
+    out = []
+    for x in lst:
+        if isinstance(x, list):
+            out.extend(flatten(x))
+        else:
+            out.append(x)
+    return out",
+code05,coding,test,"Run-length encode string s: each run of the same character becomes the character followed by the run length, e.g. 'aaabcc' -> 'a3b1c2'. Empty string gives ''. (function: rle)",,"[""rle('aaabcc') == 'a3b1c2'"", ""rle('') == ''""]","[""rle('a') == 'a1'"", ""rle('aabb') == 'a2b2'"", ""rle('abc') == 'a1b1c1'"", ""rle('zzzzzzzzzzzz') == 'z12'"", ""rle('aaAA') == 'a2A2'""]","def rle(s):
+    out, i = '', 0
+    while i < len(s):
+        j = i
+        while j < len(s) and s[j] == s[i]:
+            j += 1
+        out += s[i] + str(j - i)
+        i = j
+    return out",
+code06,coding,dev,"Convert a Roman numeral string (I, V, X, L, C, D, M with subtractive pairs like IV, IX, XL, XC, CD, CM) to an integer. (function: roman_to_int)",,"[""roman_to_int('III') == 3"", ""roman_to_int('IV') == 4""]","[""roman_to_int('IX') == 9"", ""roman_to_int('LVIII') == 58"", ""roman_to_int('MCMXCIV') == 1994"", ""roman_to_int('XL') == 40"", ""roman_to_int('MMXXIV') == 2024"", ""roman_to_int('CDXLIV') == 444""]","def roman_to_int(s):
+    v = {'I':1,'V':5,'X':10,'L':50,'C':100,'D':500,'M':1000}
+    t = 0
+    for i, c in enumerate(s):
+        t += -v[c] if i + 1 < len(s) and v[c] < v[s[i+1]] else v[c]
+    return t",
+code07,coding,test,"Return True if string s contains only correctly nested and closed brackets of the kinds (), [] and {}. The empty string is valid. (function: valid_brackets)",,"[""valid_brackets('()[]{}') is True"", ""valid_brackets('(]') is False""]","[""valid_brackets('') is True"", ""valid_brackets('([{}])') is True"", ""valid_brackets('([)]') is False"", ""valid_brackets('((') is False"", ""valid_brackets('}') is False"", ""valid_brackets('{[]}') is True""]","def valid_brackets(s):
+    pairs = {')':'(', ']':'[', '}':'{'}
+    st = []
+    for c in s:
+        if c in '([{':
+            st.append(c)
+        elif not st or st.pop() != pairs[c]:
+            return False
+    return not st",
+code08,coding,dev,"Return the tuple (i, j) with i < j and nums[i] + nums[j] == target. If several pairs work, return the one with the smallest i, then the smallest j. Return None if no pair exists. (function: two_sum)",,"[""two_sum([2,7,11,15], 9) == (0,1)"", ""two_sum([1,2], 10) is None""]","[""two_sum([3,2,4], 6) == (1,2)"", ""two_sum([3,3], 6) == (0,1)"", ""two_sum([1,5,5,1], 6) == (0,1)"", ""two_sum([0,4,3,0], 0) == (0,3)"", ""two_sum([], 1) is None"", ""two_sum([-1,-2,-3,-4,-5], -8) == (2,4)""]","def two_sum(nums, target):
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if nums[i] + nums[j] == target:
+                return (i, j)
+    return None",
+code09,coding,test,"Merge overlapping intervals (intervals that touch, like [1,4] and [4,5], also merge). Input is a list of [start, end] lists in any order; return a list of [start, end] lists sorted by start. (function: merge_intervals)",,"[""merge_intervals([[1,3],[2,6],[8,10]]) == [[1,6],[8,10]]"", ""merge_intervals([]) == []""]","[""merge_intervals([[1,4],[4,5]]) == [[1,5]]"", ""merge_intervals([[5,6],[1,2]]) == [[1,2],[5,6]]"", ""merge_intervals([[1,10],[2,3]]) == [[1,10]]"", ""merge_intervals([[1,2]]) == [[1,2]]"", ""merge_intervals([[2,3],[4,5],[6,7],[8,9],[1,10]]) == [[1,10]]""]","def merge_intervals(iv):
+    out = []
+    for a, b in sorted(iv):
+        if out and a <= out[-1][1]:
+            out[-1][1] = max(out[-1][1], b)
+        else:
+            out.append([a, b])
+    return out",
+code10,coding,dev,Group words that are anagrams of each other. Return a list of groups; sort the words inside each group alphabetically and sort the groups by their first word. (function: group_anagrams),,"[""group_anagrams(['eat','tea','tan','ate','nat','bat']) == [['ate','eat','tea'],['bat'],['nat','tan']]"", ""group_anagrams([]) == []""]","[""group_anagrams(['a']) == [['a']]"", ""group_anagrams(['ab','ba','abc']) == [['ab','ba'],['abc']]"", ""group_anagrams(['x','x']) == [['x','x']]"", ""group_anagrams(['listen','silent','enlist','google']) == [['enlist','listen','silent'],['google']]""]","def group_anagrams(words):
+    d = {}
+    for w in words:
+        d.setdefault(''.join(sorted(w)), []).append(w)
+    return sorted((sorted(g) for g in d.values()), key=lambda g: g[0])",
+code11,coding,test,"Return the longest common prefix of a list of strings, or '' if there is none or the list is empty. (function: longest_common_prefix)",,"[""longest_common_prefix(['flower','flow','flight']) == 'fl'"", ""longest_common_prefix(['dog','car']) == ''""]","[""longest_common_prefix([]) == ''"", ""longest_common_prefix(['a']) == 'a'"", ""longest_common_prefix(['abc','abc']) == 'abc'"", ""longest_common_prefix(['ab','a']) == 'a'"", ""longest_common_prefix(['interview','internet','interval']) == 'inter'""]","def longest_common_prefix(strs):
+    if not strs:
+        return ''
+    p = strs[0]
+    for s in strs[1:]:
+        while not s.startswith(p):
+            p = p[:-1]
+    return p",
+code12,coding,dev,"Return a new list: lst rotated to the right by k places. k may be 0, larger than len(lst), or negative (negative means rotate left). An empty list stays empty. (function: rotate_right)",,"[""rotate_right([1,2,3,4,5], 2) == [4,5,1,2,3]"", ""rotate_right([1,2], 0) == [1,2]""]","[""rotate_right([1,2,3], 3) == [1,2,3]"", ""rotate_right([1,2,3], 4) == [3,1,2]"", ""rotate_right([], 5) == []"", ""rotate_right([1], 100) == [1]"", ""rotate_right([1,2,3,4], -1) == [2,3,4,1]""]","def rotate_right(lst, k):
+    if not lst:
+        return []
+    k %= len(lst)
+    return lst[-k:] + lst[:-k] if k else list(lst)",
+code13,coding,test,Return the least common multiple of a list of positive integers. For an empty list return 1. (function: lcm_list),,"[""lcm_list([4,6]) == 12"", ""lcm_list([3]) == 3""]","[""lcm_list([]) == 1"", ""lcm_list([2,3,5]) == 30"", ""lcm_list([12,18]) == 36"", ""lcm_list([7,7]) == 7"", ""lcm_list([1,2,3,4,5,6]) == 60"", ""lcm_list([10,15,25]) == 150""]","from math import gcd
+def lcm_list(nums):
+    r = 1
+    for n in nums:
+        r = r * n // gcd(r, n)
+    return r",
+code14,coding,dev,"Return the index of x in the sorted list arr, or -1 if it is absent. If x appears several times, return the LEFTMOST index. (function: binary_search)",,"[""binary_search([1,3,5,7], 5) == 2"", ""binary_search([1,3], 2) == -1""]","[""binary_search([], 1) == -1"", ""binary_search([2,2,2,2], 2) == 0"", ""binary_search([1,2,2,3], 2) == 1"", ""binary_search([1,2,3], 3) == 2"", ""binary_search([1,2,3], 0) == -1"", ""binary_search([5], 5) == 0""]","def binary_search(arr, x):
+    lo, hi = 0, len(arr)
+    while lo < hi:
+        m = (lo + hi) // 2
+        if arr[m] < x:
+            lo = m + 1
+        else:
+            hi = m
+    return lo if lo < len(arr) and arr[lo] == x else -1",
+code15,coding,test,Return the largest sum of any non-empty contiguous sub-list of nums. (function: max_subarray),,"[""max_subarray([-2,1,-3,4,-1,2,1,-5,4]) == 6"", ""max_subarray([1]) == 1""]","[""max_subarray([-3,-1,-2]) == -1"", ""max_subarray([5,4,-1,7,8]) == 23"", ""max_subarray([0,0]) == 0"", ""max_subarray([-1]) == -1"", ""max_subarray([2,-1,2]) == 3""]","def max_subarray(nums):
+    best = cur = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x)
+        best = max(best, cur)
+    return best",
+code16,coding,dev,"Lowercase text and split it into words made only of the letters a-z (every other character is a separator). Return the k most frequent words as a list, most frequent first; break ties alphabetically. (function: top_words)",,"[""top_words('a b a c b a', 2) == ['a','b']"", ""top_words('', 3) == []""]","[""top_words('The cat. The dog! the end', 1) == ['the']"", ""top_words('b a', 2) == ['a','b']"", ""top_words('x y z', 5) == ['x','y','z']"", ""top_words('Hi hi HI there', 2) == ['hi','there']"", ""top_words(\""don't stop\"", 3) == ['don','stop','t']""]","import re
+from collections import Counter
+def top_words(text, k):
+    c = Counter(re.findall('[a-z]+', text.lower()))
+    return [w for w, _ in sorted(c.items(), key=lambda x: (-x[1], x[0]))[:k]]",
+code17,coding,test,Return the transpose of a matrix given as a list of rows. The empty matrix [] transposes to []. (function: transpose),,"[""transpose([[1,2,3],[4,5,6]]) == [[1,4],[2,5],[3,6]]"", ""transpose([]) == []""]","[""transpose([[1]]) == [[1]]"", ""transpose([[1,2]]) == [[1],[2]]"", ""transpose([[1],[2],[3]]) == [[1,2,3]]"", ""transpose([[1,2],[3,4]]) == [[1,3],[2,4]]""]","def transpose(m):
+    return [list(r) for r in zip(*m)]",
+code18,coding,dev,"Return a new list with duplicates removed, keeping the first occurrence of each item and the original order. Items may be of mixed types (1 and '1' are different). (function: dedupe)",,"[""dedupe([1,2,1,3]) == [1,2,3]"", ""dedupe([]) == []""]","[""dedupe(['a','b','a']) == ['a','b']"", ""dedupe([1,1,1]) == [1]"", ""dedupe([3,2,1]) == [3,2,1]"", ""dedupe([1,'1',1]) == [1,'1']"", ""dedupe([None,None]) == [None]""]","def dedupe(lst):
+    out = []
+    for x in lst:
+        if not any(type(x) == type(y) and x == y for y in out):
+            out.append(x)
+    return out",
+code19,coding,test,"Return True if string s is a valid IPv4 address: exactly four dot-separated parts, each made only of digits, each between 0 and 255, and no leading zeros (the part '0' itself is fine). (function: valid_ipv4)",,"[""valid_ipv4('192.168.1.1') is True"", ""valid_ipv4('256.1.1.1') is False""]","[""valid_ipv4('0.0.0.0') is True"", ""valid_ipv4('01.1.1.1') is False"", ""valid_ipv4('1.1.1') is False"", ""valid_ipv4('1.1.1.1.1') is False"", ""valid_ipv4('a.b.c.d') is False"", ""valid_ipv4('255.255.255.255') is True"", ""valid_ipv4('1.2.3.-4') is False"", ""valid_ipv4('') is False""]","def valid_ipv4(s):
+    p = s.split('.')
+    return len(p) == 4 and all(x.isdigit() and x.isascii() and int(x) <= 255 and (x == '0' or not x.startswith('0')) for x in p)",
+ana00,analytical,dev,A shop sells pens at 12 rupees each. Ravi buys 7 pens and pays with a 100 rupee note. How much change does he get?,16.0,,,,
+ana01,analytical,test,"A jacket costs 2400 rupees. It is sold at 25% discount, then a 5% tax is added on the discounted price. What is the final price?",1890.0,,,,
+ana02,analytical,dev,"A car travels 150 km at 50 km/h, then 120 km at 80 km/h. What is its average speed for the whole trip in km/h?",60.0,,,,
+ana03,analytical,test,Simple interest on 8000 rupees at 7.5% per year for 4 years is how many rupees?,2400.0,,,,
+ana04,analytical,dev,Two friends share 2600 rupees in the ratio 5:8. How many rupees does the one with the larger share get?,1600.0,,,,
+ana05,analytical,test,"The average of five numbers is 18. Four of the numbers are 12, 20, 25 and 15. What is the fifth number?",18.0,,,,
+ana06,analytical,dev,"Pipe A fills a tank in 12 hours and pipe B fills it in 4 hours. Working together, how many hours do they need to fill the empty tank?",3.0,,,,
+ana07,analytical,test,A father is 4 times as old as his son. The sum of their ages is 55. How old is the son?,11.0,,,,
+ana08,analytical,dev,A rectangle has perimeter 54 cm and length 17 cm. What is its area in square cm?,170.0,,,,
+ana09,analytical,test,Anu buys 6 notebooks at 45 rupees and 4 pens at 18 rupees each. She gets 10% off the total. How many rupees does she pay?,307.8,,,,
+ana10,analytical,dev,A bacteria colony doubles every 3 hours. It starts with 50 bacteria. How many are there after 15 hours?,1600.0,,,,
+ana11,analytical,test,A train moves at 72 km/h. How many metres does it travel in 25 seconds?,500.0,,,,
+ana12,analytical,dev,The sum of three consecutive integers is 132. What is the largest of them?,45.0,,,,
+ana13,analytical,test,"A price rises by 20% and then falls by 20%. If the original price was 500 rupees, what is the final price?",480.0,,,,
+ana14,analytical,dev,Two trains start 330 km apart and move towards each other at 45 km/h and 65 km/h. After how many hours do they meet?,3.0,,,,
+res00,research,dev,Who founded Veltrix Corp?,oyelaran,,,,[0]
+res01,research,test,In which year was the Brannock drill first released?,1991,,,,[2]
+res02,research,dev,What is the population of Quillhaven?,212000,,,,[3]
+res03,research,test,Who is the mayor of the city where Veltrix Corp was founded?,wrenfield,,,,"[0, 3]"
+res04,research,dev,In which village was the mayor of Quillhaven born?,aldermoor,,,,"[3, 4]"
+res05,research,test,When is the lantern festival held in the village where Tobias Wrenfield was born?,october,,,,"[4, 5]"
+res06,research,dev,At which institute did the founder of Veltrix Corp study?,dunmore institute,,,,"[0, 1]"
+res07,research,test,Who is the rector of the institute where Marta Oyelaran studied?,halvorsen,,,,"[0, 1, 8]"
+res08,research,dev,How many euros is the grant of the prize won by the founder of Norvane Labs?,80000,,,,"[6, 9, 10]"
+res09,research,test,In which city is the Harlow Prize awarded?,copenhagen,,,,[10]
+res10,research,dev,How many euros does the Sable microscope cost?,1450,,,,[7]
+res11,research,test,"Which drill is heavier, the Brannock or the Ardent? Answer with one word.",ardent,,,,"[2, 14]"
+res12,research,dev,How many people work at the second factory of Veltrix Corp?,340,,,,[12]
+res13,research,test,How many kilometers is the town of Veltrix Corp's second factory from Quillhaven?,60,,,,"[12, 13]"
+res14,research,dev,Where does the founder of Kestrel Dynamics teach now?,dunmore institute,,,,"[14, 15]"

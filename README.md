@@ -14,7 +14,7 @@ evaluated in a simulator and on recorded runs of real language models.
 
 **UCS760 Lab Evaluation · Thapar Institute of Engineering and Technology**
 
-[Report (PDF)](report/ORBIT_Report.pdf) · [Results](#results) · [Run it](#quick-start) · [Dashboard](#interactive-dashboard)
+[Report (PDF)](report/ORBIT_Report.pdf) · [Dataset](data/) · [Results](#results) · [Run it](#quick-start) · [Dashboard](#interactive-dashboard)
 
 </div>
 
@@ -73,9 +73,10 @@ against the hypothesis are reported as they came out.
 
 ### Real language models (24 held-out tasks, recorded traces)
 
-50 tasks with checkable answers (coding with hidden unit tests, exact-answer word problems, and research
-questions over fictional documents). Each agent call was recorded several times, so every policy replays the
-same traces and differences come from the policy, not from sampling luck.
+Evaluated on the [ORBIT dataset](data/): 50 tasks with automatic graders (20 coding with hidden unit tests,
+15 exact-answer word problems, 15 research questions over fictional documents), split 26 dev and 24 test, plus
+recorded runs of both models on every task. Every policy replays the same traces, so differences come from the
+policy, not from sampling luck.
 
 | Policy | qwen2.5:3b return | success | gpt-oss-20b return | success |
 |---|---:|---:|---:|---:|
@@ -148,6 +149,7 @@ eval/         evaluation runner, tuning, shift, ablation, blind and real-trace s
 llm/          model client (Ollama, Groq), agents, 50 graded tasks, trace cache, replay environment
 app/          race engine, charts and the Streamlit dashboard
 tests/        87 tests: reward loopholes, environment, engine, tasks, dashboard
+data/         the 50-task dataset (CSV) and its data card
 runs/         recorded real-model traces (qwen2.5:3b, gpt-oss-20b)
 checkpoints/  trained controllers
 report/       technical report and the scripts that build its figures
